@@ -1,0 +1,181 @@
+import { Link } from 'react-router-dom'
+import { categories } from '../../data/creations'
+import { ourCreations } from '../../data/creations'
+
+const OurCreationsDropdown = () => {
+  return (
+    <div className="w-full h-full flex items-start py-4 px-6 md:px-8 lg:px-12 gap-4 md:gap-6 lg:gap-8">
+      {/* Menu Items - Left Side */}
+      <div className="flex-shrink-0 w-48 md:w-56 lg:w-64">
+        <nav className="space-y-1">
+          {categories.map((category) => {
+            // Make "Murti" clickable and navigate to /murti
+            if (category === 'Murti') {
+              return (
+                <Link
+                  key={category}
+                  to="/murti"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            // Make "Dream Temples" clickable and navigate to /dream-temple
+            if (category === 'Dream Temples') {
+              return (
+                <Link
+                  key={category}
+                  to="/dream-temple"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            // Make "Pooja Rooms" clickable and navigate to /pooja-room
+            if (category === 'Pooja Rooms') {
+              return (
+                <Link
+                  key={category}
+                  to="/pooja-room"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            // Make "Home Decor" clickable and navigate to /home-decor
+            if (category === 'Home Decor') {
+              return (
+                <Link
+                  key={category}
+                  to="/murti#shop-home-decor"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            // Make "Communal Temples" clickable and navigate to /communal-temples
+            if (category === 'Communal Temples') {
+              return (
+                <Link
+                  key={category}
+                  to="/communal-temples"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            // Make "Jain Temples" clickable and navigate to /jain-temples
+            if (category === 'Jain Temples') {
+              return (
+                <Link
+                  key={category}
+                  to="/jain-temples"
+                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+                >
+                  {category}
+                </Link>
+              )
+            }
+
+            return (
+              <button
+                key={category}
+                className="w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+              >
+                {category}
+              </button>
+            )
+          })}
+        </nav>
+      </div>
+
+      {/* Images - Right Side in Horizontal Line */}
+      <div className="flex-1 flex items-center gap-3 md:gap-4 overflow-x-auto h-full">
+        {ourCreations.map((item) => {
+          // Make Murti image clickable
+          const ImageContent = (
+            <div className="group cursor-pointer flex-shrink-0 flex flex-col">
+              <div className="relative overflow-hidden rounded-lg bg-gray-100 w-28 h-[260px] md:w-32 md:h-[260px] lg:w-36 lg:h-[260px] shadow-md hover:shadow-lg transition-shadow">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                />
+              </div>
+              <h3 className="text-xs md:text-sm font-semibold text-black text-center mt-1.5 group-hover:text-[#8B7355] transition-colors whitespace-nowrap">
+                {item.name}
+              </h3>
+            </div>
+          )
+
+          if (item.id === 'murti') {
+            return (
+              <Link key={item.id} to="/murti">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          if (item.id === 'dream-temples') {
+            return (
+              <Link key={item.id} to="/dream-temple">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          if (item.id === 'pooja-rooms') {
+            return (
+              <Link key={item.id} to="/pooja-room">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          if (item.id === 'home-decor') {
+            return (
+              <Link key={item.id} to="/murti#shop-home-decor">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          if (item.id === 'communal-temples') {
+            return (
+              <Link key={item.id} to="/communal-temples">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          if (item.id === 'jain-temples') {
+            return (
+              <Link key={item.id} to="/jain-temples">
+                {ImageContent}
+              </Link>
+            )
+          }
+
+          return (
+            <div key={item.id}>
+              {ImageContent}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default OurCreationsDropdown
+
