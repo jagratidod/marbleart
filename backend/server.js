@@ -11,6 +11,7 @@ const jobRoutes = require('./routes/jobs');
 const expertConsultationRoutes = require('./routes/expertConsultations');
 const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
+const faqRoutes = require('./routes/faqs');
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/expert-consultations', expertConsultationRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/faqs', faqRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

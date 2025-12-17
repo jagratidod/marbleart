@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import CreationsNavBar from '../../../components/layout/CreationsNavBar'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import { fetchFAQs } from '../../../utils/faqUtils'
 import { murtiCollections } from '../../../data/murtiCollections'
 import { ganeshaProducts } from '../../../data/ganeshaProducts'
 import { hanumanProducts } from '../../../data/hanumanProducts'
@@ -34,6 +35,25 @@ const MurtiPage = ({
   // const [selectedFurnitureCategory, setSelectedFurnitureCategory] = useState('Center Tables') // Removed local state
   // const [selectedHomeDecorCategory, setSelectedHomeDecorCategory] = useState('Lamps') // Removed local state
   const [expandedFaq, setExpandedFaq] = useState(null)
+  const [faqs, setFaqs] = useState([])
+  const [loadingFAQs, setLoadingFAQs] = useState(true)
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const loadFAQs = async () => {
+      try {
+        setLoadingFAQs(true)
+        const data = await fetchFAQs('murti')
+        setFaqs(data || [])
+      } catch (error) {
+        console.error('Error loading FAQs:', error)
+        setFaqs([])
+      } finally {
+        setLoadingFAQs(false)
+      }
+    }
+    loadFAQs()
+  }, [])
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -329,7 +349,7 @@ const MurtiPage = ({
       </div>
 
       {/* FAQ Section */}
-      < section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white" >
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic text-center mb-4 md:mb-6 font-bold">
             Frequently Asked Questions
@@ -339,193 +359,61 @@ const MurtiPage = ({
           </p>
 
           <div className="space-y-4">
-            {/* FAQ 1 */}
-            <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 1 ? null : 1)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                    Q.1
-                  </span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 1 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    What products do you offer?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 1 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 1 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      We offer a variety of products including murtis, home decor items, wall art, and other stone artifacts. Each item is crafted with precision and dedication to ensure the highest quality.
-                    </p>
+            {loadingFAQs ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">Loading FAQs...</p>
+              </div>
+            ) : faqs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">No FAQs available at the moment.</p>
+              </div>
+            ) : (
+              faqs.map((faq, index) => {
+                const faqId = faq._id || faq.id || index
+                const isExpanded = expandedFaq === faqId
+                return (
+                  <div key={faqId} className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                    <button
+                      onClick={() => setExpandedFaq(isExpanded ? null : faqId)}
+                      className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
+                          Q.{index + 1}
+                        </span>
+                        <span className={`text-sm md:text-base font-medium flex-1 ${isExpanded ? 'text-[#8B7355]' : 'text-gray-800'}`}>
+                          {faq.question}
+                        </span>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        {isExpanded ? (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                    {isExpanded && faq.answer && (
+                      <div className="px-5 pb-4 pt-0">
+                        <div className="pl-8 border-l-2 border-gray-300">
+                          <div
+                            className="text-sm md:text-base text-gray-600 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 2 */}
-            <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 2 ? null : 2)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                    Q.2
-                  </span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 2 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    How can I place an order?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 2 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 2 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      You can place an order directly through our website. Simply browse our products, add your desired items to the cart, and proceed to checkout.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 3 */}
-            <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 3 ? null : 3)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                    Q.3
-                  </span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 3 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    What payment methods do you accept?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 3 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 3 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      We accept various payment methods including credit/debit cards, net banking, and UPI. For international orders, we also accept PayPal and international credit cards.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 4 */}
-            <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 4 ? null : 4)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                    Q.4
-                  </span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 4 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    Do you offer customization?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 4 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 4 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Yes, we offer customization for certain products. Please contact our customer service team to discuss your specific requirements.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 5 */}
-            <div className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 5 ? null : 5)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                    Q.5
-                  </span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 5 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    How can I contact customer support?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 5 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 5 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      You can place an order through our website or contact our customer support for assistance.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+                )
+              })
+            )}
           </div>
         </div>
-      </section >
+      </section>
 
       {/* Circular Image Cards - Auto Scrolling */}
       < section className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8 bg-white" >

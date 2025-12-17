@@ -99,8 +99,8 @@ const OurCreationsDropdown = () => {
         </nav>
       </div>
 
-      {/* Images - Right Side in Horizontal Line */}
-      <div className="flex-1 flex items-center gap-3 md:gap-4 overflow-x-auto h-full">
+      {/* Images - Right Side in Horizontal Line - Hidden on Mobile */}
+      <div className="hidden lg:flex flex-1 items-center gap-3 md:gap-4 overflow-x-auto h-full">
         {ourCreations.map((item) => {
           // Make Murti image clickable
           const ImageContent = (

@@ -96,13 +96,23 @@ const CommunalTemplesPage = ({ onShowCart, onShowLikes }) => {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
 
-        {/* Form Container - Overlay on Right Side, Fits Image Height */}
-        <div id="expert-form-container" className="absolute right-4 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 w-[85%] sm:w-[320px] md:w-[340px] max-w-[calc(100%-32px)] bg-white rounded-xl md:rounded-2xl shadow-2xl z-20 flex flex-col backdrop-blur-sm bg-white/95">
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 md:p-4 border-b-2 border-gray-200 bg-gradient-to-r flex-shrink-0 rounded-t-xl md:rounded-t-2xl" style={{ background: `linear-gradient(to right, ${THEME_COLORS.primary}1A, transparent)` }}>
-            <h3 className="text-base md:text-lg font-bold uppercase tracking-wide" style={{ color: THEME_COLORS.primary }}>Talk to Our Expert</h3>
-            <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ backgroundColor: `${THEME_COLORS.primary}1A`, color: THEME_COLORS.primary }}>{formStep}/2</span>
-          </div>
+        {/* Form Container - Centered on Mobile, Right Side on Desktop */}
+        {showExpertForm && (
+          <div id="expert-form-container" className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-4 md:lg:right-6 xl:right-8 top-1/2 -translate-y-1/2 w-[90%] sm:w-[85%] md:w-[340px] lg:w-[340px] max-w-[calc(100%-32px)] bg-white rounded-xl md:rounded-2xl shadow-2xl z-20 flex flex-col backdrop-blur-sm bg-white/95">
+            {/* Header */}
+            <div className="flex items-center justify-between p-3 md:p-4 border-b-2 border-gray-200 bg-gradient-to-r flex-shrink-0 rounded-t-xl md:rounded-t-2xl" style={{ background: `linear-gradient(to right, ${THEME_COLORS.primary}1A, transparent)` }}>
+              <h3 className="text-base md:text-lg font-bold uppercase tracking-wide" style={{ color: THEME_COLORS.primary }}>Talk to Our Expert</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ backgroundColor: `${THEME_COLORS.primary}1A`, color: THEME_COLORS.primary }}>{formStep}/2</span>
+                <button
+                  onClick={() => setShowExpertForm(false)}
+                  className="text-gray-500 hover:text-gray-700 text-xl font-bold w-6 h-6 flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
 
           <div className="px-3 pt-3 pb-4 md:px-4 md:pt-4 md:pb-4 bg-white overflow-y-auto flex-1 rounded-b-xl md:rounded-b-2xl">
             {formStep === 1 ? (
@@ -362,6 +372,7 @@ const CommunalTemplesPage = ({ onShowCart, onShowLikes }) => {
             )}
           </div>
         </div>
+        )}
       </div>
 
       {/* Why Choose Us Section */}

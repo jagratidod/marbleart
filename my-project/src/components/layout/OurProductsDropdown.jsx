@@ -47,8 +47,8 @@ const OurProductsDropdown = () => {
         </nav>
       </div>
 
-      {/* Images - Right Side Fixed (Stays in Place) */}
-      <div className="flex-1 flex items-center gap-2 md:gap-3 overflow-x-auto h-full">
+      {/* Images - Right Side Fixed (Stays in Place) - Hidden on Mobile */}
+      <div className="hidden lg:flex flex-1 items-center gap-2 md:gap-3 overflow-x-auto h-full">
         {products.map((product) => {
           const getRoute = (id) => {
             if (id === 'sandstone') return '/products/sandstone'

@@ -27,8 +27,8 @@ const ProjectsDropdown = () => {
         </nav>
       </div>
 
-      {/* Images - Right Side in Horizontal Line */}
-      <div className="flex-1 flex items-center gap-3 md:gap-4 overflow-x-auto h-full">
+      {/* Images - Right Side in Horizontal Line - Hidden on Mobile */}
+      <div className="hidden lg:flex flex-1 items-center gap-3 md:gap-4 overflow-x-auto h-full">
         {projects.map((project) => {
           const ImageContent = (
             <div className="group cursor-pointer flex-shrink-0 flex flex-col">

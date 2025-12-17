@@ -34,7 +34,7 @@ export const FOOTER_LINKS = {
     { label: 'Disclaimer', href: '/disclaimer' }
   ],
   needHelp: [
-    { label: 'FAQs', href: '#' },
+    { label: 'FAQs', href: '/faqs' },
     { label: 'Stores', href: '#' },
     { label: 'Call Us', href: '#' },
     { label: 'Email', href: '#' }

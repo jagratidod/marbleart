@@ -41,6 +41,7 @@ import TermsAndConditionsPage from './modules/user/pages/TermsAndConditionsPage'
 import PrivacyPolicyPage from './modules/user/pages/PrivacyPolicyPage'
 import CookiesPolicyPage from './modules/user/pages/CookiesPolicyPage'
 import DisclaimerPage from './modules/user/pages/DisclaimerPage'
+import FAQsPage from './modules/user/pages/FAQsPage'
 import ProductDetailPage from './modules/user/pages/ProductDetailPage'
 import CategoryListingPage from './modules/user/pages/CategoryListingPage'
 import CommunalProjectsPage from './modules/user/pages/CommunalProjectsPage'
@@ -355,6 +356,19 @@ function App() {
 
           <Route path="/privacy-policy" element={
             <PrivacyPolicyPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/faqs" element={
+            <FAQsPage
               onShowSidebar={() => setShowSidebar(true)}
               onShowProjects={() => setShowProjectsModal(true)}
               onShowCreations={() => setShowOurCreations(true)}

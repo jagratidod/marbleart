@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
@@ -8,6 +8,7 @@ import StepInfoItem from '../../../components/common/StepInfoItem'
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver'
 import { THEME_COLORS } from '../../../utils/theme'
 import { BUDGET_OPTIONS, TIMELINE_OPTIONS } from '../../../utils/constants'
+import { fetchFAQs } from '../../../utils/faqUtils'
 import howItWorksBg from '../../../assets/how it work/voice of devotion.jpeg'
 import icon1 from '../../../assets/how it work/icons/icon1.png'
 import icon2 from '../../../assets/how it work/icons/icon2.png'
@@ -31,7 +32,26 @@ const HowItWorksPage = ({
   const navigate = useNavigate()
   const [expandedFaq, setExpandedFaq] = useState(null)
   const [formStep, setFormStep] = useState(1)
+  const [faqs, setFaqs] = useState([])
+  const [loadingFAQs, setLoadingFAQs] = useState(true)
   const { refs, visibleSections } = useIntersectionObserver(0.3)
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const loadFAQs = async () => {
+      try {
+        setLoadingFAQs(true)
+        const data = await fetchFAQs('how-it-works')
+        setFaqs(data || [])
+      } catch (error) {
+        console.error('Error loading FAQs:', error)
+        setFaqs([])
+      } finally {
+        setLoadingFAQs(false)
+      }
+    }
+    loadFAQs()
+  }, [])
 
   const scrollToForm = useCallback(() => {
     const formContainer = document.getElementById('expert-form-container')
@@ -735,396 +755,56 @@ const HowItWorksPage = ({
           </h2>
 
           <div className="space-y-3">
-            {/* FAQ 1 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 1 ? null : 1)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">1.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 1 ? 'text-[#8B7355]' : 'text-gray-800'}`}>
-                    How much is your design fee?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 1 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 1 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      For our domestic clients, we offer three different design services:<br /><br />
-                      <strong>Starter Pack:</strong> INR 51,000 for a customized 2D design concept of your bespoke Dream Temple.<br /><br />
-                      <strong>Premium Pack:</strong> INR 81,000, which includes a 2D concept of your Dream Temple along with a site visit.<br /><br />
-                      <strong>Pro Pack:</strong> ₹111,000, which includes a 2D layout for your Pooja Room, Temple, walls, and floors, along with working drawings and a site visit.<br /><br />
-                      Once you finalize your 2D concept, we also offer exceptional 3D rendering services, starting at INR 1.5 lakh.
-                    </p>
+            {loadingFAQs ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">Loading FAQs...</p>
+              </div>
+            ) : faqs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">No FAQs available at the moment.</p>
+              </div>
+            ) : (
+              faqs.map((faq, index) => {
+                const faqId = faq._id || faq.id || index
+                const isExpanded = expandedFaq === faqId
+                return (
+                  <div key={faqId} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
+                    <button
+                      onClick={() => setExpandedFaq(isExpanded ? null : faqId)}
+                      className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">{index + 1}.</span>
+                        <span className={`text-sm md:text-base font-medium flex-1 ${isExpanded ? 'text-[#8B7355]' : 'text-gray-800'}`}>
+                          {faq.question}
+                        </span>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        {isExpanded ? (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                    {isExpanded && faq.answer && (
+                      <div className="px-5 pb-4 pt-0">
+                        <div className="pl-8 border-l-2 border-gray-300">
+                          <div
+                            className="text-sm md:text-base text-gray-600 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 2 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 2 ? null : 2)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">2.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 2 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    How much time is required for designing an AMS pooja room?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 2 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 2 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Designing an AMS Pooja Room typically takes 2 weeks, depending on the project scope and complexity. The production process takes an additional 3-4 months to ensure smooth operations and timely delivery.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 3 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 3 ? null : 3)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">3.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 3 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    What is the production time for a custom Dream Temple?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 3 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 3 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      The production timeline for a custom Dream Temple is 8-10 weeks, excluding:<br /><br />
-                      • The initial design phase of 10-15 days<br />
-                      • Delivery and installation (approximately 1 week)
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 4 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 4 ? null : 4)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">4.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 4 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Do you conduct site visits for taking measurements? What are the charges?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 4 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 4 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Yes, we conduct site visits across India for a site recce. You can opt for the Premium Pack, which offers you a 2D concept along with a site visit for ₹81,000 in Jaipur, Delhi NCR, and Mumbai. For other locations in India, additional charges apply.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 5 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 5 ? null : 5)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">5.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 5 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Do you deliver pan India?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 5 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 5 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Yes, we deliver across India and internationally. We have dedicated delivery and installation partners who manage the entire process seamlessly.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 6 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 6 ? null : 6)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">6.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 6 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Is the design fee refundable?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 6 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 6 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Please note that our design fee is non-refundable but adjustable. It serves as an advance payment for the design expertise AMS brings to your project and is later deducted from your total invoice upon order placement.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 7 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 7 ? null : 7)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">7.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 7 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Do custom temples cost more than ready-made ones?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 7 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 7 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Customization involves crafting bespoke concepts tailored to your specific needs and preferences. Ready-made temples are standardized products. However, pricing depends on the level of craftsmanship rather than solely on customization or readiness.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 8 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 8 ? null : 8)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">8.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 8 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Do you also make murtis?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 8 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 8 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      Yes, we offer complete pooja room solutions, including temples, murtis, and other pooja room elements like walls, flooring, and ceilings, all crafted in exquisite stonework.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 9 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 9 ? null : 9)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">9.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 9 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Which marble do you use?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 9 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 9 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      We primarily use premium-quality Vietnam White Marble, known for its pristine finish and durability. For specific projects, we also work with other high-grade marbles.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 10 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 10 ? null : 10)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">10.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 10 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Are the drawers in the temple also made of marble?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 10 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 10 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      The drawer fronts are clad with marble carvings that seamlessly match the temple's design. The internal structure is made of high-grade Centuryply boards, fitted with Hafele push-to-open channels for smooth operation. The interiors are finished with premium-quality mica, ensuring a smooth and easy-to-clean experience.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 11 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[#8B7355]">
-              <button
-                onClick={() => setExpandedFaq(expandedFaq === 11 ? null : 11)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">11.</span>
-                  <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === 11 ? 'text-amber-600' : 'text-gray-800'}`}>
-                    Is the chandelier included with the temple?
-                  </span>
-                </div>
-                <div className="flex-shrink-0 ml-4">
-                  {expandedFaq === 11 ? (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  )}
-                </div>
-              </button>
-              {expandedFaq === 11 && (
-                <div className="px-5 pb-4 pt-0">
-                  <div className="pl-8 border-l-2 border-gray-300">
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                      No, the chandelier is not included with the temple. It can be added separately upon request as an additional feature.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+                )
+              })
+            )}
           </div>
         </div>
       </section>

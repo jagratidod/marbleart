@@ -45,15 +45,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
       ),
-      submenu: [
-        { title: 'Pooja Room', path: '/admin/products/pooja-room' },
-        { title: 'Dream Temple', path: '/admin/products/dream-temple' },
-        { title: 'Murti', path: '/admin/products/murti' },
-        { title: 'Home Decor', path: '/admin/products/home-decor' },
-        { title: 'Communal Temples', path: '/admin/products/communal-temples' },
-        { title: 'Jain Temples', path: '/admin/products/jain-temples' },
-        { title: 'Stone Products', path: '/admin/products/stones' }
-      ]
+      submenu: []
     },
     {
       title: 'Content',

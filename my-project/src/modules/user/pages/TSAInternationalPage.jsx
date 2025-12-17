@@ -4,6 +4,7 @@ import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
 import HeroSectionWithForm from '../../../components/common/HeroSectionWithForm'
+import { fetchFAQs } from '../../../utils/faqUtils'
 import { internationalLocations } from '../../../data/locations'
 
 // Import hero image
@@ -32,6 +33,26 @@ const TSAInternationalPage = ({
   const scrollContainerRef = useRef(null)
   const [activeTab, setActiveTab] = useState('USA')
   const [selectedProcessStep, setSelectedProcessStep] = useState(1)
+  const [expandedFaq, setExpandedFaq] = useState(null)
+  const [faqs, setFaqs] = useState([])
+  const [loadingFAQs, setLoadingFAQs] = useState(true)
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const loadFAQs = async () => {
+      try {
+        setLoadingFAQs(true)
+        const data = await fetchFAQs('tsa-international')
+        setFaqs(data || [])
+      } catch (error) {
+        console.error('Error loading FAQs:', error)
+        setFaqs([])
+      } finally {
+        setLoadingFAQs(false)
+      }
+    }
+    loadFAQs()
+  }, [])
 
   const handleLocationClick = (locationName) => {
     navigate(`/location/${locationName.toLowerCase()}`)
@@ -385,6 +406,70 @@ const TSAInternationalPage = ({
 
       {/* 5 Steps Process Section */}
       <ProcessStepsSection selectedStep={selectedProcessStep} onStepChange={setSelectedProcessStep} />
+
+      {/* FAQ Section */}
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic text-center mb-8 md:mb-12 font-bold">
+            Frequently Asked Questions
+          </h2>
+
+          <div className="space-y-4">
+            {loadingFAQs ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">Loading FAQs...</p>
+              </div>
+            ) : faqs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-base md:text-lg">No FAQs available at the moment.</p>
+              </div>
+            ) : (
+              faqs.map((faq, index) => {
+                const faqId = faq._id || faq.id || index
+                const isExpanded = expandedFaq === faqId
+                return (
+                  <div key={faqId} className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                    <button
+                      onClick={() => setExpandedFaq(isExpanded ? null : faqId)}
+                      className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
+                          Q.{index + 1}
+                        </span>
+                        <span className={`text-sm md:text-base font-medium flex-1 ${isExpanded ? 'text-[#8B7355]' : 'text-gray-800'}`}>
+                          {faq.question}
+                        </span>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        {isExpanded ? (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                    {isExpanded && faq.answer && (
+                      <div className="px-5 pb-4 pt-0">
+                        <div className="pl-8 border-l-2 border-gray-300">
+                          <div
+                            className="text-sm md:text-base text-gray-600 leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })
+            )}
+          </div>
+        </div>
+      </section>
 
       <Footer />
       <FloatingButtons />

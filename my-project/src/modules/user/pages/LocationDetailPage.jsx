@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../../../components/layout/Header'
 import FloatingButtons from '../../../components/common/FloatingButtons'
 import LocationForm from '../../../components/location/LocationForm'
 import { formatLocationName, indianLocations } from '../../../data/locations'
-import { getLocationFAQs } from '../../../data/faqs'
+import { fetchFAQs } from '../../../utils/faqUtils'
 import { dreamTemples } from '../../../data/dreamTemples'
 import ganeshaImg from '../../../assets/communal/wmremove-transformed.jpeg'
 import templedesignImg from '../../../assets/locationicons/middlecard/templedesign.png'
@@ -23,13 +23,36 @@ const LocationDetailPage = ({
 }) => {
   const [selectedProcessStep, setSelectedProcessStep] = useState(1)
   const [expandedFaq, setExpandedFaq] = useState(null)
+  const [faqs, setFaqs] = useState([])
+  const [loadingFAQs, setLoadingFAQs] = useState(true)
 
   // Check if location is Indian or International
   const isIndianLocation = indianLocations.some(
     loc => loc.name.toUpperCase() === location.toUpperCase()
   )
 
-  const faqs = getLocationFAQs(formatLocationName(location))
+  // Fetch FAQs from API
+  useEffect(() => {
+    if (!isIndianLocation) {
+      setLoadingFAQs(false)
+      return
+    }
+
+    const loadFAQs = async () => {
+      try {
+        setLoadingFAQs(true)
+        const formattedLocation = formatLocationName(location)
+        const data = await fetchFAQs('location', formattedLocation)
+        setFaqs(data || [])
+      } catch (error) {
+        console.error('Error loading FAQs:', error)
+        setFaqs([])
+      } finally {
+        setLoadingFAQs(false)
+      }
+    }
+    loadFAQs()
+  }, [location, isIndianLocation])
 
   return (
     <div className="w-full min-h-screen relative bg-white">
@@ -195,46 +218,61 @@ const LocationDetailPage = ({
             </h2>
 
             <div className="space-y-4">
-              {faqs.map((faq) => (
-                <div
-                  key={faq.id}
-                  className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md"
-                >
-                  <button
-                    onClick={() => setExpandedFaq(expandedFaq === faq.id ? null : faq.id)}
-                    className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
-                      <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
-                        {faq.id}.
-                      </span>
-                      <span className={`text-sm md:text-base font-medium flex-1 ${expandedFaq === faq.id ? 'text-amber-600' : 'text-gray-800'}`}>
-                        {faq.question}
-                      </span>
-                    </div>
-                    <div className="flex-shrink-0 ml-4">
-                      {expandedFaq === faq.id ? (
-                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+              {loadingFAQs ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 text-base md:text-lg">Loading FAQs...</p>
+                </div>
+              ) : faqs.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 text-base md:text-lg">No FAQs available at the moment.</p>
+                </div>
+              ) : (
+                faqs.map((faq, index) => {
+                  const faqId = faq._id || faq.id || index
+                  const isExpanded = expandedFaq === faqId
+                  return (
+                    <div
+                      key={faqId}
+                      className="bg-gray-50 rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md"
+                    >
+                      <button
+                        onClick={() => setExpandedFaq(isExpanded ? null : faqId)}
+                        className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <span className="text-base md:text-lg font-semibold text-gray-800 flex-shrink-0">
+                            Q.{index + 1}
+                          </span>
+                          <span className={`text-sm md:text-base font-medium flex-1 ${isExpanded ? 'text-amber-600' : 'text-gray-800'}`}>
+                            {faq.question}
+                          </span>
+                        </div>
+                        <div className="flex-shrink-0 ml-4">
+                          {isExpanded ? (
+                            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          )}
+                        </div>
+                      </button>
+                      {isExpanded && faq.answer && (
+                        <div className="px-5 pb-4 pt-0">
+                          <div className="pl-8 border-l-2 border-gray-300">
+                            <div
+                              className="text-sm md:text-base text-gray-600 leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: faq.answer }}
+                            />
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </button>
-                  {expandedFaq === faq.id && faq.answer && (
-                    <div className="px-5 pb-4 pt-0">
-                      <div className="pl-8 border-l-2 border-gray-300">
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                  )
+                })
+              )}
             </div>
           </div>
         </section>

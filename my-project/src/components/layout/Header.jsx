@@ -173,6 +173,7 @@ const Header = ({
   const [hoveredDropdown, setHoveredDropdown] = useState(null);
   const [isFading, setIsFading] = useState(false);
   const [pendingDropdown, setPendingDropdown] = useState(null);
+  const [mobileExpandedMenu, setMobileExpandedMenu] = useState(null);
   const timeoutRef = useRef(null);
 
   // Handle dropdown change with fade animation
@@ -385,83 +386,239 @@ const Header = ({
 
           {/* Mobile / Tablet Navbar (< lg) */}
           <div className="flex lg:hidden flex-col">
-            {/* Top row: centered big logo + menu button on the right */}
-            <div className="flex items-center justify-between py-1">
+            {/* Top row: Logo + Hamburger Menu */}
+            <div className="flex items-center justify-between py-2">
               <div className="flex-1 flex justify-center">
-                {/* Make logo bigger on smaller screens */}
                 <Link to="/" className="block">
                   <img
                     src={logoImage}
                     alt="Logo"
-                    className="h-20 xs:h-24 sm:h-28 object-contain"
+                    className="h-16 sm:h-20 md:h-24 object-contain"
                   />
                 </Link>
               </div>
 
               <button
                 onClick={() => setOpen(!open)}
-                className={`text-3xl ml-2 flex-shrink-0 transition-colors duration-300 ${isVideoOverlay && !isDropdownActive ? 'text-white' : 'text-black'}`}
+                className={`ml-2 flex-shrink-0 transition-colors duration-300 p-2 ${isVideoOverlay && !isDropdownActive ? 'text-white' : 'text-black'}`}
+                aria-label="Menu"
               >
-                ☰
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {open ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
               </button>
             </div>
 
-            {/* Mobile Menu: ALL links centered */}
+            {/* Mobile Sidebar Menu */}
             {open && (
-              <div className="flex flex-col items-center gap-3 pb-3">
-                <button
-                  onClick={onShowSidebar}
-                  className={`${linkClass} text-center`}
-                >
-                  ASLAM MARBLE SUPPLIERS
-                </button>
-                <button
-                  onClick={onShowProjects}
-                  className={`${linkClass} text-center`}
-                >
-                  PROJECTS
-                </button>
-                <button
-                  onClick={onShowCreations}
-                  className={`${linkClass} text-center`}
-                >
-                  OUR CREATIONS
-                </button>
-                <button
-                  onClick={onShowProducts}
-                  className={`${linkClass} text-center`}
-                >
-                  OUR PRODUCTS
-                </button>
-                <button
-                  onClick={onShowServices}
-                  className={`${linkClass} text-center`}
-                >
-                  OUR SERVICES
-                </button>
+              <>
+                {/* Overlay */}
+                <div
+                  className="fixed inset-0 bg-black bg-opacity-50 z-[199] lg:hidden"
+                  onClick={() => setOpen(false)}
+                ></div>
+                
+                {/* Sidebar */}
+                <div className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-[201] transform transition-transform duration-300 ease-in-out overflow-y-auto">
+                  <div className="p-4">
+                    {/* Close Button */}
+                    <div className="flex justify-between items-center mb-6 pb-4 border-b">
+                      <img
+                        src={logoImage}
+                        alt="Logo"
+                        className="h-12 object-contain"
+                      />
+                      <button
+                        onClick={() => setOpen(false)}
+                        className="text-2xl text-gray-600 hover:text-black"
+                        aria-label="Close Menu"
+                      >
+                        ×
+                      </button>
+                    </div>
 
-                <Link to="/how-it-works" className={`${linkClass} text-center`}>
-                  HOW IT WORKS
-                </Link>
-                <Link to="/location" className={`${linkClass} text-center`}>
-                  LOCATION
-                </Link>
-                <Link to="/blog" className={`${linkClass} text-center`}>
-                  BLOG
-                </Link>
-                <Link
-                  to="/book-appointment"
-                  className={`${linkClass} text-center`}
-                >
-                  BOOK APPOINTMENT
-                </Link>
-                <Link
-                  to="/testimonials"
-                  className={`${linkClass} text-center`}
-                >
-                  TESTIMONIALS
-                </Link>
-              </div>
+                    {/* Menu Items */}
+                    <div className="flex flex-col gap-2">
+                      {/* ASLAM MARBLE SUPPLIERS - With Dropdown */}
+                      <div className="border-b border-gray-100">
+                        <button
+                          onClick={() => setMobileExpandedMenu(mobileExpandedMenu === 'house-of-tilak' ? null : 'house-of-tilak')}
+                          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                        >
+                          <span>ASLAM MARBLE SUPPLIERS</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform ${mobileExpandedMenu === 'house-of-tilak' ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpandedMenu === 'house-of-tilak' && (
+                          <div className="bg-gray-50 px-4 py-2">
+                            <Link to="/about-us" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">About Us</Link>
+                            <Link to="/experience-centre" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Experience Centre</Link>
+                            <Link to="/the-team" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">The Team</Link>
+                            <Link to="/careers" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Careers</Link>
+                            <Link to="/artisans-of-tilak" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">OUR ARTIST</Link>
+                            <Link to="/our-clients" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Our Clients</Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* PROJECTS - With Dropdown */}
+                      <div className="border-b border-gray-100">
+                        <button
+                          onClick={() => setMobileExpandedMenu(mobileExpandedMenu === 'projects' ? null : 'projects')}
+                          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                        >
+                          <span>PROJECTS</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform ${mobileExpandedMenu === 'projects' ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpandedMenu === 'projects' && (
+                          <div className="bg-gray-50 px-4 py-2">
+                            <Link to="/communal-projects" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Communal</Link>
+                            <Link to="/residential-projects" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Residential</Link>
+                            <Link to="/international-projects" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">International</Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* OUR CREATIONS - With Dropdown */}
+                      <div className="border-b border-gray-100">
+                        <button
+                          onClick={() => setMobileExpandedMenu(mobileExpandedMenu === 'our-creations' ? null : 'our-creations')}
+                          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                        >
+                          <span>OUR CREATIONS</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform ${mobileExpandedMenu === 'our-creations' ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpandedMenu === 'our-creations' && (
+                          <div className="bg-gray-50 px-4 py-2">
+                            <Link to="/pooja-room" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Pooja Rooms</Link>
+                            <Link to="/dream-temple" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Dream Temples</Link>
+                            <Link to="/murti" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Murti</Link>
+                            <Link to="/home-decor" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Home Decor</Link>
+                            <Link to="/communal-temples" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Communal Temples</Link>
+                            <Link to="/jain-temples" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Jain Temples</Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* OUR PRODUCTS - With Dropdown */}
+                      <div className="border-b border-gray-100">
+                        <button
+                          onClick={() => setMobileExpandedMenu(mobileExpandedMenu === 'our-products' ? null : 'our-products')}
+                          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                        >
+                          <span>OUR PRODUCTS</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform ${mobileExpandedMenu === 'our-products' ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpandedMenu === 'our-products' && (
+                          <div className="bg-gray-50 px-4 py-2 max-h-64 overflow-y-auto">
+                            <Link to="/products/sandstone" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Sandstone</Link>
+                            <Link to="/products/limestone" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Limestone</Link>
+                            <Link to="/products/marble" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Marble</Link>
+                            <Link to="/products/granite" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Granite</Link>
+                            <Link to="/products/slate" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Slate</Link>
+                            <Link to="/products/quartzite" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Quartzite</Link>
+                            <Link to="/products/pebble-stones" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Pebble Stones</Link>
+                            <Link to="/products/cobble-stones" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Cobble Stones</Link>
+                            <Link to="/products/stone-chips" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Stone Chips</Link>
+                            <Link to="/products/natural-indian-stones" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Natural Indian Stone</Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* OUR SERVICES - With Dropdown */}
+                      <div className="border-b border-gray-100">
+                        <button
+                          onClick={() => setMobileExpandedMenu(mobileExpandedMenu === 'our-services' ? null : 'our-services')}
+                          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                        >
+                          <span>OUR SERVICES</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform ${mobileExpandedMenu === 'our-services' ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {mobileExpandedMenu === 'our-services' && (
+                          <div className="bg-gray-50 px-4 py-2">
+                            <Link to="/services/tsa-international" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">AMS International</Link>
+                            <Link to="/services/tsa-design-hub" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">AMS Design Hub</Link>
+                          </div>
+                        )}
+                      </div>
+
+                      <Link
+                        to="/how-it-works"
+                        onClick={() => setOpen(false)}
+                        className="text-left px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                      >
+                        HOW IT WORKS
+                      </Link>
+                      <Link
+                        to="/location"
+                        onClick={() => setOpen(false)}
+                        className="text-left px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                      >
+                        LOCATION
+                      </Link>
+                      <Link
+                        to="/blog"
+                        onClick={() => setOpen(false)}
+                        className="text-left px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                      >
+                        BLOG
+                      </Link>
+                      <Link
+                        to="/book-appointment"
+                        onClick={() => setOpen(false)}
+                        className="text-left px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                      >
+                        BOOK APPOINTMENT
+                      </Link>
+                      <Link
+                        to="/testimonials"
+                        onClick={() => setOpen(false)}
+                        className="text-left px-4 py-3 text-sm font-medium uppercase tracking-wide text-gray-700 hover:bg-gray-100 hover:text-[#8B7355] rounded transition-colors"
+                      >
+                        TESTIMONIALS
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </nav>
