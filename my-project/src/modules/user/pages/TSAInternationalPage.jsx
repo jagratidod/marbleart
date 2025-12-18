@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import HeroSectionWithForm from '../../../components/common/HeroSectionWithForm'
 import { fetchFAQs } from '../../../utils/faqUtils'
 import { internationalLocations } from '../../../data/locations'
@@ -471,6 +472,7 @@ const TSAInternationalPage = ({
         </div>
       </section>
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

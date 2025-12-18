@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import CreationsNavBar from '../../../components/layout/CreationsNavBar'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import { fetchFAQs } from '../../../utils/faqUtils'
 import { murtiCollections } from '../../../data/murtiCollections'
 import { ganeshaProducts } from '../../../data/ganeshaProducts'
@@ -442,6 +443,7 @@ const MurtiPage = ({
         </div>
       </section >
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div >

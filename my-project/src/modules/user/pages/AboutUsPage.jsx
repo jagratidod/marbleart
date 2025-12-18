@@ -1,12 +1,15 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
+import ExpertFormSection from '../../../components/common/ExpertFormSection'
 import { journeyTimeline } from '../../../data/aboutUsJourney'
 import { companyValues } from '../../../data/aboutUsValues'
 import headingImage from '../../../assets/house of marble/about us/heading/Gemini_Generated_Image_ipme0eipme0eipme (1).png'
 import aboutImage1 from '../../../assets/house of marble/about us/Screenshot 2025-12-10 131359.png'
 import aboutImage2 from '../../../assets/house of marble/about us/Screenshot 2025-12-10 131414.png'
+import { teamMembers } from '../../../data/teamMembers'
 
 // CSS to hide scrollbar
 const scrollbarHideStyle = `
@@ -29,7 +32,25 @@ const AboutUsPage = ({
   onShowLocation,
   onShowBooking
 }) => {
+  const [dynamicContent, setDynamicContent] = useState(null)
   const journeyScrollRef = useRef(null)
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5100/api'
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await fetch(`${API_URL}/about-us`)
+        const result = await res.json()
+        if (result.success && result.data) {
+          setDynamicContent(result.data)
+        }
+      } catch (error) {
+        console.error('Error fetching about us dynamic content:', error)
+      }
+    }
+    fetchContent()
+  }, [])
 
   const scrollJourney = (direction) => {
     if (journeyScrollRef.current) {
@@ -49,7 +70,7 @@ const AboutUsPage = ({
       {/* Fixed Background Image */}
       <div className="fixed inset-0 z-0">
         <img
-          src={headingImage}
+          src={dynamicContent?.heroBgImage?.url || headingImage}
           alt="About Us Background"
           className="w-full h-full object-cover"
         />
@@ -92,7 +113,7 @@ const AboutUsPage = ({
                 <div className="w-full">
                   <div className="relative overflow-hidden rounded-xl shadow-2xl">
                     <img
-                      src={aboutImage1}
+                      src={dynamicContent?.introImage?.url || aboutImage1}
                       alt="Aslam Marble Suppliers"
                       className="w-full h-auto object-cover"
                     />
@@ -126,6 +147,40 @@ const AboutUsPage = ({
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* OUR VISION Section */}
+        <section className="w-full py-16 md:py-20 lg:py-24" style={{ backgroundColor: '#FFFAF0' }}>
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#333] tracking-[0.2em] mb-8 uppercase">
+              OUR VISION
+            </h2>
+            <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 font-light italic leading-relaxed max-w-5xl mx-auto">
+              "Crafting exquisite temples with precision and artistry; Ensuring client satisfaction with timeless designs."
+            </p>
+          </div>
+        </section>
+
+        {/* Scrolling Team Images Section */}
+        <section className="w-full py-12 bg-white overflow-hidden relative">
+          <div className="flex animate-scroll-right-to-left gap-4 md:gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex gap-4 md:gap-6">
+                {teamMembers.map((member, idx) => (
+                  <div
+                    key={`${i}-${idx}`}
+                    className="flex-shrink-0 w-64 h-80 md:w-80 md:h-[450px] overflow-hidden rounded-lg shadow-lg"
+                  >
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110 grayscale hover:grayscale-0"
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -177,23 +232,35 @@ const AboutUsPage = ({
                     msOverflowStyle: 'none'
                   }}
                 >
-                  {journeyTimeline.map((item, index) => (
+                  {(dynamicContent?.timeline?.length > 0 ? dynamicContent.timeline : journeyTimeline).map((item, index) => (
                     <div
                       key={index}
-                      className="flex-shrink-0 bg-white rounded-xl shadow-lg p-6 md:p-8 border-2 border-gray-200 hover:border-[#8B7355] transition-all duration-300"
-                      style={{ width: '300px', minWidth: '300px', maxWidth: '300px' }}
+                      className="group relative flex-shrink-0 bg-white rounded-xl shadow-md hover:shadow-xl p-6 md:p-8 border border-gray-50 transition-all duration-500 hover:-translate-y-1.5 overflow-hidden"
+                      style={{ width: '320px', minWidth: '320px', maxWidth: '320px' }}
                     >
-                      <div className="mb-4">
-                        <div className="inline-block px-4 py-2 bg-[#8B7355] text-white rounded-lg font-bold text-lg md:text-xl mb-3">
-                          {item.year}
+                      {/* Background Accent */}
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-[#8B7355]/5 rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:scale-150"></div>
+
+                      {/* Year Indicator */}
+                      <div className="relative z-10 flex items-start justify-between mb-6">
+                        <div className="flex flex-col">
+                          <span className="text-3xl font-bold text-[#8B7355] mb-2">{item.year}</span>
+                          <div className="w-12 h-1 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
                         </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3 uppercase">
+                      </div>
+
+                      {/* Content */}
+                      <div className="relative z-10">
+                        <h3 className="text-xl font-bold text-gray-800 uppercase tracking-widest mb-4 group-hover:text-[#8B7355] transition-colors">
                           {item.title}
                         </h3>
+                        <p className="text-sm md:text-base text-gray-600 leading-relaxed italic" style={{ fontWeight: 400 }}>
+                          {item.description}
+                        </p>
                       </div>
-                      <p className="text-sm md:text-base text-gray-600 leading-relaxed italic" style={{ fontWeight: 400 }}>
-                        {item.description}
-                      </p>
+
+                      {/* Bottom Gradient Border */}
+                      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B7355]/40 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
                     </div>
                   ))}
                 </div>
@@ -216,22 +283,36 @@ const AboutUsPage = ({
                 </p>
               </div>
 
-              {/* Values Grid - 2 rows, 3 columns */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {companyValues.map((value, index) => (
+              {/* Values Grid - Cards with Theme Enhancement */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                {(dynamicContent?.values?.length > 0 ? dynamicContent.values : companyValues).map((value, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-xl shadow-lg p-6 md:p-8 border-2 border-gray-200 hover:border-[#8B7355] transition-all duration-300"
+                    className="group relative bg-white rounded-xl shadow-md hover:shadow-xl p-6 md:p-7 border border-gray-50 transition-all duration-500 hover:-translate-y-1.5 overflow-hidden"
                   >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-1 h-12" style={{ backgroundColor: '#8B7355' }}></div>
-                      <h3 className="text-xl md:text-2xl font-bold text-gray-800 uppercase">
-                        {value.title}
-                      </h3>
+                    {/* Background Accent */}
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#8B7355]/5 rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:scale-150"></div>
+
+                    {/* Header with Icon/Number */}
+                    <div className="relative z-10 flex items-start justify-between mb-4">
+                      <div className="flex flex-col">
+                        <span className="text-3xl font-bold text-[#8B7355]/20 mb-1.5">0{index + 1}</span>
+                        <div className="w-10 h-0.5 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
+                      </div>
                     </div>
-                    <p className="text-sm md:text-base text-gray-600 leading-relaxed italic" style={{ fontWeight: 400 }}>
+
+                    {/* Title */}
+                    <h3 className="relative z-10 text-lg md:text-xl font-bold text-gray-800 uppercase tracking-wider mb-3 group-hover:text-[#8B7355] transition-colors">
+                      {value.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="relative z-10 text-xs md:text-sm text-gray-600 leading-relaxed italic" style={{ fontWeight: 400 }}>
                       {value.description}
                     </p>
+
+                    {/* Bottom Gradient Border */}
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B7355]/30 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
                   </div>
                 ))}
               </div>
@@ -239,6 +320,8 @@ const AboutUsPage = ({
           </div>
         </section>
 
+        <ExpertFormSection />
+        <TrustedBySection />
         <Footer />
         <FloatingButtons />
       </div>

@@ -1,9 +1,39 @@
 import { Link } from 'react-router-dom'
-import { services } from '../../data/services'
+import { useEffect, useMemo, useState } from 'react'
+import { services as defaultServices } from '../../data/services'
+import { buildImageUrl, fetchNavItems } from '../../utils/aslamHouseUtils'
+
+const GROUP = 'our-services-nav'
 
 const OurServicesDropdown = () => {
-  const getRoute = (service) => {
-    return service.path || null
+  const [items, setItems] = useState(defaultServices)
+
+  useEffect(() => {
+    let isMounted = true
+    const load = async () => {
+      const data = await fetchNavItems(GROUP, true)
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return
+      const normalized = data.map((item) => ({
+        ...item,
+        id: item.key || item.id,
+        name: item.name,
+        path: item.path || '#',
+        image: buildImageUrl(item.imagePath || item.image),
+        displayOrder: item.displayOrder ?? 0
+      }))
+      setItems(normalized)
+    }
+    load()
+    return () => { isMounted = false }
+  }, [])
+
+  const displayItems = useMemo(() => {
+    return (items || []).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+  }, [items])
+
+  const getRoute = (item) => {
+    if (item.path && item.path !== '#') return item.path
+    return null
   }
 
   return (
@@ -11,7 +41,7 @@ const OurServicesDropdown = () => {
       {/* Menu Items - Left Side */}
       <div className="flex-shrink-0 w-48 md:w-56 lg:w-64">
         <nav className="space-y-1">
-          {services.map((service) => {
+          {displayItems.map((service) => {
             const route = getRoute(service)
             return route ? (
               <Link
@@ -35,7 +65,7 @@ const OurServicesDropdown = () => {
 
       {/* Images - Right Side in Horizontal Line - Hidden on Mobile */}
       <div className="hidden lg:flex flex-1 items-center gap-3 md:gap-4 overflow-x-auto h-full">
-        {services.map((service) => {
+        {displayItems.map((service) => {
           const route = getRoute(service)
           const ImageContent = (
             <>

@@ -17,8 +17,8 @@ const OurServicesManagementPage = () => {
 
   const handleAddService = (newService) => {
     const newId = `service-${Date.now()}`
-    const serviceWithId = { 
-      ...newService, 
+    const serviceWithId = {
+      ...newService,
       id: newId
     }
     setServicesList([...servicesList, serviceWithId])
@@ -26,7 +26,7 @@ const OurServicesManagementPage = () => {
   }
 
   const handleEditService = (updatedService) => {
-    setServicesList(servicesList.map(s => 
+    setServicesList(servicesList.map(s =>
       s.id === updatedService.id ? updatedService : s
     ))
     setShowEditModal(false)
@@ -106,8 +106,8 @@ const OurServicesManagementPage = () => {
                 {servicesList.map((service) => (
                   <tr key={service.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
-                      <img 
-                        src={service.image} 
+                      <img
+                        src={service.image}
                         alt={service.name}
                         className="w-20 h-20 object-cover rounded"
                       />
@@ -167,7 +167,7 @@ const OurServicesManagementPage = () => {
 
         {/* Delete Confirmation */}
         {showDeleteConfirm && serviceToDelete && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-bold text-gray-800 mb-4">Confirm Delete</h3>
               <p className="text-gray-600 mb-6">
@@ -230,7 +230,7 @@ const ServiceEditModal = ({ service, onSave, onClose, isAdd }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
@@ -284,9 +284,9 @@ const ServiceEditModal = ({ service, onSave, onClose, isAdd }) => {
               />
               {previewImage && (
                 <div className="mt-4">
-                  <img 
-                    src={previewImage} 
-                    alt="Preview" 
+                  <img
+                    src={previewImage}
+                    alt="Preview"
                     className="w-full max-w-md h-48 object-cover rounded-lg"
                   />
                 </div>
@@ -294,9 +294,9 @@ const ServiceEditModal = ({ service, onSave, onClose, isAdd }) => {
               {!previewImage && formData.image && (
                 <div className="mt-4">
                   <p className="text-sm text-gray-600 mb-2">Current Image:</p>
-                  <img 
-                    src={formData.image} 
-                    alt="Current" 
+                  <img
+                    src={formData.image}
+                    alt="Current"
                     className="w-full max-w-md h-48 object-cover rounded-lg"
                   />
                 </div>

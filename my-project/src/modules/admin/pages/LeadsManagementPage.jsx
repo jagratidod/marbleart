@@ -211,8 +211,8 @@ const LeadsManagementPage = () => {
 
     const loadDummyLeads = () => {
       if (activeTab === 'leads' && type !== 'appointments' && type !== 'job-openings') {
-      setLeads(dummyLeads)
-    }
+        setLeads(dummyLeads)
+      }
     }
 
     fetchAppointments()
@@ -255,12 +255,12 @@ const LeadsManagementPage = () => {
         { value: 'rejected', label: 'Rejected' }
       ]
       : [
-    { value: 'all', label: 'All' },
-    { value: 'new', label: 'New' },
-    { value: 'in_discussion', label: 'In Discussion' },
-    { value: 'quotation_sent', label: 'Quotation Sent' },
-    { value: 'closed', label: 'Closed' }
-  ]
+        { value: 'all', label: 'All' },
+        { value: 'new', label: 'New' },
+        { value: 'in_discussion', label: 'In Discussion' },
+        { value: 'quotation_sent', label: 'Quotation Sent' },
+        { value: 'closed', label: 'Closed' }
+      ]
 
   const getStatusBadge = (status) => {
     const styles = type === 'appointments'
@@ -279,11 +279,11 @@ const LeadsManagementPage = () => {
           rejected: 'bg-red-100 text-red-800'
         }
         : {
-      new: 'bg-blue-100 text-blue-800',
-      in_discussion: 'bg-yellow-100 text-yellow-800',
-      quotation_sent: 'bg-purple-100 text-purple-800',
-      closed: 'bg-green-100 text-green-800'
-    }
+          new: 'bg-blue-100 text-blue-800',
+          in_discussion: 'bg-yellow-100 text-yellow-800',
+          quotation_sent: 'bg-purple-100 text-purple-800',
+          closed: 'bg-green-100 text-green-800'
+        }
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || 'bg-gray-100 text-gray-800'}`}>
         {status?.toString().replace('_', ' ').toUpperCase()}
@@ -389,8 +389,8 @@ const LeadsManagementPage = () => {
           <button
             onClick={() => setActiveTab('leads')}
             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'leads'
-                ? 'text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+              ? 'text-white'
+              : 'text-gray-700 hover:bg-gray-100'
               }`}
             style={activeTab === 'leads' ? { backgroundColor: '#8B7355' } : {}}
           >
@@ -399,8 +399,8 @@ const LeadsManagementPage = () => {
           <button
             onClick={() => setActiveTab('users')}
             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'users'
-                ? 'text-white'
-                : 'text-gray-700 hover:bg-gray-100'
+              ? 'text-white'
+              : 'text-gray-700 hover:bg-gray-100'
               }`}
             style={activeTab === 'users' ? { backgroundColor: '#8B7355' } : {}}
           >
@@ -426,8 +426,8 @@ const LeadsManagementPage = () => {
                   key={option.value}
                   onClick={() => setFilter(option.value)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === option.value
-                      ? 'text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   style={filter === option.value ? { backgroundColor: '#8B7355' } : {}}
                 >
@@ -579,7 +579,7 @@ const LeadsManagementPage = () => {
 
       {/* View Details Modal */}
       {showDetailsModal && selectedLead && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -667,8 +667,8 @@ const LeadsManagementPage = () => {
                         key={option.value}
                         onClick={() => handleStatusUpdate(selectedLead.id, option.value)}
                         className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedLead.status === option.value
-                            ? 'text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         style={selectedLead.status === option.value ? { backgroundColor: '#8B7355' } : {}}
                       >
@@ -719,7 +719,7 @@ const LeadsManagementPage = () => {
 
       {/* User Details Modal */}
       {showUserDetailsModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -825,7 +825,7 @@ const LeadsManagementPage = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && leadToDelete && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>
@@ -867,7 +867,7 @@ const EditLeadModal = ({ lead, onSave, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">

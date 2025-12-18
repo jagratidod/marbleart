@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import AdminLayout from '../components/AdminLayout'
 
 const ContentPagesManagementPage = () => {
@@ -10,10 +11,26 @@ const ContentPagesManagementPage = () => {
     { id: 5, name: 'FAQ Page', slug: 'faq', path: '/faq' },
     { id: 6, name: 'Terms & Conditions', slug: 'terms', path: '/terms' },
     { id: 7, name: 'Privacy Policy', slug: 'privacy', path: '/privacy' },
-    { id: 8, name: 'Careers', slug: 'careers', path: '/careers' }
+    { id: 8, name: 'Careers', slug: 'careers', path: '/careers' },
+    { id: 9, name: 'The Team', slug: 'the-team', path: '/the-team' },
+    { id: 10, name: 'OUR ARTIST', slug: 'artisans-of-tilak', path: '/artisans-of-tilak' },
+    { id: 11, name: 'Our Clients', slug: 'our-clients', path: '/our-clients' }
   ])
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedPage, setSelectedPage] = useState(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const slug = params.get('slug')
+    if (slug) {
+      const page = pages.find(p => p.slug === slug)
+      if (page) {
+        setSelectedPage(page)
+        setShowEditModal(true)
+      }
+    }
+  }, [location.search, pages])
 
   const handleEditPage = (updatedPage) => {
     setPages(pages.map(p => p.id === updatedPage.id ? updatedPage : p))
@@ -93,7 +110,7 @@ const PageEditModal = ({ page, onSave, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">

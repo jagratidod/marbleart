@@ -22,7 +22,7 @@ const TalkToExpertPage = () => {
     try {
       const adminToken = localStorage.getItem('adminToken')
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-      
+
       let url = `${API_URL}/expert-consultations?status=${filter}`
       if (searchTerm) {
         url += `&search=${encodeURIComponent(searchTerm)}`
@@ -288,7 +288,7 @@ const TalkToExpertPage = () => {
 
         {/* Details Modal */}
         {showDetailsModal && selectedConsultation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -324,7 +324,7 @@ const TalkToExpertPage = () => {
                   <div>
                     <label className="text-sm font-medium text-gray-500">About Yourself</label>
                     <p className="text-base text-gray-900">
-                      {selectedConsultation.aboutYourself === 'homeowner' 
+                      {selectedConsultation.aboutYourself === 'homeowner'
                         ? 'Homeowner looking for pooja unit/room'
                         : 'Interior designer/consultant'}
                     </p>
@@ -377,7 +377,7 @@ const TalkToExpertPage = () => {
 
         {/* Edit Modal */}
         {showEditModal && selectedConsultation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-md w-full">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -426,7 +426,7 @@ const TalkToExpertPage = () => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-md w-full">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>

@@ -1,15 +1,35 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { homeImages } from '../../data/homeImages'
+import { fetchAslamHouseItems, buildImageUrl } from '../../utils/aslamHouseUtils'
 
 const HomeImagesSection = () => {
   const navigate = useNavigate()
+  const [navItems, setNavItems] = useState(homeImages)
 
   const handleVisitStoreClick = () => {
     navigate('/visit-store')
   }
 
+  useEffect(() => {
+    let isMounted = true
+    const loadNavItems = async () => {
+      const data = await fetchAslamHouseItems()
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return
+      const normalized = data.map((item) => ({
+        ...item,
+        id: item.key || item.id,
+        image: buildImageUrl(item.imagePath || item.image),
+        path: item.path || '#'
+      }))
+      setNavItems(normalized)
+    }
+    loadNavItems()
+    return () => { isMounted = false }
+  }, [])
+
   // Find only the visit store image
-  const visitStoreImage = homeImages.find(item => item.id === 'visit-store')
+  const visitStoreImage = navItems.find(item => (item.id || item.key) === 'visit-store')
 
   return (
     <section className="w-full bg-white py-8 md:py-12">

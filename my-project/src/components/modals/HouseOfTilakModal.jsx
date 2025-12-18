@@ -1,20 +1,46 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
 import { homeImages } from '../../data/homeImages'
+import { fetchAslamHouseItems, buildImageUrl } from '../../utils/aslamHouseUtils'
 
 const HouseOfTilakModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null
 
-  const menuItems = [
-    { name: 'About Us', path: '#', id: 'about-us' },
-    { name: 'Experience Centre', path: '#', id: 'experience-centre' },
-    { name: 'The Team', path: '#', id: 'the-team' },
+  const defaultMenu = useMemo(() => [
+    { name: 'About Us', path: '/about-us', id: 'about-us' },
+    { name: 'Experience Centre', path: '/experience-centre', id: 'experience-centre' },
+    { name: 'The Team', path: '/the-team', id: 'the-team' },
     { name: 'Careers', path: '/careers', id: 'careers' },
-    { name: 'Artisans of Tilak', path: '#', id: 'artisans-of-tilak' },
-    { name: 'Our Clients', path: '#', id: 'our-clients' }
-  ]
+    { name: 'Artisans of Tilak', path: '/artisans-of-tilak', id: 'artisans-of-tilak' },
+    { name: 'Our Clients', path: '/our-clients', id: 'our-clients' }
+  ], [])
+
+  const [navItems, setNavItems] = useState(homeImages)
+  const menuItems = defaultMenu
+
+  useEffect(() => {
+    let isMounted = true
+    const loadNavItems = async () => {
+      const data = await fetchAslamHouseItems()
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return
+      const normalized = data.map((item) => ({
+        ...item,
+        id: item.key || item.id,
+        image: buildImageUrl(item.imagePath || item.image),
+        path: item.path || '#'
+      }))
+      setNavItems(normalized)
+    }
+    loadNavItems()
+    return () => { isMounted = false }
+  }, [])
 
   // Filter out visit store image
-  const displayImages = homeImages.filter(item => item.id !== 'visit-store')
+  const displayImages = useMemo(() => {
+    return (navItems || [])
+      .filter(item => (item.id || item.key) !== 'visit-store')
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+  }, [navItems])
 
   const handleImageClick = (imageItem) => {
     if (imageItem.id === 'careers') {
@@ -33,13 +59,13 @@ const HouseOfTilakModal = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <div 
+      <div
         className="fixed inset-0 bg-black bg-opacity-50 z-[110] transition-opacity"
         onClick={onClose}
       ></div>
-      
+
       <div className="fixed inset-0 z-[115] flex items-center justify-center p-4 pointer-events-none">
-        <div 
+        <div
           className="bg-white rounded-lg shadow-2xl max-w-[95vw] w-full max-h-[90vh] overflow-hidden pointer-events-auto transform transition-all duration-500 ease-out"
           style={{ animation: 'slideUp 0.5s ease-out' }}
         >
@@ -53,16 +79,16 @@ const HouseOfTilakModal = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row h-[calc(90vh-100px)]">
-            {/* Left Sidebar */}
-            <div className="w-full md:w-64 lg:w-72 bg-gray-50 border-r border-gray-200 overflow-y-auto p-4 md:p-6">
-              <nav className="space-y-2">
+          <div className="flex flex-col h-auto max-h-[70vh] overflow-y-auto py-8">
+            {/* Centered Menu Links */}
+            <div className="w-full max-w-md mx-auto px-6">
+              <nav className="flex flex-col gap-2">
                 {menuItems.map((item, index) => (
-                  <div key={index}>
+                  <div key={index} className="w-full">
                     {item.path === '#' ? (
                       <button
                         onClick={() => handleMenuItemClick(item)}
-                        className="w-full text-left px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:bg-gray-200 hover:text-[#8B7355] font-medium cursor-pointer"
+                        className="w-full text-center px-6 py-4 rounded-xl transition-all duration-300 text-gray-700 hover:bg-[#8B7355]/5 hover:text-[#8B7355] font-serif italic text-xl md:text-2xl border border-transparent hover:border-[#8B7355]/20"
                       >
                         {item.name}
                       </button>
@@ -70,7 +96,7 @@ const HouseOfTilakModal = ({ isOpen, onClose }) => {
                       <Link
                         to={item.path}
                         onClick={onClose}
-                        className="block w-full text-left px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:bg-gray-200 hover:text-[#8B7355] font-medium cursor-pointer"
+                        className="block w-full text-center px-6 py-4 rounded-xl transition-all duration-300 text-gray-700 hover:bg-[#8B7355]/5 hover:text-[#8B7355] font-serif italic text-xl md:text-2xl border border-transparent hover:border-[#8B7355]/20"
                       >
                         {item.name}
                       </Link>
@@ -78,52 +104,6 @@ const HouseOfTilakModal = ({ isOpen, onClose }) => {
                   </div>
                 ))}
               </nav>
-            </div>
-
-            {/* Right Side - Images Grid */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {displayImages.map((item) => {
-                  const ImageContent = (
-                    <div className="group cursor-pointer">
-                      <div className="relative overflow-hidden rounded-lg mb-3 bg-gray-100 aspect-[4/3] shadow-md hover:shadow-lg transition-shadow">
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                        />
-                      </div>
-                      <h3 className="text-base md:text-lg font-semibold text-black text-center group-hover:text-[#8B7355] transition-colors">
-                        {item.name}
-                      </h3>
-                    </div>
-                  )
-
-                  // Make Careers image clickable to navigate
-                  if (item.id === 'careers') {
-                    return (
-                      <Link
-                        key={item.id}
-                        to="/careers"
-                        onClick={onClose}
-                        className="block"
-                      >
-                        {ImageContent}
-                      </Link>
-                    )
-                  }
-
-                  return (
-                    <div
-                      key={item.id}
-                      onClick={() => handleImageClick(item)}
-                      className="cursor-pointer"
-                    >
-                      {ImageContent}
-                    </div>
-                  )
-                })}
-              </div>
             </div>
           </div>
         </div>

@@ -1,98 +1,72 @@
 import { Link } from 'react-router-dom'
-import { categories } from '../../data/creations'
-import { ourCreations } from '../../data/creations'
+import { useEffect, useMemo, useState } from 'react'
+import { ourCreations as defaultCreations } from '../../data/creations'
+import { buildImageUrl, fetchNavItems } from '../../utils/aslamHouseUtils'
+
+const GROUP = 'our-creations-nav'
 
 const OurCreationsDropdown = () => {
+  const [items, setItems] = useState(defaultCreations)
+
+  useEffect(() => {
+    let isMounted = true
+    const load = async () => {
+      const data = await fetchNavItems(GROUP, true)
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return
+      const normalized = data.map((item) => ({
+        ...item,
+        id: item.key || item.id,
+        name: item.name,
+        path: item.path || '#',
+        image: buildImageUrl(item.imagePath || item.image),
+        displayOrder: item.displayOrder ?? 0
+      }))
+      setItems(normalized)
+    }
+    load()
+    return () => { isMounted = false }
+  }, [])
+
+  const displayItems = useMemo(() => {
+    return (items || []).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+  }, [items])
+
+  const getFallbackRoute = (id) => {
+    if (id === 'murti') return '/murti'
+    if (id === 'dream-temples') return '/dream-temple'
+    if (id === 'pooja-rooms') return '/pooja-room'
+    if (id === 'home-decor') return '/murti#shop-home-decor'
+    if (id === 'communal-temples') return '/communal-temples'
+    if (id === 'jain-temples') return '/jain-temples'
+    return null
+  }
+
+  const resolveRoute = (item) => {
+    if (item.path && item.path !== '#') return item.path
+    return getFallbackRoute(item.id)
+  }
+
   return (
     <div className="w-full h-full flex items-start py-4 px-6 md:px-8 lg:px-12 gap-4 md:gap-6 lg:gap-8">
       {/* Menu Items - Left Side */}
       <div className="flex-shrink-0 w-48 md:w-56 lg:w-64">
         <nav className="space-y-1">
-          {categories.map((category) => {
-            // Make "Murti" clickable and navigate to /murti
-            if (category === 'Murti') {
-              return (
-                <Link
-                  key={category}
-                  to="/murti"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            // Make "Dream Temples" clickable and navigate to /dream-temple
-            if (category === 'Dream Temples') {
-              return (
-                <Link
-                  key={category}
-                  to="/dream-temple"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            // Make "Pooja Rooms" clickable and navigate to /pooja-room
-            if (category === 'Pooja Rooms') {
-              return (
-                <Link
-                  key={category}
-                  to="/pooja-room"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            // Make "Home Decor" clickable and navigate to /home-decor
-            if (category === 'Home Decor') {
-              return (
-                <Link
-                  key={category}
-                  to="/murti#shop-home-decor"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            // Make "Communal Temples" clickable and navigate to /communal-temples
-            if (category === 'Communal Temples') {
-              return (
-                <Link
-                  key={category}
-                  to="/communal-temples"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            // Make "Jain Temples" clickable and navigate to /jain-temples
-            if (category === 'Jain Temples') {
-              return (
-                <Link
-                  key={category}
-                  to="/jain-temples"
-                  className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
-                >
-                  {category}
-                </Link>
-              )
-            }
-
-            return (
+          {displayItems.map((item) => {
+            const route = resolveRoute(item)
+            return route ? (
+              <Link
+                key={item.id}
+                to={route}
+                className="block w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
+              >
+                {item.name}
+              </Link>
+            ) : (
               <button
-                key={category}
+                key={item.id}
                 className="w-full text-left px-3 py-2 text-xs md:text-sm text-gray-700 hover:text-[#8B7355] hover:bg-gray-50 rounded transition-all duration-200 font-medium"
               >
-                {category}
+                {item.name}
               </button>
             )
           })}
@@ -101,8 +75,8 @@ const OurCreationsDropdown = () => {
 
       {/* Images - Right Side in Horizontal Line - Hidden on Mobile */}
       <div className="hidden lg:flex flex-1 items-center gap-3 md:gap-4 overflow-x-auto h-full">
-        {ourCreations.map((item) => {
-          // Make Murti image clickable
+        {displayItems.map((item) => {
+          const route = resolveRoute(item)
           const ImageContent = (
             <div className="group cursor-pointer flex-shrink-0 flex flex-col">
               <div className="relative overflow-hidden rounded-lg bg-gray-100 w-28 h-[260px] md:w-32 md:h-[260px] lg:w-36 lg:h-[260px] shadow-md hover:shadow-lg transition-shadow">
@@ -118,55 +92,11 @@ const OurCreationsDropdown = () => {
             </div>
           )
 
-          if (item.id === 'murti') {
-            return (
-              <Link key={item.id} to="/murti">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          if (item.id === 'dream-temples') {
-            return (
-              <Link key={item.id} to="/dream-temple">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          if (item.id === 'pooja-rooms') {
-            return (
-              <Link key={item.id} to="/pooja-room">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          if (item.id === 'home-decor') {
-            return (
-              <Link key={item.id} to="/murti#shop-home-decor">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          if (item.id === 'communal-temples') {
-            return (
-              <Link key={item.id} to="/communal-temples">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          if (item.id === 'jain-temples') {
-            return (
-              <Link key={item.id} to="/jain-temples">
-                {ImageContent}
-              </Link>
-            )
-          }
-
-          return (
+          return route ? (
+            <Link key={item.id} to={route}>
+              {ImageContent}
+            </Link>
+          ) : (
             <div key={item.id}>
               {ImageContent}
             </div>

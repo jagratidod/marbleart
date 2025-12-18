@@ -16,6 +16,8 @@ const faqRoutes = require('./routes/faqs');
 const testimonialRoutes = require('./routes/testimonials');
 const blogRoutes = require('./routes/blogs');
 const navItemRoutes = require('./routes/navItems');
+const aboutUsRoutes = require('./routes/aboutUs');
+const experienceCentreRoutes = require('./routes/experienceCentre');
 
 dotenv.config();
 
@@ -58,6 +60,8 @@ app.use('/api/faqs', faqRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/nav-items', navItemRoutes);
+app.use('/api/about-us', aboutUsRoutes);
+app.use('/api/experience-centre', experienceCentreRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

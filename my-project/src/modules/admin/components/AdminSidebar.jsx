@@ -8,7 +8,14 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     leads: location.pathname.startsWith('/admin/leads'),
     products: location.pathname.startsWith('/admin/products'),
     content: location.pathname.startsWith('/admin/content'),
-    category: location.pathname.startsWith('/admin/category')
+    pages: location.pathname.startsWith('/admin/pages'),
+    aslamHouse: location.pathname.includes('slug=about-us') ||
+      location.pathname.includes('slug=experience-centre') ||
+      location.pathname.includes('slug=the-team') ||
+      location.pathname.includes('slug=careers') ||
+      location.pathname.includes('slug=artisans-of-tilak') ||
+      location.pathname.includes('slug=our-clients') ||
+      location.pathname.startsWith('/admin/pages/aslam-house')
   })
 
   const menuItems = [
@@ -58,12 +65,38 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       submenu: [
         { title: 'Blog Posts', path: '/admin/content/blog' },
         { title: 'Testimonials', path: '/admin/content/testimonials' },
-        { title: 'Projects', path: '/admin/content/projects' },
         { title: 'FAQs', path: '/admin/content/faqs' },
         { title: 'Content Pages', path: '/admin/content/pages' },
-        { title: 'Hero Section', path: '/admin/content/hero-section' },
-        { title: 'Our Creations', path: '/admin/content/our-creations' },
-        { title: 'Our Services', path: '/admin/content/our-services' }
+        { title: 'Hero Section', path: '/admin/content/hero-section' }
+      ]
+    },
+    {
+      title: 'Pages',
+      key: 'pages',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h8l4 4v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+        </svg>
+      ),
+      submenu: [
+        {
+          title: 'Aslam House',
+          key: 'aslamHouse',
+          isNested: true,
+          submenu: [
+            { title: 'About Us', path: '/admin/aslam-house/about-us' },
+            { title: 'Experience Centre', path: '/admin/aslam-house/experience-centre' },
+            { title: 'The Team', path: '/admin/content/pages?slug=the-team' },
+            { title: 'Careers', path: '/admin/content/pages?slug=careers' },
+            { title: 'OUR ARTIST', path: '/admin/content/pages?slug=artisans-of-tilak' },
+            { title: 'Our Clients', path: '/admin/content/pages?slug=our-clients' },
+            { title: 'Manage Hover', path: '/admin/pages/aslam-house' },
+          ]
+        },
+        { title: 'Projects Nav', path: '/admin/pages/projects-nav' },
+        { title: 'Our Creations Nav', path: '/admin/pages/our-creations-nav' },
+        { title: 'Our Services Nav', path: '/admin/pages/our-services-nav' },
+        { title: 'Our Products Nav', path: '/admin/pages/our-products-nav' }
       ]
     },
     {
@@ -90,7 +123,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
   ]
 
   const isActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/')
+    return location.pathname + location.search === path || (location.pathname === path.split('?')[0] && !path.includes('?')) || (path.includes('?') && (location.pathname + location.search).includes(path))
   }
 
   const toggleMenu = (menuKey) => {
@@ -105,11 +138,11 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 backdrop-blur-sm bg-black/30 z-40 lg:hidden"
           onClick={onClose}
         ></div>
       )}
-      
+
       {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50
@@ -117,12 +150,12 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `} style={{ backgroundColor: '#8B7355', borderRight: '1px solid rgba(255, 255, 255, 0.1)' }}>
-      {/* Header */}
+        {/* Header */}
         <div className="p-2 lg:p-3 border-b flex-shrink-0 flex items-center justify-center relative" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
           <div className="flex items-center justify-center w-full">
-            <img 
-              src={logoImage} 
-              alt="Logo" 
+            <img
+              src={logoImage}
+              alt="Logo"
               className="h-24 lg:h-28 w-auto object-contain max-w-full"
             />
           </div>
@@ -135,125 +168,151 @@ const AdminSidebar = ({ isOpen, onClose }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-      </div>
+        </div>
 
-      {/* Menu Items */}
-      <nav className="flex-1 p-2 lg:p-4 overflow-y-auto">
-        <ul className="space-y-1">
-          {menuItems.map((item, index) => (
-            <li key={index}>
-              {item.submenu ? (
-                <div>
-                  <button
-                    onClick={() => toggleMenu(item.key)}
-                    className="w-full flex items-center justify-between gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm font-semibold text-white uppercase tracking-wider rounded-lg transition-colors"
-                    style={{ 
-                      backgroundColor: expandedMenus[item.key] ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                      ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
-                    }}
+        {/* Menu Items */}
+        <nav className="flex-1 p-2 lg:p-4 overflow-y-auto">
+          <ul className="space-y-1">
+            {menuItems.map((item, index) => (
+              <li key={index}>
+                {item.submenu ? (
+                  <div>
+                    <button
+                      onClick={() => toggleMenu(item.key)}
+                      className="w-full flex items-center justify-between gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm font-semibold text-white uppercase tracking-wider rounded-lg transition-colors"
+                      style={{
+                        backgroundColor: expandedMenus[item.key] ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                        ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!expandedMenus[item.key]) {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!expandedMenus[item.key]) {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        {item.icon}
+                        <span>{item.title}</span>
+                      </div>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${expandedMenus[item.key] ? 'rotate-180' : ''
+                          }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {expandedMenus[item.key] && (
+                      <ul className="ml-2 lg:ml-4 mt-1 space-y-1">
+                        {item.submenu.map((subItem, subIndex) => (
+                          <li key={subIndex}>
+                            {subItem.submenu ? (
+                              <div>
+                                <button
+                                  onClick={() => toggleMenu(subItem.key)}
+                                  className="w-full flex items-center justify-between gap-2 lg:gap-3 px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm rounded-lg transition-colors text-white hover:bg-white/10"
+                                  style={{
+                                    backgroundColor: expandedMenus[subItem.key] ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                                  }}
+                                >
+                                  <span>{subItem.title}</span>
+                                  <svg
+                                    className={`w-3 h-3 transition-transform duration-200 ${expandedMenus[subItem.key] ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                                {expandedMenus[subItem.key] && (
+                                  <ul className="ml-4 mt-1 space-y-1 border-l border-white/10">
+                                    {subItem.submenu.map((nestedItem, nestedIndex) => (
+                                      <li key={nestedIndex}>
+                                        <Link
+                                          to={nestedItem.path}
+                                          onClick={onClose}
+                                          className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-1 lg:py-1.5 text-xs lg:text-[13px] rounded-lg transition-colors ${isActive(nestedItem.path)
+                                            ? 'text-white font-medium bg-white/20'
+                                            : 'text-white/80 hover:text-white hover:bg-white/10'
+                                            }`}
+                                        >
+                                          {nestedItem.title}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            ) : (
+                              <Link
+                                to={subItem.path}
+                                onClick={onClose}
+                                className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActive(subItem.path)
+                                  ? 'text-white font-medium bg-white/20'
+                                  : 'text-white hover:bg-white/10'
+                                  }`}
+                              >
+                                {subItem.title}
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to={item.path}
+                    onClick={onClose}
+                    className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm font-medium rounded-lg transition-colors ${isActive(item.path)
+                      ? 'text-white'
+                      : 'text-white hover:bg-white/10'
+                      }`}
+                    style={isActive(item.path) ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : { opacity: 0.9 }}
                     onMouseEnter={(e) => {
-                      if (!expandedMenus[item.key]) {
+                      if (!isActive(item.path)) {
                         e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (!expandedMenus[item.key]) {
+                      if (!isActive(item.path)) {
                         e.currentTarget.style.backgroundColor = 'transparent'
                       }
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        expandedMenus[item.key] ? 'rotate-180' : ''
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {expandedMenus[item.key] && (
-                    <ul className="ml-2 lg:ml-4 mt-1 space-y-1">
-                      {item.submenu.map((subItem, subIndex) => (
-                        <li key={subIndex}>
-                          <Link
-                            to={subItem.path}
-                            onClick={onClose}
-                            className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm rounded-lg transition-colors ${
-                              isActive(subItem.path)
-                                ? 'text-white font-medium'
-                                : 'text-white hover:bg-white/10'
-                            }`}
-                            style={isActive(subItem.path) ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : { opacity: 0.9 }}
-                            onMouseEnter={(e) => {
-                              if (!isActive(subItem.path)) {
-                                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!isActive(subItem.path)) {
-                                e.currentTarget.style.backgroundColor = 'transparent'
-                              }
-                            }}
-                          >
-                            {subItem.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to={item.path}
-                  onClick={onClose}
-                  className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm font-medium rounded-lg transition-colors ${
-                    isActive(item.path)
-                      ? 'text-white'
-                      : 'text-white hover:bg-white/10'
-                  }`}
-                  style={isActive(item.path) ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : { opacity: 0.9 }}
-                  onMouseEnter={(e) => {
-                    if (!isActive(item.path)) {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive(item.path)) {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                    }
-                  }}
-                >
-                  {item.icon}
-                  <span>{item.title}</span>
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+                    {item.icon}
+                    <span>{item.title}</span>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-      {/* Footer */}
-      <div className="p-3 lg:p-4 border-t flex-shrink-0" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-        <Link
-          to="/"
-          onClick={onClose}
-          className="flex items-center gap-2 text-xs lg:text-sm text-white hover:opacity-80 transition-opacity"
-          style={{ opacity: 0.9 }}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span className="hidden sm:inline">Back to Website</span>
-          <span className="sm:hidden">Back</span>
-        </Link>
+        {/* Footer */}
+        <div className="p-3 lg:p-4 border-t flex-shrink-0" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+          <Link
+            to="/"
+            onClick={onClose}
+            className="flex items-center gap-2 text-xs lg:text-sm text-white hover:opacity-80 transition-opacity"
+            style={{ opacity: 0.9 }}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="hidden sm:inline">Back to Website</span>
+            <span className="sm:hidden">Back</span>
+          </Link>
+        </div>
       </div>
-    </div>
     </>
   )
 }

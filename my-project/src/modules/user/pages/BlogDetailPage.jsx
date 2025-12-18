@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import { blogPosts } from '../../../data/blogPosts'
+import TrustedBySection from '../../../components/common/TrustedBySection'
+import { fetchBlogs, fetchBlogById } from '../../../utils/blogUtils'
 
 const BlogDetailPage = ({
   onShowSidebar,
@@ -15,10 +17,39 @@ const BlogDetailPage = ({
 }) => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [currentPost, setCurrentPost] = useState(null)
+  const [allBlogs, setAllBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
   
-  const blogId = parseInt(id)
-  const currentPost = blogPosts.find(post => post.id === blogId)
-  
+  useEffect(() => {
+    const loadBlog = async () => {
+      try {
+        setLoading(true)
+        const blog = await fetchBlogById(id)
+        if (blog) {
+          setCurrentPost(blog)
+          // Also fetch all blogs for navigation
+          const blogs = await fetchBlogs()
+          setAllBlogs(blogs || [])
+        }
+      } catch (error) {
+        console.error('Error loading blog:', error)
+        setCurrentPost(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadBlog()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-white flex items-center justify-center">
+        <p className="text-xl text-gray-600">Loading blog...</p>
+      </div>
+    )
+  }
+
   if (!currentPost) {
     return (
       <div className="w-full min-h-screen bg-white flex items-center justify-center">
@@ -27,19 +58,19 @@ const BlogDetailPage = ({
     )
   }
 
-  const currentIndex = blogPosts.findIndex(post => post.id === blogId)
-  const previousPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null
-  const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null
+  const currentIndex = allBlogs.findIndex(post => (post._id || post.id) === id)
+  const previousPost = currentIndex > 0 ? allBlogs[currentIndex - 1] : null
+  const nextPost = currentIndex < allBlogs.length - 1 ? allBlogs[currentIndex + 1] : null
 
   const handlePrevious = () => {
     if (previousPost) {
-      navigate(`/blog/${previousPost.id}`)
+      navigate(`/blog/${previousPost._id || previousPost.id}`)
     }
   }
 
   const handleNext = () => {
     if (nextPost) {
-      navigate(`/blog/${nextPost.id}`)
+      navigate(`/blog/${nextPost._id || nextPost.id}`)
     }
   }
 
@@ -116,29 +147,39 @@ const BlogDetailPage = ({
                 {currentPost.description}
               </p>
               
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
-                Vietnam White Marble has long been revered for its pristine beauty and spiritual significance. 
-                In contemporary home design, incorporating marble temples and pooja rooms brings together 
-                traditional craftsmanship with modern aesthetics, creating spaces that honor both heritage and innovation.
-              </p>
-              
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
-                The intricate carvings and meticulous attention to detail in marble temple design reflect not just 
-                artistic excellence but also a deep understanding of spiritual architecture. Each element, from the 
-                placement of the mandir to the selection of materials, plays a crucial role in creating an environment 
-                that promotes peace, devotion, and positive energy flow throughout your home.
-              </p>
-              
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Whether you're designing a compact mandir for an apartment or a spacious pooja room for a traditional 
-                home, the versatility of Vietnam White Marble ensures that your sacred space will be both functional 
-                and beautiful, standing as a testament to timeless design and spiritual devotion for generations to come.
-              </p>
+              {currentPost.content ? (
+                <div 
+                  className="text-base md:text-lg text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: currentPost.content }}
+                />
+              ) : (
+                <>
+                  <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                    Vietnam White Marble has long been revered for its pristine beauty and spiritual significance. 
+                    In contemporary home design, incorporating marble temples and pooja rooms brings together 
+                    traditional craftsmanship with modern aesthetics, creating spaces that honor both heritage and innovation.
+                  </p>
+                  
+                  <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                    The intricate carvings and meticulous attention to detail in marble temple design reflect not just 
+                    artistic excellence but also a deep understanding of spiritual architecture. Each element, from the 
+                    placement of the mandir to the selection of materials, plays a crucial role in creating an environment 
+                    that promotes peace, devotion, and positive energy flow throughout your home.
+                  </p>
+                  
+                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                    Whether you're designing a compact mandir for an apartment or a spacious pooja room for a traditional 
+                    home, the versatility of Vietnam White Marble ensures that your sacred space will be both functional 
+                    and beautiful, standing as a testament to timeless design and spiritual devotion for generations to come.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

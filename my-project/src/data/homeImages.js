@@ -11,37 +11,44 @@ export const homeImages = [
     id: 'visit-store',
     name: 'Visit Store',
     image: visitStoreImg,
+    path: '/visit-store',
     hasButton: true
   },
   {
     id: 'about-us',
     name: 'About Us',
-    image: aboutUsImg
+    image: aboutUsImg,
+    path: '/about-us'
   },
   {
     id: 'experience-centre',
     name: 'Experience Centre',
-    image: experienceCenterImg
+    image: experienceCenterImg,
+    path: '/experience-centre'
   },
   {
     id: 'careers',
     name: 'Careers',
-    image: careersImg
+    image: careersImg,
+    path: '/careers'
   },
   {
     id: 'artisans-of-tilak',
     name: 'OUR ARTIST',
-    image: artisansOfTilakImg
+    image: artisansOfTilakImg,
+    path: '/artisans-of-tilak'
   },
   {
     id: 'the-team',
     name: 'The Team',
-    image: theTeamImg
+    image: theTeamImg,
+    path: '/the-team'
   },
   {
     id: 'our-clients',
     name: 'Our Clients',
-    image: ourClientsImg
+    image: ourClientsImg,
+    path: '/our-clients'
   }
 ]
 

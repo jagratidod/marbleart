@@ -35,9 +35,7 @@ export const FOOTER_LINKS = {
   ],
   needHelp: [
     { label: 'FAQs', href: '/faqs' },
-    { label: 'Stores', href: '#' },
-    { label: 'Call Us', href: '#' },
-    { label: 'Email', href: '#' }
+    { label: 'Stores', href: '/visit-store' }
   ]
 }
 

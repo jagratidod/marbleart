@@ -1,7 +1,8 @@
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import { useNavigate } from 'react-router-dom'
-import { testimonials } from '../../../data/testimonials'
+import { fetchTestimonials } from '../../../utils/testimonialUtils'
 
 const TestimonialsPage = ({ 
   onShowSidebar, 
@@ -13,6 +14,44 @@ const TestimonialsPage = ({
   onShowBooking 
 }) => {
   const navigate = useNavigate()
+  const [testimonials, setTestimonials] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+    const loadTestimonials = async () => {
+      try {
+        setLoading(true)
+        const data = await fetchTestimonials()
+        if (isMounted) {
+          setTestimonials(data || [])
+        }
+      } catch (error) {
+        console.error('Error loading testimonials:', error)
+        if (isMounted) {
+          setTestimonials([])
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+    loadTestimonials()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const handleLocationClick = useCallback(() => {
+    navigate('/location')
+  }, [navigate])
+
+  const handleBookingClick = useCallback(() => {
+    navigate('/book-appointment')
+  }, [navigate])
+
+  const memoizedTestimonials = useMemo(() => testimonials, [testimonials])
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -23,17 +62,26 @@ const TestimonialsPage = ({
         onShowCreations={onShowCreations}
         onShowServices={onShowServices}
         onShowHowItWorks={onShowHowItWorks}
-        onShowLocation={() => navigate('/location')}
-        onShowBooking={() => navigate('/book-appointment')}
+        onShowLocation={handleLocationClick}
+        onShowBooking={handleBookingClick}
       />
 
       <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {testimonials.map((testimonial) => (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-base md:text-lg">Loading testimonials...</p>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-base md:text-lg">No testimonials available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {memoizedTestimonials.map((testimonial) => (
               <div
-                key={testimonial.id}
+                key={testimonial._id || testimonial.id}
                 className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
               >
                 {/* Avatar Section */}
@@ -84,15 +132,17 @@ const TestimonialsPage = ({
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
+      <TrustedBySection />
       <Footer />
     </div>
   )
 }
 
-export default TestimonialsPage
+export default memo(TestimonialsPage)
 

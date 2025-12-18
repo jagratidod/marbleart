@@ -1,5 +1,6 @@
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import { indianLocations, internationalLocations } from '../../../data/locations'
 import FloatingButtons from '../../../components/common/FloatingButtons'
 
@@ -77,6 +78,7 @@ const LocationPage = ({
           </div>
         </div>
       </section>
+      <TrustedBySection />
       <FloatingButtons />
       <Footer />
     </div>

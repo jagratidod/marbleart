@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import JobOpportunities from '../../../components/careers/JobOpportunities'
 import JoinTheTeamForm from '../../../components/careers/JoinTheTeamForm'
 import { useNavigate } from 'react-router-dom'
@@ -171,6 +172,7 @@ const CareersPage = ({
         <JoinTheTeamForm />
       </section>
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

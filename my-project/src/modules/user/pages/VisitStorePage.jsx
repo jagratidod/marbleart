@@ -1,7 +1,49 @@
+import { useEffect, useRef, useState } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import visitStoreImg from '../../../assets/home/visit store/poojaroomm.jpeg'
+
+const ScrollSlideIn = ({ children, direction = 'left', delay = 0 }) => {
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.unobserve(entry.target)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current)
+      }
+    }
+  }, [])
+
+  const initialTransform = direction === 'left' ? '-translate-x-20 md:-translate-x-32' : 'translate-x-20 md:translate-x-32'
+
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-1000 ease-out transform ${isVisible ? 'opacity-100 translate-x-0' : `opacity-0 ${initialTransform}`
+        }`}
+    >
+      {children}
+    </div>
+  )
+}
 
 const VisitStorePage = ({
   onShowSidebar,
@@ -100,40 +142,45 @@ const VisitStorePage = ({
         </div>
       </section>
 
+      {/* Spacer Gap */}
+      <div className="w-full h-20 md:h-32 lg:h-40 bg-white"></div>
+
       {/* Location and Map Section */}
       <section className="w-full py-8 md:py-12 px-4 md:px-6 bg-[#fffbf0]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            {/* Left Side - Address */}
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-serif text-[#8B7355] italic font-bold mb-6">
-                  Visit Our Store
-                </h2>
-                <div className="space-y-4 text-gray-700">
-                  <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Address:</h3>
-                    <p className="text-sm md:text-base leading-relaxed">
-                      Borawar Byepass Road Makrana
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Contact:</h3>
-                    <p className="text-sm md:text-base leading-relaxed">
-                      Phone: +917877639699<br />
-                      Email: aslammarble40@gmail.com
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Timings:</h3>
-                    <p className="text-sm md:text-base leading-relaxed">
-                      Monday - Saturday: 10:00 AM - 8:00 PM<br />
-                      Sunday: 11:00 AM - 7:00 PM
-                    </p>
+            {/* Left Side - Address (Slides in from left) */}
+            <ScrollSlideIn direction="left">
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#8B7355] italic font-bold mb-6">
+                    Visit Our Store
+                  </h2>
+                  <div className="space-y-4 text-gray-700">
+                    <div>
+                      <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Address:</h3>
+                      <p className="text-sm md:text-base leading-relaxed">
+                        Borawar Byepass Road Makrana
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Contact:</h3>
+                      <p className="text-sm md:text-base leading-relaxed">
+                        Phone: +917877639699<br />
+                        Email: aslammarble40@gmail.com
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-semibold mb-2 text-gray-800">Timings:</h3>
+                      <p className="text-sm md:text-base leading-relaxed">
+                        Monday - Saturday: 10:00 AM - 8:00 PM<br />
+                        Sunday: 11:00 AM - 7:00 PM
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollSlideIn>
 
             {/* Right Side - Map */}
             <div className="w-full h-[300px] md:h-[400px] lg:h-full rounded-lg overflow-hidden shadow-lg">
@@ -193,6 +240,7 @@ const VisitStorePage = ({
         </div>
       </section>
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

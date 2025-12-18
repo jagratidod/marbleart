@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
+import ExpertFormSection from '../../../components/common/ExpertFormSection'
 import { teamMembers } from '../../../data/teamMembers'
 import headingImage from '../../../assets/house of marble/team/heading/Gemini_Generated_Image_ipme0eipme0eipme (1).png'
 
@@ -73,9 +75,9 @@ const TheTeamPage = ({
       <section className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-base md:text-lg lg:text-xl text-gray-700 leading-relaxed" style={{ color: '#8B7355' }}>
-            At Aslam Marble Suppliers, our team is the heart of our craft. Each member brings decades of expertise, 
-            passion for traditional stone artistry, and a commitment to excellence. Together, we transform visions 
-            into timeless marble masterpieces, blending heritage craftsmanship with modern innovation to create 
+            At Aslam Marble Suppliers, our team is the heart of our craft. Each member brings decades of expertise,
+            passion for traditional stone artistry, and a commitment to excellence. Together, we transform visions
+            into timeless marble masterpieces, blending heritage craftsmanship with modern innovation to create
             spiritual spaces that inspire devotion and tranquility.
           </p>
         </div>
@@ -98,13 +100,12 @@ const TheTeamPage = ({
                   <img
                     src={member.image}
                     alt={member.name}
-                    className={`w-full h-full object-cover transition-all duration-500 ${
-                      hoveredMember === member.id 
-                        ? 'opacity-100 brightness-[1.3] grayscale-0' 
+                    className={`w-full h-full object-cover transition-all duration-500 ${hoveredMember === member.id
+                        ? 'opacity-100 brightness-[1.3] grayscale-0'
                         : 'opacity-100 grayscale brightness-50'
-                    }`}
+                      }`}
                   />
-                  
+
                   {/* Overlay with Name and Position - Shows on Hover with Slide-in Animation */}
                   {hoveredMember === member.id && (
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-3 md:p-4 lg:p-5 transition-opacity duration-300">
@@ -129,7 +130,7 @@ const TheTeamPage = ({
       {selectedMember && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-6">
           {/* Modal Content */}
-          <div 
+          <div
             className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden relative"
           >
             {/* Close Button */}
@@ -166,7 +167,7 @@ const TheTeamPage = ({
                     {selectedMember.position}
                   </p>
                 </div>
-                
+
                 <div className="mt-3">
                   <p className="text-xs md:text-sm text-gray-700 leading-relaxed">
                     {selectedMember.description}
@@ -178,6 +179,8 @@ const TheTeamPage = ({
         </div>
       )}
 
+      <ExpertFormSection />
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

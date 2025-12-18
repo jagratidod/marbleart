@@ -82,10 +82,17 @@ import ContentPagesManagementPage from './modules/admin/pages/ContentPagesManage
 import SettingsPage from './modules/admin/pages/SettingsPage'
 import CategoryManagementPage from './modules/admin/pages/CategoryManagementPage'
 import HeroSectionManagementPage from './modules/admin/pages/HeroSectionManagementPage'
-import OurCreationsManagementPage from './modules/admin/pages/OurCreationsManagementPage'
+import AboutUsManagementPage from './modules/admin/pages/AboutUsManagementPage'
+import ExperienceCentreManagementPage from './modules/admin/pages/ExperienceCentreManagementPage'
+
 import OurServicesManagementPage from './modules/admin/pages/OurServicesManagementPage'
 import TalkToExpertPage from './modules/admin/pages/TalkToExpertPage'
 import ProtectedRoute from './modules/admin/components/ProtectedRoute'
+import AslamHousePage from './modules/admin/pages/AslamHousePage'
+import ProjectsNavPage from './modules/admin/pages/ProjectsNavPage'
+import OurCreationsNavPage from './modules/admin/pages/OurCreationsNavPage'
+import OurServicesNavPage from './modules/admin/pages/OurServicesNavPage'
+import OurProductsNavPage from './modules/admin/pages/OurProductsNavPage'
 import ProjectsModal from './components/modals/ProjectsModal'
 import OurCreationsModal from './components/modals/OurCreationsModal'
 import OurProductsModal from './components/modals/OurProductsModal'
@@ -1241,11 +1248,42 @@ function App() {
               <HeroSectionManagementPage />
             </ProtectedRoute>
           } />
-          <Route path="/admin/content/our-creations" element={
+          <Route path="/admin/aslam-house/about-us" element={
             <ProtectedRoute>
-              <OurCreationsManagementPage />
+              <AboutUsManagementPage />
             </ProtectedRoute>
           } />
+          <Route path="/admin/aslam-house/experience-centre" element={
+            <ProtectedRoute>
+              <ExperienceCentreManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/pages/aslam-house" element={
+            <ProtectedRoute>
+              <AslamHousePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/pages/projects-nav" element={
+            <ProtectedRoute>
+              <ProjectsNavPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/pages/our-creations-nav" element={
+            <ProtectedRoute>
+              <OurCreationsNavPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/pages/our-services-nav" element={
+            <ProtectedRoute>
+              <OurServicesNavPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/pages/our-products-nav" element={
+            <ProtectedRoute>
+              <OurProductsNavPage />
+            </ProtectedRoute>
+          } />
+
           <Route path="/admin/content/our-services" element={
             <ProtectedRoute>
               <OurServicesManagementPage />

@@ -1,6 +1,8 @@
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
+import ExpertFormSection from '../../../components/common/ExpertFormSection'
 import { useNavigate } from 'react-router-dom'
 import heroImage from '../../../assets/house of marble/our artist/Artisan.jpeg'
 import artisan1 from '../../../assets/house of marble/our artist/slide1.jpeg'
@@ -163,6 +165,8 @@ const ArtisansOfTilakPage = ({
         </div>
       </section>
 
+      <ExpertFormSection />
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

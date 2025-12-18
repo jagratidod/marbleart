@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import Header from '../../../components/layout/Header'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import LocationForm from '../../../components/location/LocationForm'
+
 import { formatLocationName, indianLocations } from '../../../data/locations'
 import { fetchFAQs } from '../../../utils/faqUtils'
 import { dreamTemples } from '../../../data/dreamTemples'
-import ganeshaImg from '../../../assets/communal/wmremove-transformed.jpeg'
+
 import templedesignImg from '../../../assets/locationicons/middlecard/templedesign.png'
 import marblecuttingImg from '../../../assets/locationicons/middlecard/marblecutting.png'
 import settingImg from '../../../assets/locationicons/middlecard/setting.png'
@@ -65,35 +65,7 @@ const LocationDetailPage = ({
         onShowHowItWorks={onShowHowItWorks}
       />
 
-      {/* Background Image Container with Form Overlay */}
-      <div className="relative w-full overflow-hidden" style={{ height: '75vh', minHeight: '600px' }}>
-        {/* Background Image */}
-        <img
-          src={ganeshaImg}
-          alt="Pooja Room"
-          className="w-full h-full object-cover"
-          style={{ objectFit: 'cover', objectPosition: 'top center' }}
-        />
 
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-
-        {/* Text Overlay - Left Side */}
-        <div className="absolute top-16 md:top-24 lg:top-32 left-4 md:left-6 lg:left-8 xl:left-12 z-10 max-w-xl md:max-w-2xl">
-          <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-2 leading-tight uppercase">
-            PREMIUM POOJA ROOMS AND MARBLE TEMPLE<br />
-            DESIGNERS IN {location.toUpperCase()}
-          </h1>
-          <p className="text-xs md:text-sm lg:text-base text-white font-light uppercase">
-            BREATHTAKING POOJA ROOM DESIGN AND CONSTRUCTION SERVICES IN {location.toUpperCase()}
-          </p>
-        </div>
-
-        {/* Form Container - Overlay on Right Side, Fits Image Height */}
-        <div className="absolute right-4 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 w-[85%] sm:w-[320px] md:w-[340px] max-w-[calc(100%-32px)] bg-white rounded-xl md:rounded-2xl shadow-2xl z-20 flex flex-col">
-          <LocationForm />
-        </div>
-      </div>
 
       {/* WE TAKE CARE OF EVERYTHING Section */}
       <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-[#fffbf0]">

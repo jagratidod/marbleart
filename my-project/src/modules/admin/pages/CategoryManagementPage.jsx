@@ -160,7 +160,7 @@ const CategoryManagementPage = () => {
               + Add Main Category
             </button>
           </div>
-          
+
           {/* Display All Main Categories */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mt-4">
             {/* Show saved main categories */}
@@ -186,7 +186,7 @@ const CategoryManagementPage = () => {
                 </div>
               </div>
             ))}
-            
+
             {/* Show default options that aren't saved yet */}
             {mainCategoryOptions
               .filter(opt => !mainCategories.some(mc => mc.name === opt))
@@ -209,7 +209,7 @@ const CategoryManagementPage = () => {
                   </div>
                 </div>
               ))}
-            
+
             {/* Show message if no categories */}
             {mainCategories.length === 0 && mainCategoryOptions.length === 0 && (
               <div className="col-span-full text-center py-8 text-gray-500">
@@ -379,7 +379,7 @@ const CategoryManagementPage = () => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && categoryToDelete && (
-          <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>
@@ -445,7 +445,7 @@ const CategoryFormModal = ({ category, onSave, onClose, mainCategories = [], ima
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-4 lg:p-6">
           <div className="flex items-center justify-between mb-4">
@@ -591,7 +591,7 @@ const MainCategoryFormModal = ({ onSave, onClose, imagePreview, setImagePreview 
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-4 lg:p-6">
           <div className="flex items-center justify-between mb-4">

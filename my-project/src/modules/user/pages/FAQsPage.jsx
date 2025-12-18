@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import TrustedBySection from '../../../components/common/TrustedBySection'
 import footerBackgroundImage from '../../../assets/footer page background/Beige Pink Elegant Watercolor Background Notes Planner.png'
 import { indianLocations, internationalLocations, formatLocationName } from '../../../data/locations'
 import { fetchFAQs, fetchAllFAQs } from '../../../utils/faqUtils'
@@ -244,6 +245,7 @@ const FAQsPage = ({
         </div>
       </section>
 
+      <TrustedBySection />
       <Footer />
       <FloatingButtons />
     </div>

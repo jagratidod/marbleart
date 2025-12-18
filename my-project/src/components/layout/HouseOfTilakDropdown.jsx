@@ -1,22 +1,52 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
 import { homeImages } from '../../data/homeImages'
+import { fetchAslamHouseItems, buildImageUrl } from '../../utils/aslamHouseUtils'
 
 const HouseOfTilakDropdown = () => {
-  const menuItems = [
+  const defaultMenu = useMemo(() => [
     { name: 'About Us', path: '/about-us', id: 'about-us' },
     { name: 'Experience Centre', path: '/experience-centre', id: 'experience-centre' },
     { name: 'The Team', path: '/the-team', id: 'the-team' },
     { name: 'Careers', path: '/careers', id: 'careers' },
     { name: 'OUR ARTIST', path: '/artisans-of-tilak', id: 'artisans-of-tilak' },
     { name: 'Our Clients', path: '/our-clients', id: 'our-clients' }
-  ]
+  ], [])
 
-  const displayImages = homeImages.filter(item => item.id !== 'visit-store')
+  const [navItems, setNavItems] = useState(homeImages)
+  const menuItems = defaultMenu
+
+  useEffect(() => {
+    let isMounted = true
+    const loadNavItems = async () => {
+      const data = await fetchAslamHouseItems()
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return
+      const normalized = data.map((item) => ({
+        ...item,
+        id: item.key || item.id,
+        image: buildImageUrl(item.imagePath || item.image),
+        path: item.path || '#'
+      }))
+      setNavItems(normalized)
+    }
+    loadNavItems()
+    return () => { isMounted = false }
+  }, [])
+
+  const displayImages = useMemo(() => {
+    return (navItems || [])
+      .filter(item => (item.id || item.key) !== 'visit-store')
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+  }, [navItems])
 
   // Function to get route path for image ID
   const getImageRoute = (imageId) => {
-    const menuItem = menuItems.find(item => item.id === imageId)
-    return menuItem && menuItem.path !== '#' ? menuItem.path : null
+    const navItem = navItems.find(item => item.id === imageId || item.key === imageId)
+    if (navItem && navItem.path && navItem.path !== '#') {
+      return navItem.path
+    }
+    const fallback = defaultMenu.find(item => item.id === imageId)
+    return fallback && fallback.path !== '#' ? fallback.path : null
   }
 
   return (

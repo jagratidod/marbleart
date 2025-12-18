@@ -31,7 +31,7 @@ const ProductsManagementPage = () => {
     const initialProducts = {}
     if (category === 'murti') {
       getMurtiCategories().forEach(cat => {
-        switch(cat) {
+        switch (cat) {
           case 'Ganesha': initialProducts[cat] = [...(ganeshaProducts || [])]; break
           case 'Durga': initialProducts[cat] = [...(durgaProducts || [])]; break
           default: initialProducts[cat] = []
@@ -114,11 +114,10 @@ const ProductsManagementPage = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 border-2 rounded-lg font-medium transition-colors ${
-                  selectedCategory === cat
+                className={`px-4 py-2 border-2 rounded-lg font-medium transition-colors ${selectedCategory === cat
                     ? 'text-white border-[#8B7355]'
                     : 'border-gray-300 text-gray-700 hover:border-[#8B7355] hover:text-[#8B7355]'
-                }`}
+                  }`}
                 style={selectedCategory === cat ? { backgroundColor: '#8B7355' } : {}}
               >
                 {cat}
@@ -203,7 +202,7 @@ const ProductsManagementPage = () => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && productToDelete && (
-          <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>
@@ -284,7 +283,7 @@ const ProductFormModal = ({ product, category, onSave, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">

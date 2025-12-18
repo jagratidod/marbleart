@@ -9,7 +9,7 @@ const OrdersPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [orderToDelete, setOrderToDelete] = useState(null)
   const [actionMenuOpen, setActionMenuOpen] = useState(null)
-  
+
   // Filters
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -25,13 +25,13 @@ const OrdersPage = () => {
     try {
       const adminToken = localStorage.getItem('adminToken')
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-      
+
       const params = new URLSearchParams()
       if (statusFilter !== 'all') params.append('status', statusFilter)
       if (startDate) params.append('startDate', startDate)
       if (endDate) params.append('endDate', endDate)
       if (searchTerm) params.append('search', searchTerm)
-      
+
       const res = await fetch(`${API_URL}/orders/all?${params.toString()}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const OrdersPage = () => {
 
   const confirmDelete = async () => {
     if (!orderToDelete) return
-    
+
     try {
       const adminToken = localStorage.getItem('adminToken')
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
@@ -81,7 +81,7 @@ const OrdersPage = () => {
           'Authorization': `Bearer ${adminToken}`
         }
       })
-      
+
       if (res.ok) {
         fetchOrders()
         setShowDeleteConfirm(false)
@@ -130,12 +130,12 @@ const OrdersPage = () => {
         formatDate(order.createdAt)
       ]
     })
-    
+
     const csvContent = [
       headers.join(','),
       ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
     ].join('\n')
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -305,7 +305,7 @@ const OrdersPage = () => {
                                   Order Details
                                 </button>
                                 <button
-                                  onClick={() => {/* Generate Invoice */}}
+                                  onClick={() => {/* Generate Invoice */ }}
                                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                                 >
                                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,7 +314,7 @@ const OrdersPage = () => {
                                   Generate Invoice
                                 </button>
                                 <button
-                                  onClick={() => {/* Order Tracking */}}
+                                  onClick={() => {/* Order Tracking */ }}
                                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                                 >
                                   <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -346,7 +346,7 @@ const OrdersPage = () => {
 
         {/* Order Details Modal */}
         {showDetailsModal && selectedOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowDetailsModal(false)}>
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center p-4" onClick={() => setShowDetailsModal(false)}>
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
@@ -421,7 +421,7 @@ const OrdersPage = () => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-6 max-w-md w-full">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Delete Order</h3>
               <p className="text-gray-600 mb-6">Are you sure you want to delete this order? This action cannot be undone.</p>
