@@ -33,8 +33,10 @@ const faqSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-faqSchema.index({ pageKey: 1, location: 1 });
-faqSchema.index({ pageKey: 1, displayOrder: 1 });
+// Compound indexes for common query patterns
+faqSchema.index({ pageKey: 1, location: 1, isActive: 1 });
+faqSchema.index({ pageKey: 1, isActive: 1, displayOrder: 1 });
+faqSchema.index({ isActive: 1, displayOrder: 1 });
 
 const FAQ = mongoose.model('FAQ', faqSchema);
 

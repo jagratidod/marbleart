@@ -22,7 +22,7 @@ exports.getAllFAQs = async (req, res) => {
 
 exports.getFAQById = async (req, res) => {
   try {
-    const faq = await FAQ.findById(req.params.id);
+    const faq = await FAQ.findById(req.params.id).lean();
     if (!faq) {
       return res.status(404).json({ success: false, message: 'FAQ not found' });
     }
@@ -55,17 +55,27 @@ exports.createFAQ = async (req, res) => {
 exports.updateFAQ = async (req, res) => {
   try {
     const { pageKey, location, question, answer, displayOrder, isActive } = req.body;
-    const faq = await FAQ.findById(req.params.id);
-    if (!faq) {
+    
+    // Build update object
+    const updateData = {};
+    if (pageKey) updateData.pageKey = pageKey.toLowerCase();
+    if (location !== undefined) updateData.location = location;
+    if (question) updateData.question = question;
+    if (answer) updateData.answer = answer;
+    if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
+    if (isActive !== undefined) updateData.isActive = isActive;
+
+    // Use findByIdAndUpdate for better performance
+    const updatedFAQ = await FAQ.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true, lean: true }
+    );
+    
+    if (!updatedFAQ) {
       return res.status(404).json({ success: false, message: 'FAQ not found' });
     }
-    faq.pageKey = pageKey ? pageKey.toLowerCase() : faq.pageKey;
-    faq.location = location !== undefined ? location : faq.location;
-    faq.question = question || faq.question;
-    faq.answer = answer || faq.answer;
-    faq.displayOrder = displayOrder !== undefined ? displayOrder : faq.displayOrder;
-    faq.isActive = isActive !== undefined ? isActive : faq.isActive;
-    const updatedFAQ = await faq.save();
+    
     res.json({ success: true, data: updatedFAQ });
   } catch (error) {
     console.error('Error updating FAQ:', error);
