@@ -77,7 +77,6 @@ const JoinTheTeamForm = () => {
   return (
     <div id="join-the-team" className="max-w-4xl mx-auto scroll-mt-20">
       {/* Title */}
-      {/* Title */}
       <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic text-center mb-3">
         Join The Team
       </h2>
@@ -234,4 +233,3 @@ const JoinTheTeamForm = () => {
 }
 
 export default JoinTheTeamForm
-

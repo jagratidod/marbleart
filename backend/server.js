@@ -18,6 +18,11 @@ const blogRoutes = require('./routes/blogs');
 const navItemRoutes = require('./routes/navItems');
 const aboutUsRoutes = require('./routes/aboutUs');
 const experienceCentreRoutes = require('./routes/experienceCentre');
+const teamRoutes = require('./routes/team');
+const careersRoutes = require('./routes/careers');
+const artistRoutes = require('./routes/artists');
+const ourClientsRoutes = require('./routes/ourClients');
+const communalProjectsRoutes = require('./routes/communalProjects');
 
 dotenv.config();
 
@@ -62,6 +67,11 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/nav-items', navItemRoutes);
 app.use('/api/about-us', aboutUsRoutes);
 app.use('/api/experience-centre', experienceCentreRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/careers', careersRoutes);
+app.use('/api/artists', artistRoutes);
+app.use('/api/our-clients', ourClientsRoutes);
+app.use('/api/communal-projects', communalProjectsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

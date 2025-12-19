@@ -15,7 +15,12 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       location.pathname.includes('slug=careers') ||
       location.pathname.includes('slug=artisans-of-tilak') ||
       location.pathname.includes('slug=our-clients') ||
-      location.pathname.startsWith('/admin/pages/aslam-house')
+      location.pathname.startsWith('/admin/pages/aslam-house') ||
+      location.pathname.startsWith('/admin/aslam-house'),
+    projectsNav: location.pathname.startsWith('/admin/aslam-house/communal-projects') ||
+      location.pathname.startsWith('/admin/projects/residential') ||
+      location.pathname.startsWith('/admin/projects/international') ||
+      location.pathname.startsWith('/admin/pages/projects-nav')
   })
 
   const menuItems = [
@@ -66,7 +71,6 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         { title: 'Blog Posts', path: '/admin/content/blog' },
         { title: 'Testimonials', path: '/admin/content/testimonials' },
         { title: 'FAQs', path: '/admin/content/faqs' },
-        { title: 'Content Pages', path: '/admin/content/pages' },
         { title: 'Hero Section', path: '/admin/content/hero-section' }
       ]
     },
@@ -86,14 +90,24 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           submenu: [
             { title: 'About Us', path: '/admin/aslam-house/about-us' },
             { title: 'Experience Centre', path: '/admin/aslam-house/experience-centre' },
-            { title: 'The Team', path: '/admin/content/pages?slug=the-team' },
-            { title: 'Careers', path: '/admin/content/pages?slug=careers' },
-            { title: 'OUR ARTIST', path: '/admin/content/pages?slug=artisans-of-tilak' },
-            { title: 'Our Clients', path: '/admin/content/pages?slug=our-clients' },
+            { title: 'The Team', path: '/admin/aslam-house/the-team' },
+            { title: 'Careers', path: '/admin/aslam-house/careers' },
+            { title: 'OUR ARTIST', path: '/admin/aslam-house/our-artist' },
+            { title: 'Our Clients', path: '/admin/aslam-house/our-clients' },
             { title: 'Manage Hover', path: '/admin/pages/aslam-house' },
           ]
         },
-        { title: 'Projects Nav', path: '/admin/pages/projects-nav' },
+        {
+          title: 'Projects Nav',
+          key: 'projectsNav',
+          isNested: true,
+          submenu: [
+            { title: 'Communal', path: '/admin/aslam-house/communal-projects' },
+            { title: 'Residential', path: '/admin/projects/residential' },
+            { title: 'International', path: '/admin/projects/international' },
+            { title: 'Manage Hover', path: '/admin/pages/projects-nav' },
+          ]
+        },
         { title: 'Our Creations Nav', path: '/admin/pages/our-creations-nav' },
         { title: 'Our Services Nav', path: '/admin/pages/our-services-nav' },
         { title: 'Our Products Nav', path: '/admin/pages/our-products-nav' }

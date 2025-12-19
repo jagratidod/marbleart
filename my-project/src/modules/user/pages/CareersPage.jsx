@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
 import TrustedBySection from '../../../components/common/TrustedBySection'
 import JobOpportunities from '../../../components/careers/JobOpportunities'
 import JoinTheTeamForm from '../../../components/careers/JoinTheTeamForm'
-import { useNavigate } from 'react-router-dom'
-import careerHeroImage from '../../../assets/house of marble/careers/SMT01780-Edit_6ebd2fd8-7aa4-4df4-b841-2cb2e362337e_large.jpeg'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const CareersPage = ({
   onShowSidebar,
@@ -16,12 +15,53 @@ const CareersPage = ({
   onShowHowItWorks
 }) => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [careersData, setCareersData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5100/api'
+
+  useEffect(() => {
+    const fetchCareersData = async () => {
+      try {
+        const res = await fetch(`${API_URL}/careers`)
+        const result = await res.json()
+        if (result.success) {
+          setCareersData(result.data)
+        }
+      } catch (error) {
+        console.error('Error fetching careers data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCareersData()
+  }, [API_URL])
+
+  useEffect(() => {
+    if (location.hash === '#join-the-team') {
+      const element = document.getElementById('join-the-team')
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 100)
+      }
+    }
+  }, [location])
 
   const handleApplyNow = () => {
     const joinTeamSection = document.getElementById('join-the-team')
     if (joinTeamSection) {
       joinTeamSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B7355]"></div>
+      </div>
+    )
   }
 
   return (
@@ -41,7 +81,7 @@ const CareersPage = ({
       <section className="w-full relative">
         <div className="relative w-full h-[350px] md:h-[450px] lg:h-[550px] overflow-hidden">
           <img
-            src={careerHeroImage}
+            src={careersData?.heroImage?.url}
             alt="Careers"
             className="w-full h-full object-cover"
           />
@@ -79,92 +119,131 @@ const CareersPage = ({
         </div>
       </section>
 
-      {/* Why Join Us Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-gradient-to-b from-white to-gray-50">
+      <section className="w-full py-16 md:py-24 px-4 md:px-8 bg-gradient-to-b from-white to-gray-50/50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center mb-4 md:mb-6">
-            Why Join Us?
-          </h2>
-          <p className="text-center text-gray-600 mb-8 md:mb-12 text-base md:text-lg max-w-2xl mx-auto">
-            At Aslam Marble Suppliers, we offer more than just a job - we offer a career path filled with growth, learning, and meaningful contributions to timeless art.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center border border-gray-100 hover:border-[#8B7355]/30 hover:-translate-y-2">
-              <div className="text-5xl mb-4">🎯</div>
-              <h3 className="text-xl md:text-2xl font-bold mb-3 text-black">Growth Opportunities</h3>
-              <p className="text-gray-600 leading-relaxed">Continuous learning and career development in a supportive environment. We invest in your professional growth.</p>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#8B7355] italic mb-6">
+              Why Join Us?
+            </h2>
+            <div className="w-24 h-1 bg-[#8B7355] mx-auto mb-6 rounded-full"></div>
+            <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+              At Aslam Marble Suppliers, we offer more than just a job - we offer a career path filled with growth, learning, and meaningful contributions to timeless art.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {careersData?.whyJoinUs?.map((item, index) => (
+              <div
+                key={index}
+                className="group relative bg-white rounded-xl shadow-lg hover:shadow-2xl p-6 md:p-8 border border-gray-100 transition-all duration-500 hover:-translate-y-2 overflow-hidden text-center"
+              >
+                {/* Background Accent from About Us */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[#8B7355]/5 rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-700 group-hover:scale-150"></div>
+
+                <div className="relative z-10">
+                  <div className="text-4xl mb-4 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 inline-block">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#8B7355] transition-colors duration-300 uppercase tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed font-light italic text-sm md:text-base">
+                    {item.description}
+                  </p>
+                </div>
+
+                {/* Bottom Gradient Border from About Us */}
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B7355]/40 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Training and Development Section */}
+      <section className="w-full py-16 md:py-24 px-4 md:px-8" style={{ backgroundColor: 'rgb(255, 250, 240)' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Side - Image */}
+            <div className="w-full h-full">
+              <div className="relative overflow-hidden shadow-2xl h-full">
+                <img
+                  src={careersData?.trainingImage?.url}
+                  alt="Training and Development"
+                  className="w-full h-full object-cover scale-110"
+                />
+              </div>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center border border-gray-100 hover:border-[#8B7355]/30 hover:-translate-y-2">
-              <div className="text-5xl mb-4">🤝</div>
-              <h3 className="text-xl md:text-2xl font-bold mb-3 text-black">Team Culture</h3>
-              <p className="text-gray-600 leading-relaxed">Work with passionate professionals dedicated to preserving traditional craftsmanship and creating excellence.</p>
-            </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center border border-gray-100 hover:border-[#8B7355]/30 hover:-translate-y-2">
-              <div className="text-5xl mb-4">✨</div>
-              <h3 className="text-xl md:text-2xl font-bold mb-3 text-black">Meaningful Work</h3>
-              <p className="text-gray-600 leading-relaxed">Create lasting masterpieces that honor tradition and inspire generations. Your work will stand the test of time.</p>
+
+            {/* Right Side - Text Content */}
+            <div className="w-full space-y-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-1 h-16" style={{ backgroundColor: '#8B7355' }}></div>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic">
+                  Training and Development
+                </h2>
+              </div>
+
+              <div className="space-y-4 text-gray-700 leading-relaxed">
+                <p className="text-base md:text-lg">
+                  At <span className="font-bold text-gray-900">Aslam Marble Suppliers</span>, we are committed to nurturing the growth and potential of our people. We provide a supportive and dynamic work environment where every team member is encouraged to learn, grow, and excel. Our focused training programs are designed to refine craftsmanship and enhance product knowledge, ensuring that each individual develops to the highest standards of excellence.
+                </p>
+                <p className="text-base md:text-lg">
+                  New team members are guided by experienced professionals who mentor them throughout their journey, helping them seamlessly adapt to our values, processes, and commitment to quality.
+                </p>
+                <p className="text-base md:text-lg">
+                  Our approach to training extends beyond skill enhancement—it is about building sustainable careers. Through continuous learning opportunities and a strong emphasis on personal and professional development, we cultivate long-term relationships with our team, allowing them to grow alongside the reputation and success of Aslam Marble Suppliers.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-white">
+      <section className="w-full py-16 md:py-24 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center mb-4 md:mb-6">
-            Employee Benefits
-          </h2>
-          <p className="text-center text-gray-600 mb-8 md:mb-12 text-base md:text-lg max-w-2xl mx-auto">
-            We value our team members and offer comprehensive benefits to support your well-being and success.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">💰</div>
-              <h4 className="font-semibold text-black mb-1">Competitive Salary</h4>
-              <p className="text-xs text-gray-600">Fair compensation packages</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🏥</div>
-              <h4 className="font-semibold text-black mb-1">Health Insurance</h4>
-              <p className="text-xs text-gray-600">Medical coverage for you & family</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">📚</div>
-              <h4 className="font-semibold text-black mb-1">Training Programs</h4>
-              <p className="text-xs text-gray-600">Skill development opportunities</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🎁</div>
-              <h4 className="font-semibold text-black mb-1">Performance Bonus</h4>
-              <p className="text-xs text-gray-600">Rewards for excellence</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🏖️</div>
-              <h4 className="font-semibold text-black mb-1">Paid Time Off</h4>
-              <p className="text-xs text-gray-600">Work-life balance</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🍽️</div>
-              <h4 className="font-semibold text-black mb-1">Meal Facilities</h4>
-              <p className="text-xs text-gray-600">On-site dining options</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🚗</div>
-              <h4 className="font-semibold text-black mb-1">Transportation</h4>
-              <p className="text-xs text-gray-600">Commute assistance</p>
-            </div>
-            <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#8B7355]/5 p-5 rounded-lg text-center border border-[#8B7355]/20">
-              <div className="text-3xl mb-2">🎉</div>
-              <h4 className="font-semibold text-black mb-1">Team Events</h4>
-              <p className="text-xs text-gray-600">Regular celebrations</p>
-            </div>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#8B7355] italic mb-6">
+              Employee Benefits
+            </h2>
+            <div className="w-24 h-1 bg-[#8B7355] mx-auto mb-6 rounded-full"></div>
+            <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+              We value our team members and offer comprehensive benefits to support your well-being and success.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+            {careersData?.benefits?.map((benefit, index) => (
+              <div
+                key={index}
+                className="group relative bg-white p-6 md:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 border border-gray-50 flex flex-col items-center text-center hover:-translate-y-1.5 overflow-hidden"
+              >
+                {/* Background Accent */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-[#8B7355]/5 rounded-bl-full transform translate-x-10 -translate-y-10 transition-transform duration-700 group-hover:scale-150"></div>
+
+                <div className="relative z-10">
+                  <div className="text-4xl mb-4 transform transition-transform duration-500 group-hover:scale-110">
+                    {benefit.icon}
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-2 group-hover:text-[#8B7355] transition-colors">
+                    {benefit.title}
+                  </h4>
+                  <p className="text-sm text-gray-500 italic">
+                    {benefit.description}
+                  </p>
+                </div>
+
+                {/* Bottom Border */}
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B7355]/30 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Job Opportunities Section */}
       <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-white">
-        <JobOpportunities />
+        <JobOpportunities jobs={careersData?.jobs || []} />
       </section>
 
       {/* Join the Team Section */}
@@ -180,4 +259,3 @@ const CareersPage = ({
 }
 
 export default CareersPage
-

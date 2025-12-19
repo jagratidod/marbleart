@@ -1,245 +1,216 @@
 import { useState } from 'react'
 
-const JobOpportunities = () => {
-  const [expandedJobs, setExpandedJobs] = useState({})
+const JobOpportunities = ({ jobs = [] }) => {
+  const [selectedJob, setSelectedJob] = useState(null)
 
-  const jobCategories = [
-    {
-      id: 'architecture',
-      title: 'Architecture',
-      icon: '🏛️',
-      jobs: [
-        {
-          id: 'architect-1',
-          title: 'Senior Architect',
-          experience: '5+ years',
-          location: 'Makrana, Rajasthan',
-          type: 'Full-time',
-          description: 'We are looking for a skilled Senior Architect with extensive experience in designing sacred spaces and temple architecture. The ideal candidate should have a deep understanding of traditional Indian architecture and modern design principles.',
-          requirements: [
-            'Bachelor\'s or Master\'s degree in Architecture',
-            'Proficiency in AutoCAD, SketchUp, and Revit',
-            'Strong portfolio of temple/sacred space designs',
-            'Excellent communication and presentation skills'
-          ]
-        },
-        {
-          id: 'architect-2',
-          title: 'Junior Architect',
-          experience: '1 to 3 years',
-          location: 'Makrana, Rajasthan',
-          type: 'Full-time',
-          description: 'Join our team as a Junior Architect and work on exciting projects involving marble temple design and sacred architecture. Great opportunity for growth and learning.',
-          requirements: [
-            'Bachelor\'s degree in Architecture',
-            'Basic knowledge of design software',
-            'Passion for traditional architecture',
-            'Willingness to learn and grow'
-          ]
-        }
-      ]
-    },
-    {
-      id: 'creative',
-      title: 'Creative',
-      icon: '🎨',
-      jobs: [
-        {
-          id: 'video-editor-1',
-          title: 'Video Editor',
-          experience: '2+ Years',
-          location: 'Remote / On-site',
-          type: 'Full-time',
-          description: 'Join our creative team as a Video Editor to create compelling visual content showcasing our craftsmanship, projects, and brand story. You\'ll work on promotional videos, social media content, and documentary-style pieces.',
-          requirements: [
-            'Proficiency in Adobe Premiere Pro, After Effects',
-            'Strong storytelling and editing skills',
-            'Portfolio demonstrating video editing capabilities',
-            'Creative mindset and attention to detail'
-          ]
-        },
-        {
-          id: 'graphic-designer-1',
-          title: 'Graphic Designer',
-          experience: '2-4 Years',
-          location: 'Makrana, Rajasthan',
-          type: 'Full-time',
-          description: 'We are seeking a talented Graphic Designer to create visually stunning designs for marketing materials, social media, and brand identity.',
-          requirements: [
-            'Proficiency in Adobe Creative Suite',
-            'Strong portfolio of design work',
-            'Understanding of brand identity',
-            'Creative and innovative thinking'
-          ]
-        }
-      ]
-    },
-    {
-      id: 'sales',
-      title: 'Sales',
-      icon: '💼',
-      jobs: [
-        {
-          id: 'sales-rep-1',
-          title: 'Online Sales Representative',
-          experience: '3+ Years',
-          location: 'Remote / On-site',
-          type: 'Full-time',
-          description: 'We need an experienced Online Sales Representative to help expand our digital presence and customer reach. You\'ll be responsible for managing online sales, customer relationships, and driving revenue growth.',
-          requirements: [
-            'Proven track record in online sales',
-            'Excellent communication skills',
-            'Knowledge of CRM systems',
-            'Customer-focused approach'
-          ]
-        },
-        {
-          id: 'sales-manager-1',
-          title: 'Sales Manager',
-          experience: '5+ Years',
-          location: 'Makrana, Rajasthan',
-          type: 'Full-time',
-          description: 'Lead our sales team and drive business growth. Manage sales strategies, client relationships, and team performance.',
-          requirements: [
-            'Strong leadership skills',
-            'Experience in B2B sales',
-            'Strategic thinking',
-            'Results-oriented mindset'
-          ]
-        }
-      ]
-    },
-    {
-      id: 'operations',
-      title: 'Operations',
-      icon: '⚙️',
-      jobs: [
-        {
-          id: 'production-manager-1',
-          title: 'Production Manager',
-          experience: '4+ Years',
-          location: 'Makrana, Rajasthan',
-          type: 'Full-time',
-          description: 'Oversee production operations, manage teams, and ensure quality standards in marble processing and temple construction.',
-          requirements: [
-            'Experience in manufacturing/production',
-            'Strong organizational skills',
-            'Quality management expertise',
-            'Team management experience'
-          ]
-        }
-      ]
+  const openJobModal = (job) => {
+    setSelectedJob(job)
+  }
+
+  const closeJobModal = () => {
+    setSelectedJob(null)
+  }
+
+  // Group jobs by category
+  const jobsByCategory = jobs.reduce((acc, job) => {
+    if (!acc[job.category]) {
+      acc[job.category] = []
     }
-  ]
+    acc[job.category].push(job)
+    return acc
+  }, {})
 
-  const toggleJobExpansion = (jobId) => {
-    setExpandedJobs(prev => ({
-      ...prev,
-      [jobId]: !prev[jobId]
-    }))
+  const categoryTitles = {
+    architecture: 'Architecture',
+    creative: 'Creative',
+    sales: 'Sales'
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Title */}
-      {/* Title */}
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center mb-8 md:mb-12">
-        Job Opportunities
-      </h1>
+    <div className="max-w-7xl mx-auto px-4">
+      <style>{`
+        @keyframes slideDown {
+          from { transform: translateY(-50px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+          animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+      `}</style>
 
-      {/* Job Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-        {jobCategories.map((category) => (
-          <div key={category.id} className="flex flex-col">
-            {/* Category Title with Icon */}
-            <div className="flex items-center gap-3 mb-4 md:mb-6 pb-3 border-b-2" style={{ borderColor: '#8B7355' }}>
-              <span className="text-3xl">{category.icon}</span>
-              <h2 className="text-xl md:text-2xl font-bold text-black">
-                {category.title}
-              </h2>
+      {/* Title Section */}
+      <div className="text-center mb-12 md:mb-16">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#8B7355] italic mb-6">
+          Job Opportunities
+        </h2>
+        <div className="w-24 h-1 bg-[#8B7355] mx-auto mb-6 rounded-full"></div>
+      </div>
+
+      {/* Category Buttons */}
+      <div className="flex justify-center gap-4 md:gap-8 mb-12 flex-wrap">
+        {Object.keys(jobsByCategory).map((category) => (
+          <button
+            key={category}
+            onClick={() => {
+              const firstJob = jobsByCategory[category][0]
+              if (firstJob) {
+                const element = document.getElementById(`job-card-${firstJob._id}`)
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  // Highlight effect
+                  element.classList.add('ring-4', 'ring-[#8B7355]', 'ring-opacity-50')
+                  setTimeout(() => {
+                    element.classList.remove('ring-4', 'ring-[#8B7355]', 'ring-opacity-50')
+                  }, 2000)
+                }
+              }
+            }}
+            className="px-6 py-2 text-sm md:text-base font-medium tracking-wider transition-all duration-300 text-gray-700 hover:text-[#8B7355] border-b-2 border-transparent hover:border-[#8B7355]"
+          >
+            {categoryTitles[category]}
+          </button>
+        ))}
+      </div>
+
+      {/* Job Cards - All in One Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {jobs.filter(job => job.isActive).map((job) => (
+          <div
+            key={job._id}
+            id={`job-card-${job._id}`}
+            className="bg-white border border-gray-200 p-6 flex flex-col justify-between transition-all duration-300"
+          >
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">{categoryTitles[job.category]}</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                {job.title}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Experience: {job.experience}
+              </p>
             </div>
 
-            {/* Job Cards */}
-            <div className="space-y-4">
-              {category.jobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="bg-white rounded-lg shadow-md p-4 md:p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#8B7355]/30"
-                >
-                  {/* Job Title */}
-                  <h3 className="text-lg md:text-xl font-bold text-black mb-3">
-                    {job.title}
-                  </h3>
-
-                  {/* Job Details */}
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span className="font-semibold">Experience:</span>
-                      <span>{job.experience}</span>
-                    </div>
-                    {job.location && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span className="font-semibold">Location:</span>
-                        <span>{job.location}</span>
-                      </div>
-                    )}
-                    {job.type && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span className="font-semibold">Type:</span>
-                        <span className="px-2 py-1 bg-[#8B7355]/10 rounded text-[#8B7355] font-medium">{job.type}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Expanded Description */}
-                  {expandedJobs[job.id] && (
-                    <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
-                        {job.description}
-                      </p>
-                      {job.requirements && (
-                        <div>
-                          <h4 className="font-semibold text-gray-800 mb-2">Requirements:</h4>
-                          <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                            {job.requirements.map((req, idx) => (
-                              <li key={idx}>{req}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-3 mt-4">
-                    <a
-                      href="#join-the-team"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        document.getElementById('join-the-team')?.scrollIntoView({ behavior: 'smooth' })
-                      }}
-                      className="text-center px-4 py-2 rounded-lg text-white text-sm md:text-base font-medium transition-all hover:opacity-90 shadow-md hover:shadow-lg"
-                      style={{ backgroundColor: '#8B7355' }}
-                    >
-                      Apply Now
-                    </a>
-                    <button
-                      onClick={() => toggleJobExpansion(job.id)}
-                      className="px-4 py-2 rounded-lg border-2 text-sm md:text-base font-medium transition-all hover:bg-gray-50"
-                      style={{ borderColor: '#8B7355', color: '#8B7355' }}
-                    >
-                      {expandedJobs[job.id] ? 'Show Less' : 'View Details'}
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div className="flex gap-3 mt-4">
+              <a
+                href="#join-the-team"
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById('join-the-team')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="flex-1 text-center px-4 py-2 text-sm font-medium transition-all duration-300 underline"
+                style={{ color: '#8B7355' }}
+              >
+                Apply Now
+              </a>
+              <button
+                onClick={() => openJobModal(job)}
+                className="flex-1 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:opacity-90"
+                style={{ backgroundColor: '#8B7355' }}
+              >
+                View More
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Job Details Modal - Blur & Animation */}
+      {selectedJob && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-6 overflow-hidden">
+          {/* Backdrop with Blur */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-500"
+            onClick={closeJobModal}
+          ></div>
+
+          {/* Modal Content */}
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden relative z-10 animate-slide-down flex flex-col"
+          >
+            {/* Header */}
+            <div className="p-6 border-b flex items-center justify-between bg-white sticky top-0 z-20">
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-10 bg-[#8B7355] rounded-full"></div>
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                    {selectedJob.title}
+                  </h2>
+                  <p className="text-[#8B7355] font-medium uppercase tracking-widest text-xs mt-1">
+                    {selectedJob.type} • {selectedJob.location}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={closeJobModal}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-black transition-all"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable Body */}
+            <div className="p-6 md:p-10 overflow-y-auto">
+              <div className="space-y-8">
+                {/* Description */}
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#8B7355]/10 text-[#8B7355]">📝</span>
+                    Job Description
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed font-light italic text-lg">
+                    {selectedJob.description}
+                  </p>
+                </div>
+
+                {/* Requirements */}
+                {selectedJob.requirements && selectedJob.requirements.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#8B7355]/10 text-[#8B7355]">✅</span>
+                      Requirements
+                    </h3>
+                    <ul className="space-y-3">
+                      {selectedJob.requirements.map((req, idx) => (
+                        <li key={idx} className="flex items-start gap-4 text-gray-600">
+                          <span className="mt-1.5 w-2 h-2 rounded-full bg-[#8B7355] flex-shrink-0"></span>
+                          <span className="font-light">{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t bg-gray-50 flex items-center justify-end gap-4 sticky bottom-0 z-20">
+              <button
+                onClick={closeJobModal}
+                className="px-6 py-3 font-bold text-gray-600 hover:text-black transition-colors"
+              >
+                Close
+              </button>
+              <a
+                href="#join-the-team"
+                onClick={(e) => {
+                  e.preventDefault()
+                  closeJobModal()
+                  setTimeout(() => {
+                    document.getElementById('join-the-team')?.scrollIntoView({ behavior: 'smooth' })
+                  }, 100)
+                }}
+                className="px-8 py-3 rounded-xl bg-[#8B7355] text-white font-bold hover:bg-[#6B5A42] transition-all duration-300 shadow-lg hover:shadow-xl uppercase tracking-wider"
+              >
+                Apply Now
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 export default JobOpportunities
-

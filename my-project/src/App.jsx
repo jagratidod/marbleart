@@ -84,6 +84,14 @@ import CategoryManagementPage from './modules/admin/pages/CategoryManagementPage
 import HeroSectionManagementPage from './modules/admin/pages/HeroSectionManagementPage'
 import AboutUsManagementPage from './modules/admin/pages/AboutUsManagementPage'
 import ExperienceCentreManagementPage from './modules/admin/pages/ExperienceCentreManagementPage'
+import TheTeamManagementPage from './modules/admin/pages/TheTeamManagementPage'
+import CareersManagementPage from './modules/admin/pages/CareersManagementPage'
+import ArtistManagementPage from './modules/admin/pages/ArtistManagementPage'
+import OurArtistManagementPage from './modules/admin/pages/OurArtistManagementPage'
+import OurClientsManagementPage from './modules/admin/pages/OurClientsManagementPage'
+import CommunalProjectsManagementPage from './modules/admin/pages/CommunalProjectsManagementPage'
+import ResidentialProjectsManagementPage from './modules/admin/pages/ResidentialProjectsManagementPage'
+import InternationalProjectsManagementPage from './modules/admin/pages/InternationalProjectsManagementPage'
 
 import OurServicesManagementPage from './modules/admin/pages/OurServicesManagementPage'
 import TalkToExpertPage from './modules/admin/pages/TalkToExpertPage'
@@ -1256,6 +1264,41 @@ function App() {
           <Route path="/admin/aslam-house/experience-centre" element={
             <ProtectedRoute>
               <ExperienceCentreManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/aslam-house/the-team" element={
+            <ProtectedRoute>
+              <TheTeamManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/aslam-house/careers" element={
+            <ProtectedRoute>
+              <CareersManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/aslam-house/our-artist" element={
+            <ProtectedRoute>
+              <OurArtistManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/aslam-house/our-clients" element={
+            <ProtectedRoute>
+              <OurClientsManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/aslam-house/communal-projects" element={
+            <ProtectedRoute>
+              <CommunalProjectsManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/projects/residential" element={
+            <ProtectedRoute>
+              <ResidentialProjectsManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/projects/international" element={
+            <ProtectedRoute>
+              <InternationalProjectsManagementPage />
             </ProtectedRoute>
           } />
           <Route path="/admin/pages/aslam-house" element={

@@ -1,16 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProjectDrawer from '../../../components/common/ProjectDrawer'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import communalHeroImage from '../../../assets/communal/Screenshot 2025-12-02 113644.png'
-import communalImg1 from '../../../assets/communal/1733300550903.jpeg'
-import communalImg2 from '../../../assets/communal/wmremove-transformed.jpeg'
-import communalImg3 from '../../../assets/communal/wmremove-transformed (3).jpeg'
-import communalImg4 from '../../../assets/communal/wmremove-transformed (4).jpeg'
-import communalImg5 from '../../../assets/communal/wmremove-transformed (5).jpeg'
-import communalImg6 from '../../../assets/communal/wmremove-transformed (6).jpeg'
 import { BUDGET_OPTIONS, TIMELINE_OPTIONS } from '../../../utils/constants'
+import { fetchCommunalProjectsData } from '../../../utils/communalProjectsUtils'
 
 const CommunalProjectsPage = ({
   onShowSidebar,
@@ -22,6 +16,8 @@ const CommunalProjectsPage = ({
   onShowBooking
 }) => {
   const [formStep, setFormStep] = useState(1)
+  const [communalData, setCommunalData] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     type: 'DOMESTIC',
     fullName: '',
@@ -56,23 +52,33 @@ const CommunalProjectsPage = ({
     })
   }
 
-  const communalImages = [
-    communalImg1,
-    communalImg2,
-    communalImg3,
-    communalImg4,
-    communalImg5,
-    communalImg6
-  ]
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        const data = await fetchCommunalProjectsData()
+        if (data) {
+          setCommunalData(data)
+        }
+      } catch (error) {
+        console.error('Error loading communal projects data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  const communalImages = communalData?.galleryImages || []
 
   const [selectedProject, setSelectedProject] = useState(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const handleImageClick = (image, index) => {
     setSelectedProject({
-      image: image,
-      title: `Communal Project ${index + 1}`,
-      description: "This magnificent communal project stands as a testament to our dedication to preserving traditional temple architecture. Built with high-quality marble and intricate carvings, it serves as a spiritual gathering place for the community."
+      image: image.url,
+      title: image.title,
+      description: image.description
     })
     setIsDrawerOpen(true)
   }
@@ -93,12 +99,22 @@ const CommunalProjectsPage = ({
       {/* Hero Image Container with Form Overlay */}
       <div className="relative w-full overflow-hidden" style={{ height: '75vh', minHeight: '600px' }}>
         {/* Background Image */}
-        <img
-          src={communalHeroImage}
-          alt="Communal Projects Background"
-          className="w-full h-full object-cover"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-        />
+        {loading ? (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        ) : communalData?.heroImage?.url ? (
+          <img
+            src={communalData.heroImage.url}
+            alt={communalData.heroImage.alt || 'Communal Projects'}
+            className="w-full h-full object-cover"
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+            <p className="text-gray-600">No hero image available</p>
+          </div>
+        )}
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent"></div>
@@ -106,13 +122,13 @@ const CommunalProjectsPage = ({
         {/* Hero Text Overlay - Left Side */}
         <div className="absolute top-16 md:top-24 lg:top-32 left-4 md:left-6 lg:left-8 xl:left-12 z-10 max-w-xl md:max-w-2xl">
           <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight uppercase tracking-wide drop-shadow-lg">
-            COMMUNAL PROJECTS
+            {communalData?.title || 'COMMUNAL PROJECTS'}
           </h1>
           <p className="text-sm md:text-base lg:text-lg text-white font-light mb-2 drop-shadow-md">
-            Building Sacred Spaces for Communities
+            {communalData?.subtitle || 'Building Sacred Spaces for Communities'}
           </p>
           <p className="text-xs md:text-sm text-white/90 font-light leading-relaxed drop-shadow-md">
-            Crafting magnificent communal temples and spiritual spaces that bring communities together through timeless architecture and exquisite craftsmanship.
+            {communalData?.description || 'Crafting magnificent communal temples and spiritual spaces that bring communities together through timeless architecture and exquisite craftsmanship.'}
           </p>
         </div>
 
@@ -378,33 +394,43 @@ const CommunalProjectsPage = ({
           {/* Section Header */}
           <div className="text-center mb-10 md:mb-14 lg:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic mb-4 md:mb-5 tracking-wide">
-              Our Communal Projects
+              {communalData?.sectionTitle || 'Our Communal Projects'}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Showcasing our magnificent communal temple projects that bring communities together through divine architecture.
+              {communalData?.sectionDescription || 'Showcasing our magnificent communal temple projects that bring communities together through divine architecture.'}
             </p>
             <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
           </div>
 
           {/* Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {communalImages.map((image, index) => (
-              <div
-                key={index}
-                onClick={() => handleImageClick(image, index)}
-                className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
-              >
-                <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
-                  <img
-                    src={image}
-                    alt={`Communal Project ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">Loading gallery...</p>
+            </div>
+          ) : communalImages.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No projects available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {communalImages.map((image, index) => (
+                <div
+                  key={image._id || index}
+                  onClick={() => handleImageClick(image, index)}
+                  className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
+                >
+                  <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
+                    <img
+                      src={image.url}
+                      alt={image.alt || `Communal Project ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

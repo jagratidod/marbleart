@@ -39,6 +39,22 @@ const uploadBuffer = (buffer, folder) => {
   })
 }
 
+const uploadLocalFile = (filePath, folder) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(
+      filePath,
+      {
+        folder,
+        resource_type: 'image'
+      },
+      (error, result) => {
+        if (error) return reject(error)
+        resolve(result)
+      }
+    )
+  })
+}
+
 const deleteByPublicId = async (publicId) => {
   if (!publicId) return
   try {
@@ -48,5 +64,5 @@ const deleteByPublicId = async (publicId) => {
   }
 }
 
-module.exports = { cloudinary, uploadBuffer, deleteByPublicId }
+module.exports = { cloudinary, uploadBuffer, uploadLocalFile, deleteByPublicId }
 

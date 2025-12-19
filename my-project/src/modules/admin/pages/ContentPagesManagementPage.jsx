@@ -21,6 +21,7 @@ const ContentPagesManagementPage = () => {
   const location = useLocation()
 
   useEffect(() => {
+    // Handle URL parameters (legacy)
     const params = new URLSearchParams(location.search)
     const slug = params.get('slug')
     if (slug) {
@@ -29,8 +30,29 @@ const ContentPagesManagementPage = () => {
         setSelectedPage(page)
         setShowEditModal(true)
       }
+      return
     }
-  }, [location.search, pages])
+
+    // Handle path-based routing for Aslam House pages
+    const pathname = location.pathname
+    let targetSlug = null
+    
+    if (pathname === '/admin/aslam-house/careers') {
+      targetSlug = 'careers'
+    } else if (pathname === '/admin/aslam-house/our-artist') {
+      targetSlug = 'artisans-of-tilak'
+    } else if (pathname === '/admin/aslam-house/our-clients') {
+      targetSlug = 'our-clients'
+    }
+
+    if (targetSlug) {
+      const page = pages.find(p => p.slug === targetSlug)
+      if (page) {
+        setSelectedPage(page)
+        setShowEditModal(true)
+      }
+    }
+  }, [location.search, location.pathname, pages])
 
   const handleEditPage = (updatedPage) => {
     setPages(pages.map(p => p.id === updatedPage.id ? updatedPage : p))
@@ -64,8 +86,12 @@ const ContentPagesManagementPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         onClick={() => {
-                          setSelectedPage(page)
-                          setShowEditModal(true)
+                          if (page.slug === 'the-team') {
+                            window.location.href = '/admin/aslam-house/the-team'
+                          } else {
+                            setSelectedPage(page)
+                            setShowEditModal(true)
+                          }
                         }}
                         className="text-[#8B7355] hover:underline font-medium"
                       >
@@ -81,17 +107,252 @@ const ContentPagesManagementPage = () => {
 
         {/* Edit Page Modal */}
         {showEditModal && selectedPage && (
-          <PageEditModal
-            page={selectedPage}
-            onSave={handleEditPage}
-            onClose={() => {
-              setShowEditModal(false)
-              setSelectedPage(null)
-            }}
-          />
+          selectedPage.slug === 'careers' ? (
+            <CareersEditModal
+              page={selectedPage}
+              onClose={() => {
+                setShowEditModal(false)
+                setSelectedPage(null)
+              }}
+            />
+          ) : (
+            <PageEditModal
+              page={selectedPage}
+              onSave={handleEditPage}
+              onClose={() => {
+                setShowEditModal(false)
+                setSelectedPage(null)
+              }}
+            />
+          )
         )}
       </div>
     </AdminLayout>
+  )
+}
+
+// Careers Edit Modal Component
+const CareersEditModal = ({ page, onClose }) => {
+  const [careersData, setCareersData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
+  const [message, setMessage] = useState({ type: '', text: '' })
+
+  const [heroImage, setHeroImage] = useState(null)
+  const [heroPreview, setHeroPreview] = useState('')
+  const [trainingImage, setTrainingImage] = useState(null)
+  const [trainingPreview, setTrainingPreview] = useState('')
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5100/api'
+  const token = localStorage.getItem('adminToken')
+
+  useEffect(() => {
+    fetchCareersData()
+  }, [])
+
+  const fetchCareersData = async () => {
+    try {
+      const res = await fetch(`${API_URL}/careers`)
+      const result = await res.json()
+      if (result.success && result.data) {
+        setCareersData(result.data)
+        setHeroPreview(result.data.heroImage?.url || '')
+        setTrainingPreview(result.data.trainingImage?.url || '')
+      }
+    } catch (error) {
+      console.error('Error fetching careers data:', error)
+      setMessage({ type: 'error', text: 'Failed to load careers data' })
+    } finally {
+      setFetching(false)
+    }
+  }
+
+  const handleHeroImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setHeroImage(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setHeroPreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleTrainingImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setTrainingImage(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setTrainingPreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const saveHeroImage = async () => {
+    if (!heroImage) return
+    setLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('heroImage', heroImage)
+
+      const res = await fetch(`${API_URL}/careers/hero-image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      const result = await res.json()
+      if (result.success) {
+        setMessage({ type: 'success', text: 'Hero image updated successfully!' })
+        setCareersData(result.data)
+        setHeroImage(null)
+      } else {
+        setMessage({ type: 'error', text: result.message || 'Failed to update hero image' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Connection error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const saveTrainingImage = async () => {
+    if (!trainingImage) return
+    setLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('trainingImage', trainingImage)
+
+      const res = await fetch(`${API_URL}/careers/training-image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      const result = await res.json()
+      if (result.success) {
+        setMessage({ type: 'success', text: 'Training image updated successfully!' })
+        setCareersData(result.data)
+        setTrainingImage(null)
+      } else {
+        setMessage({ type: 'error', text: result.message || 'Failed to update training image' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Connection error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b p-6 z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">Edit Careers Page</h2>
+              <p className="text-gray-500 text-sm mt-1">Manage hero and training images</p>
+            </div>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-8">
+          {message.text && (
+            <div className={`p-4 rounded-xl flex items-center justify-between ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+              }`}>
+              <p className="font-medium">{message.text}</p>
+              <button onClick={() => setMessage({ type: '', text: '' })} className="text-current opacity-50 hover:opacity-100">×</button>
+            </div>
+          )}
+
+          {fetching ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B7355]"></div>
+            </div>
+          ) : (
+            <>
+              {/* Hero Image Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <span className="bg-[#8B7355] text-white p-1.5 rounded-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  </span>
+                  Hero Image (Horizontal Banner)
+                </h3>
+
+                <div className="relative w-full h-[250px] rounded-xl overflow-hidden bg-gray-50 border-2 border-dashed border-gray-200 group">
+                  {heroPreview ? (
+                    <img src={heroPreview} alt="Hero" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300">No image</div>
+                  )}
+                  <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white font-bold gap-2">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Change Image
+                    <input type="file" className="hidden" onChange={handleHeroImageChange} accept="image/*" />
+                  </label>
+                </div>
+
+                {heroImage && (
+                  <button
+                    onClick={saveHeroImage}
+                    disabled={loading}
+                    className="w-full bg-[#8B7355] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#6B5A42] transition-colors"
+                  >
+                    {loading ? 'Uploading...' : 'Save Hero Image'}
+                  </button>
+                )}
+              </div>
+
+              {/* Training Image Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <span className="bg-[#8B7355] text-white p-1.5 rounded-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  </span>
+                  Training & Development Image
+                </h3>
+
+                <div className="relative w-full h-[300px] rounded-xl overflow-hidden bg-gray-50 border-2 border-dashed border-gray-200 group">
+                  {trainingPreview ? (
+                    <img src={trainingPreview} alt="Training" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300">No image</div>
+                  )}
+                  <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white font-bold gap-2">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Change Image
+                    <input type="file" className="hidden" onChange={handleTrainingImageChange} accept="image/*" />
+                  </label>
+                </div>
+
+                {trainingImage && (
+                  <button
+                    onClick={saveTrainingImage}
+                    disabled={loading}
+                    className="w-full bg-[#8B7355] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#6B5A42] transition-colors"
+                  >
+                    {loading ? 'Uploading...' : 'Save Training Image'}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
 

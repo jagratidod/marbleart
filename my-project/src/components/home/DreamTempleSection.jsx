@@ -88,12 +88,6 @@ const DreamTempleSection = ({ onOpenPricing }) => {
                                         {temple.description}
                                     </p>
                                 </div>
-                                {/* View Details Link */}
-                                <div className="mt-4 pt-4 border-t border-gray-200">
-                                    <span className="text-xs font-semibold uppercase tracking-wide group-hover:text-[#8B7355] transition-colors duration-300" style={{ color: '#8B7355' }}>
-                                        View Details →
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     ))}
