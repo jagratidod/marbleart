@@ -23,10 +23,16 @@ import galleryImg4 from '../../../assets/ourcreation/pooja room/images/81fe6d99-
 import galleryImg5 from '../../../assets/ourcreation/pooja room/images/8d836775-b2f6-4c0a-8ab4-5b7c27a36e55.png'
 import galleryImg6 from '../../../assets/ourcreation/pooja room/images/ca344ef3-3bd3-44dc-adeb-cd70d1b3c573.png'
 import { BUDGET_OPTIONS, TIMELINE_OPTIONS } from '../../../utils/constants'
+import { indianLocations, internationalLocations } from '../../../data/locations'
+import TrustedBySection from '../../../components/common/TrustedBySection'
+import BeforeAfterSlider from '../../../components/common/BeforeAfterSlider'
+import afterImage from '../../../assets/ourcreation/pooja room/before&after/compare1.png'
+import beforeImage from '../../../assets/ourcreation/pooja room/before&after/compare2.jpg'
 
 const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
   const navigate = useNavigate()
   const [formStep, setFormStep] = useState(1)
+  const [showAllLocations, setShowAllLocations] = useState(false)
   const [showConsultationModal, setShowConsultationModal] = useState(false)
   const [selectedProjectType, setSelectedProjectType] = useState('Communal')
   const [galleryIndex, setGalleryIndex] = useState(0)
@@ -168,6 +174,16 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
 
+        {/* Overlay Text */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 lg:left-20 max-w-sm md:max-w-lg lg:max-w-2xl px-6 md:px-0 z-10 w-full animate-fadeInUp">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif text-white italic drop-shadow-md mb-2 md:mb-4">
+            Welcome to Our Pooja Room Collection
+          </h1>
+          <p className="text-base md:text-2xl text-white/90 font-medium drop-shadow-md tracking-wide">
+            <span className="font-bold border-b-2 border-[#8B7355] pb-1">Aslam Marble Suppliers</span>
+          </p>
+        </div>
+
         {/* Form Container - Centered on Mobile, Right Side on Desktop */}
         {showExpertForm && (
           <div id="expert-form-container" className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-4 md:lg:right-6 xl:right-8 top-1/2 -translate-y-1/2 w-[90%] sm:w-[85%] md:w-[340px] lg:w-[340px] max-w-[calc(100%-32px)] bg-white rounded-xl md:rounded-2xl shadow-2xl z-20 flex flex-col backdrop-blur-sm bg-white/95">
@@ -186,252 +202,252 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
               </div>
             </div>
 
-          <div className="px-3 pt-3 pb-4 md:px-4 md:pt-4 md:pb-4 bg-white overflow-y-auto flex-1 rounded-b-xl md:rounded-b-2xl">
-            {formStep === 1 ? (
-              <form className="space-y-2.5" onSubmit={(e) => { e.preventDefault(); setFormStep(2); }}>
-                <div className="flex gap-2">
-                  <label className="flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="DOMESTIC"
-                      checked={formData.type === 'DOMESTIC'}
-                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                      className="w-3 h-3 accent-amber-600"
-                    />
-                    <span className="text-xs font-medium" style={{ color: formData.type === 'DOMESTIC' ? '#8B7355' : '#333' }}>DOMESTIC</span>
-                  </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="INTERNATIONAL"
-                      checked={formData.type === 'INTERNATIONAL'}
-                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                      className="w-3 h-3 accent-amber-600"
-                    />
-                    <span className="text-xs font-medium" style={{ color: formData.type === 'INTERNATIONAL' ? '#8B7355' : '#333' }}>INTERNATIONAL</span>
-                  </label>
-                </div>
-
-                <input
-                  type="text"
-                  placeholder="Full Name *"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <input
-                  type="email"
-                  placeholder="Email Address *"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <div>
-                  <label className="block text-xs font-medium mb-1">Phone number</label>
-                  <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                    <div className="flex items-center gap-1 px-2 bg-gray-50 border-r">
-                      <span className="text-sm">🇮🇳</span>
-                      <span className="text-xs">+91</span>
-                    </div>
-                    <input
-                      type="tel"
-                      placeholder="Phone number *"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600"
-                    />
-                  </div>
-                </div>
-
-                <input
-                  type="text"
-                  placeholder="City *"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <div>
-                  <label className="block text-xs font-medium mb-1.5">Tell us about yourself *</label>
-                  <div className="space-y-1.5">
-                    <label className="flex items-start gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="aboutYourself"
-                        value="homeowner"
-                        checked={formData.aboutYourself === 'homeowner'}
-                        onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
-                        className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
-                        required
-                      />
-                      <span className="text-xs leading-relaxed">I am a homeowner looking for a pooja unit or pooja room</span>
-                    </label>
-                    <label className="flex items-start gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="aboutYourself"
-                        value="designer"
-                        checked={formData.aboutYourself === 'designer'}
-                        onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
-                        className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
-                        required
-                      />
-                      <span className="text-xs leading-relaxed">I am an interior designer/consultant seeking solutions for my client</span>
-                    </label>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full text-white py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
-                  style={{ backgroundColor: '#8B7355' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
-                >
-                  NEXT →
-                </button>
-              </form>
-            ) : (
-              <form className="space-y-2.5" onSubmit={handleSubmit}>
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What are you looking for? *</label>
-                  <div className="space-y-1.5">
+            <div className="px-3 pt-3 pb-4 md:px-4 md:pt-4 md:pb-4 bg-white overflow-y-auto flex-1 rounded-b-xl md:rounded-b-2xl">
+              {formStep === 1 ? (
+                <form className="space-y-2.5" onSubmit={(e) => { e.preventDefault(); setFormStep(2); }}>
+                  <div className="flex gap-2">
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input
                         type="radio"
-                        name="lookingFor"
-                        value="singular"
-                        checked={formData.lookingFor === 'singular'}
-                        onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                        name="type"
+                        value="DOMESTIC"
+                        checked={formData.type === 'DOMESTIC'}
+                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                         className="w-3 h-3 accent-amber-600"
-                        required
                       />
-                      <span className="text-xs">Singular Marble Mandir Unit</span>
+                      <span className="text-xs font-medium" style={{ color: formData.type === 'DOMESTIC' ? '#8B7355' : '#333' }}>DOMESTIC</span>
                     </label>
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input
                         type="radio"
-                        name="lookingFor"
-                        value="complete"
-                        checked={formData.lookingFor === 'complete'}
-                        onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                        name="type"
+                        value="INTERNATIONAL"
+                        checked={formData.type === 'INTERNATIONAL'}
+                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                         className="w-3 h-3 accent-amber-600"
-                        required
                       />
-                      <span className="text-xs">Complete Pooja Room Solution</span>
+                      <span className="text-xs font-medium" style={{ color: formData.type === 'INTERNATIONAL' ? '#8B7355' : '#333' }}>INTERNATIONAL</span>
                     </label>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What is your estimated budget? *</label>
-                  <div className="space-y-1.5">
-                    {BUDGET_OPTIONS.map((budget) => (
-                      <label key={budget} className="flex items-center gap-1.5 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="budget"
-                          value={budget}
-                          checked={formData.budget === budget}
-                          onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                          className="w-3 h-3 accent-amber-600"
-                          required
-                        />
-                        <span className="text-xs">{budget}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What is your timeline for the project? *</label>
-                  <div className="space-y-1.5">
-                    {TIMELINE_OPTIONS.map((timeline) => (
-                      <label key={timeline} className="flex items-center gap-1.5 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="timeline"
-                          value={timeline}
-                          checked={formData.timeline === timeline}
-                          onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                          className="w-3 h-3 accent-amber-600"
-                          required
-                        />
-                        <span className="text-xs">{timeline}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <textarea
-                  placeholder="Please share a bit more about your needs"
-                  value={formData.additionalInfo}
-                  onChange={(e) => setFormData({ ...formData, additionalInfo: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 resize-none"
-                />
-
-                <div>
                   <input
-                    type="file"
-                    id="designReferences"
-                    accept="image/*,.pdf"
-                    multiple
-                    onChange={(e) => setFormData({ ...formData, designReferences: e.target.files })}
-                    className="hidden"
+                    type="text"
+                    placeholder="Full Name *"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                    required
                   />
-                  <label
-                    htmlFor="designReferences"
-                    className="block w-full text-white py-2 rounded-lg text-xs text-center font-medium cursor-pointer transition-colors shadow-md"
-                    style={{ backgroundColor: '#8B7355' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
-                  >
-                    UPLOAD DESIGN REFERENCES
-                  </label>
-                  {formData.designReferences && formData.designReferences.length > 0 && (
-                    <p className="text-xs text-gray-600 mt-1">
-                      {formData.designReferences.length} file(s) selected
-                    </p>
-                  )}
-                </div>
 
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setFormStep(1)}
-                    className="flex-1 bg-white py-2 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors shadow-md border-2"
-                    style={{ color: '#8B7355', borderColor: '#8B7355' }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#f9f9f9'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'white'
-                    }}
-                  >
-                    BACK
-                  </button>
+                  <input
+                    type="email"
+                    placeholder="Email Address *"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                    required
+                  />
+
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Phone number</label>
+                    <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                      <div className="flex items-center gap-1 px-2 bg-gray-50 border-r">
+                        <span className="text-sm">🇮🇳</span>
+                        <span className="text-xs">+91</span>
+                      </div>
+                      <input
+                        type="tel"
+                        placeholder="Phone number *"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="flex-1 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600"
+                      />
+                    </div>
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="City *"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
+                    required
+                  />
+
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5">Tell us about yourself *</label>
+                    <div className="space-y-1.5">
+                      <label className="flex items-start gap-1.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="aboutYourself"
+                          value="homeowner"
+                          checked={formData.aboutYourself === 'homeowner'}
+                          onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
+                          className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
+                          required
+                        />
+                        <span className="text-xs leading-relaxed">I am a homeowner looking for a pooja unit or pooja room</span>
+                      </label>
+                      <label className="flex items-start gap-1.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="aboutYourself"
+                          value="designer"
+                          checked={formData.aboutYourself === 'designer'}
+                          onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
+                          className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
+                          required
+                        />
+                        <span className="text-xs leading-relaxed">I am an interior designer/consultant seeking solutions for my client</span>
+                      </label>
+                    </div>
+                  </div>
+
                   <button
                     type="submit"
-                    className="flex-1 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                    className="w-full text-white py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
                     style={{ backgroundColor: '#8B7355' }}
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
                   >
-                    SUBMIT
+                    NEXT →
                   </button>
-                </div>
-              </form>
-            )}
+                </form>
+              ) : (
+                <form className="space-y-2.5" onSubmit={handleSubmit}>
+                  <div>
+                    <label className="block text-xs font-bold mb-1.5">What are you looking for? *</label>
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="lookingFor"
+                          value="singular"
+                          checked={formData.lookingFor === 'singular'}
+                          onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                          className="w-3 h-3 accent-amber-600"
+                          required
+                        />
+                        <span className="text-xs">Singular Marble Mandir Unit</span>
+                      </label>
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="lookingFor"
+                          value="complete"
+                          checked={formData.lookingFor === 'complete'}
+                          onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                          className="w-3 h-3 accent-amber-600"
+                          required
+                        />
+                        <span className="text-xs">Complete Pooja Room Solution</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold mb-1.5">What is your estimated budget? *</label>
+                    <div className="space-y-1.5">
+                      {BUDGET_OPTIONS.map((budget) => (
+                        <label key={budget} className="flex items-center gap-1.5 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="budget"
+                            value={budget}
+                            checked={formData.budget === budget}
+                            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                            className="w-3 h-3 accent-amber-600"
+                            required
+                          />
+                          <span className="text-xs">{budget}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold mb-1.5">What is your timeline for the project? *</label>
+                    <div className="space-y-1.5">
+                      {TIMELINE_OPTIONS.map((timeline) => (
+                        <label key={timeline} className="flex items-center gap-1.5 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="timeline"
+                            value={timeline}
+                            checked={formData.timeline === timeline}
+                            onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+                            className="w-3 h-3 accent-amber-600"
+                            required
+                          />
+                          <span className="text-xs">{timeline}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <textarea
+                    placeholder="Please share a bit more about your needs"
+                    value={formData.additionalInfo}
+                    onChange={(e) => setFormData({ ...formData, additionalInfo: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 resize-none"
+                  />
+
+                  <div>
+                    <input
+                      type="file"
+                      id="designReferences"
+                      accept="image/*,.pdf"
+                      multiple
+                      onChange={(e) => setFormData({ ...formData, designReferences: e.target.files })}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="designReferences"
+                      className="block w-full text-white py-2 rounded-lg text-xs text-center font-medium cursor-pointer transition-colors shadow-md"
+                      style={{ backgroundColor: '#8B7355' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
+                    >
+                      UPLOAD DESIGN REFERENCES
+                    </label>
+                    {formData.designReferences && formData.designReferences.length > 0 && (
+                      <p className="text-xs text-gray-600 mt-1">
+                        {formData.designReferences.length} file(s) selected
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFormStep(1)}
+                      className="flex-1 bg-white py-2 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors shadow-md border-2"
+                      style={{ color: '#8B7355', borderColor: '#8B7355' }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = '#f9f9f9'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'white'
+                      }}
+                    >
+                      BACK
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                      style={{ backgroundColor: '#8B7355' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
-        </div>
         )}
       </div>
 
@@ -672,8 +688,8 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
                   navigate('/communal-projects')
                 }}
                 className={`px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 ${selectedProjectType === 'Communal'
-                    ? 'text-white'
-                    : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
+                  ? 'text-white'
+                  : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
                   }`}
                 style={selectedProjectType === 'Communal' ? { backgroundColor: '#8B7355' } : {}}
               >
@@ -685,8 +701,8 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
                   navigate('/residential-projects')
                 }}
                 className={`px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 ${selectedProjectType === 'Residential'
-                    ? 'text-white'
-                    : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
+                  ? 'text-white'
+                  : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
                   }`}
                 style={selectedProjectType === 'Residential' ? { backgroundColor: '#8B7355' } : {}}
               >
@@ -698,8 +714,8 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
                   navigate('/international-projects')
                 }}
                 className={`px-6 md:px-8 py-3 md:py-4 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 ${selectedProjectType === 'International'
-                    ? 'text-white'
-                    : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
+                  ? 'text-white'
+                  : 'bg-white text-gray-800 border-2 border-gray-300 hover:border-gray-400'
                   }`}
                 style={selectedProjectType === 'International' ? { backgroundColor: '#8B7355' } : {}}
               >
@@ -709,6 +725,80 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
           </div>
         </div>
       </section>
+
+
+
+      {/* Before and After Section */}
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left Side - Text */}
+            <div className="space-y-6 order-2 lg:order-1">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic">
+                Before and After
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed text-justify">
+                Witness the transformation from a blank canvas to a serene sanctuary with Tilak Stone Arts India. Our skilled artisans turn raw spaces into exquisite pooja rooms, reflecting spirituality and elegance. See the remarkable difference quality and craftsmanship can make.
+              </p>
+            </div>
+
+            {/* Right Side - Comparison Slider */}
+            <div className="order-1 lg:order-2 w-full">
+              <BeforeAfterSlider
+                beforeImage={beforeImage}
+                afterImage={afterImage}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Locations Section */}
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-[#fffbf0]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-12">
+            <div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black text-left">
+                {showAllLocations ? 'OUR GLOBAL PRESENCE' : 'INTERNATIONAL LOCATIONS'}
+              </h2>
+            </div>
+            <button
+              onClick={() => setShowAllLocations(!showAllLocations)}
+              className="text-[#8B7355] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300 mt-4 md:mt-0"
+            >
+              {showAllLocations ? 'View Less' : 'View More'}
+              <svg
+                className={`w-5 h-5 transform transition-transform duration-300 ${showAllLocations ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+
+          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 transition-all duration-700 ease-in-out ${showAllLocations ? 'opacity-100 max-h-[2000px]' : 'max-h-[500px]'}`}>
+            {(showAllLocations ? [...internationalLocations, ...indianLocations] : internationalLocations.slice(0, 5)).map((location, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center cursor-pointer group animate-fadeIn"
+                onClick={() => navigate(`/location/${location.name.toLowerCase()}`)}
+              >
+                <div className="w-32 h-32 md:w-40 md:h-40 bg-[#fffbf0] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <img
+                    src={location.image}
+                    alt={location.name}
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <TrustedBySection />
 
       <Footer />
       <FloatingButtons />

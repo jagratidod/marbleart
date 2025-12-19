@@ -57,6 +57,22 @@ const communalProjectsSchema = new mongoose.Schema({
       type: String,
       default: 'This magnificent communal project stands as a testament to our dedication to preserving traditional temple architecture. Built with high-quality marble and intricate carvings, it serves as a spiritual gathering place for the community.'
     },
+    location: {
+      type: String,
+      default: ''
+    },
+    address: {
+      type: String,
+      default: ''
+    },
+    client: {
+      type: String,
+      default: ''
+    },
+    duration: {
+      type: String,
+      default: ''
+    },
     order: {
       type: Number,
       default: 0
@@ -77,7 +93,7 @@ const communalProjectsSchema = new mongoose.Schema({
 })
 
 // Update timestamp on save
-communalProjectsSchema.pre('save', function(next) {
+communalProjectsSchema.pre('save', function (next) {
   this.updatedAt = Date.now()
   if (typeof next === 'function') {
     next()

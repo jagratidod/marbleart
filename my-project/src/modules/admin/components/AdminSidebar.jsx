@@ -20,7 +20,15 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     projectsNav: location.pathname.startsWith('/admin/aslam-house/communal-projects') ||
       location.pathname.startsWith('/admin/projects/residential') ||
       location.pathname.startsWith('/admin/projects/international') ||
-      location.pathname.startsWith('/admin/pages/projects-nav')
+      location.pathname.startsWith('/admin/projects/international') ||
+      location.pathname.startsWith('/admin/pages/projects-nav'),
+    ourCreationsNav: location.pathname.startsWith('/admin/category/pooja-room') ||
+      location.pathname.startsWith('/admin/category/dream-temple') ||
+      location.pathname.startsWith('/admin/category/murti') ||
+      location.pathname.startsWith('/admin/category/home-decor') ||
+      location.pathname.startsWith('/admin/category/communal-temples') ||
+      location.pathname.startsWith('/admin/category/jain-temples') ||
+      location.pathname.startsWith('/admin/pages/our-creations-nav')
   })
 
   const menuItems = [
@@ -108,7 +116,20 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             { title: 'Manage Hover', path: '/admin/pages/projects-nav' },
           ]
         },
-        { title: 'Our Creations Nav', path: '/admin/pages/our-creations-nav' },
+        {
+          title: 'Our Creations Nav',
+          key: 'ourCreationsNav',
+          isNested: true,
+          submenu: [
+            { title: 'Pooja Rooms', path: '/admin/category/pooja-room' },
+            { title: 'Dream Temples', path: '/admin/category/dream-temple' },
+            { title: 'Murti', path: '/admin/category/murti' },
+            { title: 'Home Decor', path: '/admin/category/home-decor' },
+            { title: 'Communal Temples', path: '/admin/category/communal-temples' },
+            { title: 'Jain Temples', path: '/admin/category/jain-temples' },
+            { title: 'Manage Hover', path: '/admin/pages/our-creations-nav' }
+          ]
+        },
         { title: 'Our Services Nav', path: '/admin/pages/our-services-nav' },
         { title: 'Our Products Nav', path: '/admin/pages/our-products-nav' }
       ]

@@ -5,7 +5,7 @@ const { uploadBuffer, deleteByPublicId } = require('../utils/cloudinary')
 const getCommunalProjectsData = async (req, res) => {
   try {
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -30,9 +30,9 @@ const getCommunalProjectsData = async (req, res) => {
 const updateCommunalProjectsData = async (req, res) => {
   try {
     const { title, subtitle, description, sectionTitle, sectionDescription } = req.body
-    
+
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -73,7 +73,7 @@ const updateHeroImage = async (req, res) => {
     }
 
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -88,7 +88,7 @@ const updateHeroImage = async (req, res) => {
 
     // Upload new image
     const result = await uploadBuffer(req.file.buffer, 'communal-projects/hero')
-    
+
     communalData.heroImage = {
       url: result.secure_url,
       publicId: result.public_id,
@@ -121,10 +121,10 @@ const addGalleryImage = async (req, res) => {
       })
     }
 
-    const { alt, title, description, order } = req.body
-    
+    const { alt, title, description, order, location, address, client, duration } = req.body
+
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -134,13 +134,17 @@ const addGalleryImage = async (req, res) => {
 
     // Upload image to Cloudinary
     const result = await uploadBuffer(req.file.buffer, 'communal-projects/gallery')
-    
+
     const newImage = {
       url: result.secure_url,
       publicId: result.public_id,
       alt: alt || 'Communal Project',
       title: title || `Communal Project ${communalData.galleryImages.length + 1}`,
       description: description || 'This magnificent communal project stands as a testament to our dedication to preserving traditional temple architecture. Built with high-quality marble and intricate carvings, it serves as a spiritual gathering place for the community.',
+      location: location || '',
+      address: address || '',
+      client: client || '',
+      duration: duration || '',
       order: parseInt(order) || communalData.galleryImages.length
     }
 
@@ -165,10 +169,10 @@ const addGalleryImage = async (req, res) => {
 const updateGalleryImage = async (req, res) => {
   try {
     const { imageId } = req.params
-    const { alt, title, description, order } = req.body
+    const { alt, title, description, order, location, address, client, duration } = req.body
 
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -177,7 +181,7 @@ const updateGalleryImage = async (req, res) => {
     }
 
     const imageIndex = communalData.galleryImages.findIndex(img => img._id.toString() === imageId)
-    
+
     if (imageIndex === -1) {
       return res.status(404).json({
         success: false,
@@ -194,7 +198,7 @@ const updateGalleryImage = async (req, res) => {
 
       // Upload new image
       const result = await uploadBuffer(req.file.buffer, 'communal-projects/gallery')
-      
+
       communalData.galleryImages[imageIndex].url = result.secure_url
       communalData.galleryImages[imageIndex].publicId = result.public_id
     }
@@ -203,6 +207,10 @@ const updateGalleryImage = async (req, res) => {
     if (alt) communalData.galleryImages[imageIndex].alt = alt
     if (title) communalData.galleryImages[imageIndex].title = title
     if (description) communalData.galleryImages[imageIndex].description = description
+    if (location) communalData.galleryImages[imageIndex].location = location
+    if (address) communalData.galleryImages[imageIndex].address = address
+    if (client) communalData.galleryImages[imageIndex].client = client
+    if (duration) communalData.galleryImages[imageIndex].duration = duration
     if (order !== undefined) communalData.galleryImages[imageIndex].order = parseInt(order)
 
     await communalData.save()
@@ -227,7 +235,7 @@ const deleteGalleryImage = async (req, res) => {
     const { imageId } = req.params
 
     let communalData = await CommunalProjects.findOne({ isActive: true })
-    
+
     if (!communalData) {
       return res.status(404).json({
         success: false,
@@ -236,7 +244,7 @@ const deleteGalleryImage = async (req, res) => {
     }
 
     const imageIndex = communalData.galleryImages.findIndex(img => img._id.toString() === imageId)
-    
+
     if (imageIndex === -1) {
       return res.status(404).json({
         success: false,

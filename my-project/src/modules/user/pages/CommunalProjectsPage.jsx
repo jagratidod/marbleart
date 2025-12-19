@@ -78,7 +78,11 @@ const CommunalProjectsPage = ({
     setSelectedProject({
       image: image.url,
       title: image.title,
-      description: image.description
+      description: image.description,
+      location: image.location,
+      address: image.address,
+      client: image.client,
+      duration: image.duration
     })
     setIsDrawerOpen(true)
   }
@@ -412,20 +416,45 @@ const CommunalProjectsPage = ({
               <p className="text-gray-600 text-lg">No projects available at the moment.</p>
             </div>
           ) : (
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {communalImages.map((image, index) => (
                 <div
                   key={image._id || index}
                   onClick={() => handleImageClick(image, index)}
-                  className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
+                  className="group cursor-pointer bg-white border border-gray-200 overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl"
                 >
-                  <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
+                  <div className="relative w-full h-80 md:h-96 overflow-hidden bg-gray-100">
                     <img
                       src={image.url}
                       alt={image.alt || `Communal Project ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 text-white">
+                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h3 className="text-xl font-serif leading-tight mb-1">
+                          {image.title || 'Jain Temple Complex'}, <br />
+                          <span className="text-lg">{image.location || 'Ahmedabad, Gujarat'}</span>
+                        </h3>
+
+                        <p className="text-xs text-gray-300 mb-3 font-light leading-relaxed">
+                          {image.address || '5, Pandurang Shastri Athavale Marg, Satellite, Ahmedabad, Gujarat 380015'}
+                        </p>
+
+                        <div className="w-full h-[1px] bg-white/30 my-3"></div>
+
+                        <p className="text-sm font-medium tracking-wide">
+                          {image.client || 'Community Trust'}
+                        </p>
+
+                        <div className="w-full h-[1px] bg-white/30 my-3"></div>
+
+                        <p className="text-sm font-light">
+                          {image.duration || 'Running Project'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

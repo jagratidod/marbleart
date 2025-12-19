@@ -54,14 +54,50 @@ const ProjectDrawer = ({ isOpen, onClose, project }) => {
                         <h3 className="text-2xl font-serif text-[#8B7355] italic">
                             {project?.title || "Project Details"}
                         </h3>
+                        {project?.location && (
+                            <p className="text-lg text-gray-600 font-medium">
+                                {project.location}
+                            </p>
+                        )}
                         <div className="w-16 h-1 bg-[#8B7355] mx-auto rounded-full"></div>
                     </div>
 
-                    <div className="space-y-4 text-gray-600 leading-relaxed text-sm md:text-base text-justify">
-                        <p>
-                            {project?.description || "Experience the divine craftsmanship and intricate details of this magnificent project. Each stone is carefully selected and carved to perfection, creating a timeless masterpiece that radiates spiritual energy and architectural beauty."}
-                        </p>
-                        <p>
+                    <div className="space-y-6 text-gray-600 leading-relaxed text-sm md:text-base text-justify">
+                        {/* Description */}
+                        <div>
+                            <p>
+                                {project?.description || "Experience the divine craftsmanship and intricate details of this magnificent project. Each stone is carefully selected and carved to perfection, creating a timeless masterpiece that radiates spiritual energy and architectural beauty."}
+                            </p>
+                        </div>
+
+                        {/* Project Details Grid */}
+                        {(project?.address || project?.client || project?.duration) && (
+                            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 mt-6">
+                                <h4 className="text-[#8B7355] font-serif font-bold mb-4 uppercase text-xs tracking-wider border-b border-[#8B7355]/20 pb-2">Project Information</h4>
+                                <div className="space-y-4">
+                                    {project.address && (
+                                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wide min-w-[80px]">Address:</span>
+                                            <span className="text-sm text-gray-800">{project.address}</span>
+                                        </div>
+                                    )}
+                                    {project.client && (
+                                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wide min-w-[80px]">Client:</span>
+                                            <span className="text-sm text-gray-800">{project.client}</span>
+                                        </div>
+                                    )}
+                                    {project.duration && (
+                                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wide min-w-[80px]">Duration:</span>
+                                            <span className="text-sm text-gray-800">{project.duration}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        <p className="mt-6 text-sm italic text-gray-500">
                             Our team of expert artisans has poured their heart and soul into creating this sacred space, ensuring that every curve and corner reflects the devotion and tradition it represents.
                         </p>
                     </div>

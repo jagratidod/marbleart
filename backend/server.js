@@ -23,6 +23,8 @@ const careersRoutes = require('./routes/careers');
 const artistRoutes = require('./routes/artists');
 const ourClientsRoutes = require('./routes/ourClients');
 const communalProjectsRoutes = require('./routes/communalProjects');
+const residentialProjectsRoutes = require('./routes/residentialProjects');
+const internationalProjectsRoutes = require('./routes/internationalProjects');
 
 dotenv.config();
 
@@ -72,6 +74,8 @@ app.use('/api/careers', careersRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/our-clients', ourClientsRoutes);
 app.use('/api/communal-projects', communalProjectsRoutes);
+app.use('/api/residential-projects', residentialProjectsRoutes);
+app.use('/api/international-projects', internationalProjectsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

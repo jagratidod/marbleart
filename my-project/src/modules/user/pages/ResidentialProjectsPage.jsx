@@ -1,18 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProjectDrawer from '../../../components/common/ProjectDrawer'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import residentialHeroImage from '../../../assets/residential/headignimage/a81fbe96-e50f-413e-94f0-fc1f7aba5b4c.png'
-import residentialImg1 from '../../../assets/residential/1733296958645.jpeg'
-import residentialImg2 from '../../../assets/residential/1733300646054.jpeg'
-import residentialImg3 from '../../../assets/residential/2d07e532-fa01-4e30-b638-52b26887f92c-small.jpeg'
-import residentialImg4 from '../../../assets/residential/99e40aab-0df8-4175-ad0e-a0a94517b611-medium.jpeg'
-import residentialImg5 from '../../../assets/residential/06fcbe87-a149-445b-912c-6787ef4a4d50.png'
-import residentialImg6 from '../../../assets/residential/446d311a-f90e-4837-b736-3f8e6a5f4b2c.png'
-import residentialImg7 from '../../../assets/residential/4d2730d0-5d47-49f4-94b5-a8d151f7b39b.png'
-import residentialImg8 from '../../../assets/residential/8d836775-b2f6-4c0a-8ab4-5b7c27a36e55.png'
 import { BUDGET_OPTIONS, TIMELINE_OPTIONS } from '../../../utils/constants'
+import { fetchResidentialProjectsData } from '../../../utils/residentialProjectsUtils'
 
 const ResidentialProjectsPage = ({
   onShowSidebar,
@@ -24,6 +16,8 @@ const ResidentialProjectsPage = ({
   onShowBooking
 }) => {
   const [formStep, setFormStep] = useState(1)
+  const [residentialData, setResidentialData] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     type: 'DOMESTIC',
     fullName: '',
@@ -58,25 +52,37 @@ const ResidentialProjectsPage = ({
     })
   }
 
-  const residentialImages = [
-    residentialImg1,
-    residentialImg2,
-    residentialImg3,
-    residentialImg4,
-    residentialImg5,
-    residentialImg6,
-    residentialImg7,
-    residentialImg8
-  ]
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        const data = await fetchResidentialProjectsData()
+        if (data) {
+          setResidentialData(data)
+        }
+      } catch (error) {
+        console.error('Error loading residential projects data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  const residentialImages = residentialData?.galleryImages || []
 
   const [selectedProject, setSelectedProject] = useState(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const handleImageClick = (image, index) => {
     setSelectedProject({
-      image: image,
-      title: `Residential Project ${index + 1}`,
-      description: "Our residential projects bring the divine into your home. This custom-designed pooja room features premium marble and exquisite craftsmanship, creating a perfect sanctuary for daily worship and meditation."
+      image: image.url,
+      title: image.title,
+      description: image.description,
+      location: image.location,
+      address: image.address,
+      client: image.client,
+      duration: image.duration
     })
     setIsDrawerOpen(true)
   }
@@ -97,12 +103,22 @@ const ResidentialProjectsPage = ({
       {/* Hero Image Container with Form Overlay */}
       <div className="relative w-full overflow-hidden" style={{ height: '75vh', minHeight: '600px' }}>
         {/* Background Image */}
-        <img
-          src={residentialHeroImage}
-          alt="Residential Projects Background"
-          className="w-full h-full object-cover"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-        />
+        {loading ? (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        ) : residentialData?.heroImage?.url ? (
+          <img
+            src={residentialData.heroImage.url}
+            alt={residentialData.heroImage.alt || 'Residential Projects'}
+            className="w-full h-full object-cover"
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+            <p className="text-gray-600">No hero image available</p>
+          </div>
+        )}
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent"></div>
@@ -110,13 +126,13 @@ const ResidentialProjectsPage = ({
         {/* Hero Text Overlay - Left Side */}
         <div className="absolute top-16 md:top-24 lg:top-32 left-4 md:left-6 lg:left-8 xl:left-12 z-10 max-w-xl md:max-w-2xl">
           <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight uppercase tracking-wide drop-shadow-lg">
-            RESIDENTIAL PROJECTS
+            {residentialData?.title || 'RESIDENTIAL PROJECTS'}
           </h1>
           <p className="text-sm md:text-base lg:text-lg text-white font-light mb-2 drop-shadow-md">
-            Creating Sacred Spaces in Your Home
+            {residentialData?.subtitle || 'Creating Sacred Spaces in Your Home'}
           </p>
           <p className="text-xs md:text-sm text-white/90 font-light leading-relaxed drop-shadow-md">
-            Crafting beautiful residential pooja rooms and mandirs that bring divine energy into your home through exquisite design and timeless craftsmanship.
+            {residentialData?.description || 'Crafting beautiful residential pooja rooms and mandirs that bring divine energy into your home through exquisite design and timeless craftsmanship.'}
           </p>
         </div>
 
@@ -382,33 +398,67 @@ const ResidentialProjectsPage = ({
           {/* Section Header */}
           <div className="text-center mb-10 md:mb-14 lg:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic mb-4 md:mb-5 tracking-wide">
-              Our Residential Projects
+              {residentialData?.sectionTitle || 'Our Residential Projects'}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Showcasing our beautiful residential pooja rooms and mandirs that bring divine energy into homes through exquisite design.
+              {residentialData?.sectionDescription || 'Showcasing our beautiful residential pooja rooms and mandirs that bring divine energy into homes through exquisite design.'}
             </p>
             <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
           </div>
 
           {/* Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {residentialImages.map((image, index) => (
-              <div
-                key={index}
-                onClick={() => handleImageClick(image, index)}
-                className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
-              >
-                <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
-                  <img
-                    src={image}
-                    alt={`Residential Project ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">Loading gallery...</p>
+            </div>
+          ) : residentialImages.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No projects available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {residentialImages.map((image, index) => (
+                <div
+                  key={image._id || index}
+                  onClick={() => handleImageClick(image, index)}
+                  className="group cursor-pointer bg-white border border-gray-200 overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl"
+                >
+                  <div className="relative w-full h-80 md:h-96 overflow-hidden bg-gray-100">
+                    <img
+                      src={image.url}
+                      alt={image.alt || image.title || `Residential Project ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+                    />
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 text-white">
+                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h3 className="text-xl font-serif leading-tight mb-1">
+                          {image.title || 'Modern Home Rights'}, <br />
+                          <span className="text-lg">{image.location || 'Ahmedabad, Gujarat'}</span>
+                        </h3>
+
+                        <p className="text-xs text-gray-300 mb-3 font-light leading-relaxed">
+                          {image.address || '...'}
+                        </p>
+
+                        <div className="w-full h-[1px] bg-white/30 my-3"></div>
+
+                        <p className="text-sm font-medium tracking-wide">
+                          {image.client || 'Client Name'}
+                        </p>
+
+                        <div className="w-full h-[1px] bg-white/30 my-3"></div>
+
+                        <p className="text-sm font-light">
+                          {image.duration || 'Duration'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -425,4 +475,3 @@ const ResidentialProjectsPage = ({
 }
 
 export default ResidentialProjectsPage
-

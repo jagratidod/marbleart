@@ -24,6 +24,10 @@ const CommunalProjectsManagementPage = () => {
   const [imageTitle, setImageTitle] = useState('')
   const [imageDescription, setImageDescription] = useState('')
   const [imageAlt, setImageAlt] = useState('')
+  const [imageLocation, setImageLocation] = useState('')
+  const [imageAddress, setImageAddress] = useState('')
+  const [imageClient, setImageClient] = useState('')
+  const [imageDuration, setImageDuration] = useState('')
 
   // Edit states
   const [editingImage, setEditingImage] = useState(null)
@@ -41,7 +45,7 @@ const CommunalProjectsManagementPage = () => {
       setFetching(true)
       const res = await fetch(`${API_URL}/communal-projects`)
       const result = await res.json()
-      
+
       if (result.success && result.data) {
         const data = result.data
         setCommunalData(data)
@@ -141,6 +145,18 @@ const CommunalProjectsManagementPage = () => {
     }
   }
 
+  const resetFormOnly = () => {
+    setGalleryImage(null)
+    setGalleryPreview('')
+    setImageTitle('')
+    setImageDescription('')
+    setImageAlt('')
+    setImageLocation('')
+    setImageAddress('')
+    setImageClient('')
+    setImageDuration('')
+  }
+
   const addGalleryImage = async () => {
     if (!galleryImage) return
     setLoading(true)
@@ -150,6 +166,10 @@ const CommunalProjectsManagementPage = () => {
       formData.append('title', imageTitle || 'Communal Project')
       formData.append('description', imageDescription || 'This magnificent communal project stands as a testament to our dedication to preserving traditional temple architecture.')
       formData.append('alt', imageAlt || 'Communal Project')
+      formData.append('location', imageLocation)
+      formData.append('address', imageAddress)
+      formData.append('client', imageClient)
+      formData.append('duration', imageDuration)
 
       const res = await fetch(`${API_URL}/communal-projects/gallery-image`, {
         method: 'POST',
@@ -163,11 +183,7 @@ const CommunalProjectsManagementPage = () => {
       if (result.success) {
         setMessage({ type: 'success', text: 'Gallery image added successfully!' })
         setCommunalData(result.data)
-        setGalleryImage(null)
-        setGalleryPreview('')
-        setImageTitle('')
-        setImageDescription('')
-        setImageAlt('')
+        resetFormOnly()
         setShowAddImageForm(false)
       } else {
         setMessage({ type: 'error', text: result.message || 'Failed to add gallery image' })
@@ -189,6 +205,10 @@ const CommunalProjectsManagementPage = () => {
       formData.append('title', imageTitle)
       formData.append('description', imageDescription)
       formData.append('alt', imageAlt)
+      formData.append('location', imageLocation)
+      formData.append('address', imageAddress)
+      formData.append('client', imageClient)
+      formData.append('duration', imageDuration)
 
       const res = await fetch(`${API_URL}/communal-projects/gallery-image/${imageId}`, {
         method: 'PUT',
@@ -203,11 +223,7 @@ const CommunalProjectsManagementPage = () => {
         setMessage({ type: 'success', text: 'Gallery image updated successfully!' })
         setCommunalData(result.data)
         setEditingImage(null)
-        setGalleryImage(null)
-        setGalleryPreview('')
-        setImageTitle('')
-        setImageDescription('')
-        setImageAlt('')
+        resetFormOnly()
       } else {
         setMessage({ type: 'error', text: result.message || 'Failed to update gallery image' })
       }
@@ -220,7 +236,7 @@ const CommunalProjectsManagementPage = () => {
 
   const deleteGalleryImage = async (imageId) => {
     if (!confirm('Are you sure you want to delete this image?')) return
-    
+
     setLoading(true)
     try {
       const res = await fetch(`${API_URL}/communal-projects/gallery-image/${imageId}`, {
@@ -249,6 +265,10 @@ const CommunalProjectsManagementPage = () => {
     setImageTitle(image.title)
     setImageDescription(image.description)
     setImageAlt(image.alt)
+    setImageLocation(image.location || '')
+    setImageAddress(image.address || '')
+    setImageClient(image.client || '')
+    setImageDuration(image.duration || '')
     setGalleryPreview(image.url)
   }
 
@@ -280,7 +300,7 @@ const CommunalProjectsManagementPage = () => {
         {/* Basic Information */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Page Content</h2>
-          
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Main Title</label>
@@ -355,7 +375,7 @@ const CommunalProjectsManagementPage = () => {
         {/* Hero Image */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Hero Image</h2>
-          
+
           {heroPreview && (
             <div className="mb-4">
               <img src={heroPreview} alt="Hero" className="w-full max-w-md h-48 object-cover rounded-lg" />
@@ -397,12 +417,19 @@ const CommunalProjectsManagementPage = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Gallery Images</h2>
             <button
-              onClick={() => setShowAddImageForm(!showAddImageForm)}
-              className={`px-6 py-2 rounded-lg font-medium transition-colors shadow-lg ${
-                showAddImageForm 
-                  ? 'bg-red-600 text-white hover:bg-red-700' 
+              onClick={() => {
+                if (showAddImageForm) {
+                  resetFormOnly()
+                  setShowAddImageForm(false)
+                } else {
+                  resetFormOnly()
+                  setShowAddImageForm(true)
+                }
+              }}
+              className={`px-6 py-2 rounded-lg font-medium transition-colors shadow-lg ${showAddImageForm
+                  ? 'bg-red-600 text-white hover:bg-red-700'
                   : 'bg-green-600 text-white hover:bg-green-700'
-              }`}
+                }`}
             >
               {showAddImageForm ? '❌ Cancel' : '➕ Add New Image'}
             </button>
@@ -416,18 +443,14 @@ const CommunalProjectsManagementPage = () => {
                 <button
                   onClick={() => {
                     setShowAddImageForm(false)
-                    setGalleryImage(null)
-                    setGalleryPreview('')
-                    setImageTitle('')
-                    setImageDescription('')
-                    setImageAlt('')
+                    resetFormOnly()
                   }}
                   className="text-gray-500 hover:text-gray-700 text-xl font-bold"
                 >
                   ×
                 </button>
               </div>
-              
+
               {galleryPreview && (
                 <div className="mb-4">
                   <p className="text-sm font-medium text-gray-700 mb-2">Image Preview:</p>
@@ -449,36 +472,82 @@ const CommunalProjectsManagementPage = () => {
                   />
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Image Title</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., 'Magnificent Temple Project'"
+                      value={imageTitle}
+                      onChange={(e) => setImageTitle(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., 'Ahmedabad, Gujarat'"
+                      value={imageLocation}
+                      onChange={(e) => setImageLocation(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Image Title</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                   <input
                     type="text"
-                    placeholder="Enter image title (e.g., 'Magnificent Temple Project')"
-                    value={imageTitle}
-                    onChange={(e) => setImageTitle(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355]"
+                    placeholder="Full address of the project"
+                    value={imageAddress}
+                    onChange={(e) => setImageAddress(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., 'Community Trust'"
+                      value={imageClient}
+                      onChange={(e) => setImageClient(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., '6 Months'"
+                      value={imageDuration}
+                      onChange={(e) => setImageDuration(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    />
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Image Description</label>
                   <textarea
-                    placeholder="Describe this project (e.g., 'This magnificent communal project stands as a testament to our dedication...')"
+                    placeholder="Describe this project..."
                     value={imageDescription}
                     onChange={(e) => setImageDescription(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Alt Text (for accessibility)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Alt Text</label>
                   <input
                     type="text"
-                    placeholder="Brief description for screen readers (e.g., 'Communal Temple Project')"
+                    placeholder="Accessibility text"
                     value={imageAlt}
                     onChange={(e) => setImageAlt(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                   />
                 </div>
 
@@ -486,11 +555,7 @@ const CommunalProjectsManagementPage = () => {
                   <button
                     onClick={() => {
                       setShowAddImageForm(false)
-                      setGalleryImage(null)
-                      setGalleryPreview('')
-                      setImageTitle('')
-                      setImageDescription('')
-                      setImageAlt('')
+                      resetFormOnly()
                     }}
                     className="flex-1 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
                   >
@@ -523,14 +588,16 @@ const CommunalProjectsManagementPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {communalData.galleryImages.map((image, index) => (
                 <div key={image._id} className="border border-gray-200 rounded-lg p-4">
-                  <img 
-                    src={image.url} 
-                    alt={image.alt} 
+                  <img
+                    src={image.url}
+                    alt={image.alt}
                     className="w-full h-32 object-cover rounded-lg mb-3"
                   />
                   <h4 className="font-medium text-sm mb-1">{image.title}</h4>
-                  <p className="text-xs text-gray-600 mb-3 line-clamp-2">{image.description}</p>
-                  
+                  <p className="text-xs text-gray-500"><strong>Loc:</strong> {image.location || 'N/A'}</p>
+                  <p className="text-xs text-gray-500"><strong>Client:</strong> {image.client || 'N/A'}</p>
+                  <p className="text-xs text-gray-600 mb-3 mt-1 line-clamp-2">{image.description}</p>
+
                   <div className="flex gap-2">
                     <button
                       onClick={() => startEditImage(image)}
@@ -557,16 +624,12 @@ const CommunalProjectsManagementPage = () => {
 
         {/* Edit Image Modal */}
         {editingImage && (
-          <div 
+          <div
             className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
             onClick={(e) => {
               if (e.target === e.currentTarget) {
                 setEditingImage(null)
-                setGalleryImage(null)
-                setGalleryPreview('')
-                setImageTitle('')
-                setImageDescription('')
-                setImageAlt('')
+                resetFormOnly()
               }
             }}
           >
@@ -577,11 +640,7 @@ const CommunalProjectsManagementPage = () => {
                   <button
                     onClick={() => {
                       setEditingImage(null)
-                      setGalleryImage(null)
-                      setGalleryPreview('')
-                      setImageTitle('')
-                      setImageDescription('')
-                      setImageAlt('')
+                      resetFormOnly()
                     }}
                     className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold transition-colors"
                   >
@@ -603,13 +662,55 @@ const CommunalProjectsManagementPage = () => {
                     className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#8B7355] file:text-white hover:file:bg-[#7A6349]"
                   />
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Image Title"
+                        value={imageTitle}
+                        onChange={(e) => setImageTitle(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Location"
+                        value={imageLocation}
+                        onChange={(e) => setImageLocation(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                      />
+                    </div>
+                  </div>
+
                   <input
                     type="text"
-                    placeholder="Image Title"
-                    value={imageTitle}
-                    onChange={(e) => setImageTitle(e.target.value)}
+                    placeholder="Address"
+                    value={imageAddress}
+                    onChange={(e) => setImageAddress(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                   />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Client"
+                        value={imageClient}
+                        onChange={(e) => setImageClient(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Duration"
+                        value={imageDuration}
+                        onChange={(e) => setImageDuration(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                      />
+                    </div>
+                  </div>
 
                   <textarea
                     placeholder="Image Description"
@@ -631,11 +732,7 @@ const CommunalProjectsManagementPage = () => {
                     <button
                       onClick={() => {
                         setEditingImage(null)
-                        setGalleryImage(null)
-                        setGalleryPreview('')
-                        setImageTitle('')
-                        setImageDescription('')
-                        setImageAlt('')
+                        resetFormOnly()
                       }}
                       className="flex-1 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
                     >
