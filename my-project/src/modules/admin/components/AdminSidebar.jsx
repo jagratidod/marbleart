@@ -8,7 +8,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     leads: location.pathname.startsWith('/admin/leads'),
     products: location.pathname.startsWith('/admin/products'),
     content: location.pathname.startsWith('/admin/content'),
-    pages: location.pathname.startsWith('/admin/pages'),
+    pages: location.pathname.startsWith('/admin/pages') || location.pathname.startsWith('/admin/products/stone') || location.pathname.startsWith('/admin/products/stone-pages'),
     aslamHouse: location.pathname.includes('slug=about-us') ||
       location.pathname.includes('slug=experience-centre') ||
       location.pathname.includes('slug=the-team') ||
@@ -28,7 +28,10 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       location.pathname.startsWith('/admin/category/home-decor') ||
       location.pathname.startsWith('/admin/category/communal-temples') ||
       location.pathname.startsWith('/admin/category/jain-temples') ||
-      location.pathname.startsWith('/admin/pages/our-creations-nav')
+      location.pathname.startsWith('/admin/pages/our-creations-nav'),
+    ourProductsNav: location.pathname.startsWith('/admin/products/stone') ||
+      location.pathname.startsWith('/admin/products/stone-pages') ||
+      location.pathname.startsWith('/admin/pages/our-products-nav')
   })
 
   const menuItems = [
@@ -131,7 +134,15 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           ]
         },
         { title: 'Our Services Nav', path: '/admin/pages/our-services-nav' },
-        { title: 'Our Products Nav', path: '/admin/pages/our-products-nav' }
+        {
+          title: 'Our Products Nav',
+          key: 'ourProductsNav',
+          isNested: true,
+          submenu: [
+            { title: 'Our Products', path: '/admin/products/stone-pages' },
+            { title: 'Manage Hover', path: '/admin/pages/our-products-nav' }
+          ]
+        }
       ]
     },
     {

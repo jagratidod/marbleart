@@ -81,7 +81,9 @@ app.use('/api/residential-projects', residentialProjectsRoutes);
 app.use('/api/international-projects', internationalProjectsRoutes);
 app.use('/api/pooja-room', poojaRoomRoutes);
 app.use('/api/dream-temple', dreamTempleRoutes);
+app.use('/api/dream-temple', dreamTempleRoutes);
 app.use('/api/v1/translate', translationRoutes);
+app.use('/api/stone-products', require('./routes/stoneProductRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

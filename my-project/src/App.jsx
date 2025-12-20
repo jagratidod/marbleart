@@ -64,6 +64,10 @@ import TravertinePage from './modules/user/pages/TravertinePage'
 import TSADesignHubPage from './modules/user/pages/TSADesignHubPage'
 import TSAInternationalPage from './modules/user/pages/TSAInternationalPage'
 import IndividualProductDetailPage from './modules/user/pages/IndividualProductDetailPage'
+import ModernArtPage from './modules/user/pages/ModernArtPage'
+import ImportedPage from './modules/user/pages/ImportedPage'
+import PackagingPage from './modules/user/pages/PackagingPage'
+
 import LimitedEditionPage from './modules/user/pages/LimitedEditionPage'
 import CheckoutPage from './modules/user/pages/CheckoutPage'
 import ShippingPage from './modules/user/pages/ShippingPage'
@@ -106,6 +110,7 @@ import ProjectsNavPage from './modules/admin/pages/ProjectsNavPage'
 import OurCreationsNavPage from './modules/admin/pages/OurCreationsNavPage'
 import OurServicesNavPage from './modules/admin/pages/OurServicesNavPage'
 import OurProductsNavPage from './modules/admin/pages/OurProductsNavPage'
+import StoneProductsManagementPage from './modules/admin/pages/StoneProductsManagementPage'
 import ProjectsModal from './components/modals/ProjectsModal'
 import OurCreationsModal from './components/modals/OurCreationsModal'
 import OurProductsModal from './components/modals/OurProductsModal'
@@ -888,6 +893,45 @@ function App() {
             />
           } />
 
+          <Route path="/art/modern-art" element={
+            <ModernArtPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/art/imported" element={
+            <ImportedPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/art/packaging" element={
+            <PackagingPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
           <Route path="/tsa-design-hub" element={
             <TSADesignHubPage
               onShowSidebar={() => setShowSidebar(true)}
@@ -1445,6 +1489,11 @@ function App() {
           <Route path="/admin/pages/our-products-nav" element={
             <ProtectedRoute>
               <OurProductsNavPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/products/stone-pages" element={
+            <ProtectedRoute>
+              <StoneProductsManagementPage />
             </ProtectedRoute>
           } />
           <Route path="/admin/content/pooja-room" element={
