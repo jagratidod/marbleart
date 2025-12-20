@@ -34,9 +34,7 @@ const OurServicesModal = ({ isOpen, onClose }) => {
             <div className="w-full max-w-md mx-auto px-6">
               <nav className="flex flex-col gap-2">
                 {services.map((service, index) => {
-                  let path = '#'
-                  if (service.name === 'AMS International') path = '/tsa-international'
-                  else if (service.name === 'AMS Design Hub') path = '/tsa-design-hub'
+                  const path = service.path || '#'
 
                   return (
                     <div key={index} className="w-full">

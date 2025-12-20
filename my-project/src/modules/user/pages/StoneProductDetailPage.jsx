@@ -17,14 +17,14 @@ const StoneProductDetailPage = ({
   const { productId, stoneType } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   // Extract stone type from URL path
   const pathParts = location.pathname.split('/')
   const actualStoneType = stoneType || pathParts[2] // /products/{stoneType}/{productId}
-  
+
   // Get product data based on stone type
   let product = null
-  
+
   if (actualStoneType === 'sandstone') {
     product = sandstoneProducts.find(p => p.id === parseInt(productId))
   } else {
@@ -86,7 +86,7 @@ const StoneProductDetailPage = ({
 
   return (
     <div className="w-full min-h-screen bg-white">
-      <Header 
+      <Header
         variant="default"
         onShowSidebar={onShowSidebar}
         onShowProjects={onShowProjects}
@@ -129,51 +129,56 @@ const StoneProductDetailPage = ({
                 />
               </div>
               {/* Image Caption */}
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                  <span className="font-semibold text-gray-800">{product.name}</span> is a premium natural stone 
-                  from {product.specifications.Origin}, known for its distinctive {product.specifications.Color.toLowerCase()} color 
-                  and exceptional durability. This versatile stone is available in multiple finishes including 
-                  {product.specifications.Finish.toLowerCase()} and can be used in various applications such as 
-                  {product.specifications['Offered In'].toLowerCase()}. Perfect for both interior and exterior projects, 
-                  it offers timeless elegance and natural beauty that enhances any architectural design.
+              <div className="mt-8 p-8 bg-gray-50 rounded-2xl border-l-4 border-[#8B7355] shadow-sm">
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-light">
+                  <span className="font-serif italic font-bold text-gray-900 text-2xl block mb-3">{product.name}</span>
+                  This premium natural stone is sourced directly from the historic quarries of <span className="font-semibold text-gray-900">{product.specifications.Origin}</span>.
+                  Renowned for its distinctive <span className="font-semibold text-[#8B7355]">{product.specifications.Color.toLowerCase()}</span> hues and remarkable geological
+                  strength, it serves as a centerpiece for architectural excellence. Available in refined <span className="italic">{product.specifications.Finish.toLowerCase()}</span> finishes,
+                  it seamlessly adapts to <span className="font-medium text-gray-800">{product.specifications['Offered In'].toLowerCase()}</span> applications,
+                  offering a timeless aesthetic that matures beautifully over time.
                 </p>
               </div>
             </div>
 
             {/* Right Side - Specifications Table */}
             <div className="w-full">
-              <div className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg">
-                <div className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 uppercase">
-                    {product.name}
-                  </h2>
-                  
-                  {/* Specifications Table */}
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr>
-                        <th className="text-left py-3 px-4 font-bold text-gray-800 border-b-2 border-gray-300" style={{ backgroundColor: '#f9fafb' }}>
-                          Category
-                        </th>
-                        <th className="text-left py-3 px-4 font-bold text-gray-800 border-b-2 border-gray-300" style={{ backgroundColor: '#f9fafb' }}>
-                          Details
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(product.specifications).map(([key, value], index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="py-4 px-4 font-semibold text-gray-700 border-b border-gray-200">
-                            {key}
-                          </td>
-                          <td className="py-4 px-4 text-gray-600 border-b border-gray-200">
-                            {value}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+                <div className="p-8 md:p-10">
+                  <div className="flex items-center gap-4 mb-8">
+                    <span className="h-[1px] w-12 bg-[#8B7355]"></span>
+                    <h2 className="text-sm font-black uppercase tracking-[0.3em] text-[#8B7355]">
+                      Technical Specifications
+                    </h2>
+                  </div>
+
+                  {/* Stylized Specifications List */}
+                  <div className="space-y-1">
+                    {Object.entries(product.specifications).map(([key, value], index) => (
+                      <div
+                        key={key}
+                        className={`group flex flex-col sm:flex-row sm:items-center justify-between p-5 transition-all duration-300 rounded-xl hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
+                      >
+                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 sm:mb-0 transition-colors group-hover:text-[#8B7355]">
+                          {key}
+                        </span>
+                        <span className="text-base font-medium text-gray-800 sm:text-right">
+                          {value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Aesthetic Brand Touch */}
+                  <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em]">Crafted By</span>
+                      <span className="text-xs font-serif italic text-[#8B7355]">Aslam Marble Suppliers</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center opacity-50">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#8B7355]"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

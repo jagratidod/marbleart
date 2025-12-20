@@ -17,7 +17,9 @@ const OurServicesDropdown = () => {
         ...item,
         id: item.key || item.id,
         name: item.name,
-        path: item.path || '#',
+        path: (item.name === 'AMS International' ? '/services/tsa-international' :
+          item.name === 'AMS Design Hub' ? '/services/tsa-design-hub' :
+            item.path) || '#',
         image: buildImageUrl(item.imagePath || item.image),
         displayOrder: item.displayOrder ?? 0
       }))
@@ -70,8 +72,8 @@ const OurServicesDropdown = () => {
           const ImageContent = (
             <>
               <div className="relative overflow-hidden rounded-lg bg-gray-100 w-28 h-[260px] md:w-32 md:h-[260px] lg:w-36 lg:h-[260px] shadow-md hover:shadow-lg transition-shadow">
-                <img 
-                  src={service.image} 
+                <img
+                  src={service.image}
                   alt={service.name}
                   className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
                 />

@@ -19,6 +19,9 @@ const OurProductsDropdown = () => {
     if (id === 'cobble-stones') return '/products/cobble-stones'
     if (id === 'stone-chips') return '/products/stone-chips'
     if (id === 'granite') return '/products/granite'
+    if (id === 'basalt-stones') return '/products/basalt-stones'
+    if (id === 'soap-stones') return '/products/soap-stones'
+    if (id === 'travertine-stones') return '/products/travertine-stones'
     if (id === 'natural-indian-stones') return '/products/natural-indian-stones'
     if (id === 'modern-art') return '/art/modern-art'
     if (id === 'imported') return '/art/imported'
@@ -84,8 +87,8 @@ const OurProductsDropdown = () => {
             <>
               <div className="relative overflow-hidden rounded-lg bg-gray-100 w-28 h-[260px] md:w-32 md:h-[260px] lg:w-36 lg:h-[260px] shadow-lg hover:shadow-2xl transition-all duration-300 ring-2 ring-gray-200/50 hover:ring-[#8B7355]/40">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"></div>
-                <img 
-                  src={product.image} 
+                <img
+                  src={product.image}
                   alt={product.name}
                   loading="eager"
                   decoding="async"

@@ -121,8 +121,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           key: 'ourCreationsNav',
           isNested: true,
           submenu: [
-            { title: 'Pooja Rooms', path: '/admin/category/pooja-room' },
-            { title: 'Dream Temples', path: '/admin/category/dream-temple' },
+            { title: 'Pooja Rooms', path: '/admin/content/pooja-room' },
+            { title: 'Dream Temples', path: '/admin/content/dream-temple' },
             { title: 'Murti', path: '/admin/category/murti' },
             { title: 'Home Decor', path: '/admin/category/home-decor' },
             { title: 'Communal Temples', path: '/admin/category/communal-temples' },

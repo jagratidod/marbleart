@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
+import HeroSectionWithForm from '../../../components/common/HeroSectionWithForm'
+import ImageGallery from '../../../components/common/ImageGallery'
 
 // Import all sandstone images
 import agraRedSandstone from '../../../assets/our products/sandstone/agra red sandstone.jpg'
@@ -39,32 +40,30 @@ const SandstonePage = ({
   onShowLocation,
   onShowBooking
 }) => {
-  const navigate = useNavigate()
-
   const sandstoneImages = [
-    { id: 1, name: 'Agra Red Sandstone', image: agraRedSandstone },
-    { id: 2, name: 'Autumn Brown Sandstone', image: automnBrownSandstone },
-    { id: 3, name: 'Bansi Pink Sandstone', image: bansipinkSandstone },
-    { id: 4, name: 'Camel Dust Sandstone', image: camelDustSandstone },
-    { id: 5, name: 'Chocolate Sandstone', image: chocolateSandstone },
-    { id: 6, name: 'Dholpur Beige Sandstone', image: dholpurBeigeSandstone },
-    { id: 7, name: 'Fossil Mint Sandstone', image: fossilMintSandstone },
-    { id: 8, name: 'Jaisalmer Yellow Sandstone', image: jaisalmerYellowSandstone },
-    { id: 9, name: 'Jodhpur Pink Sandstone', image: jodhpurPinkSandstone },
-    { id: 10, name: 'Kandla Grey Sandstone', image: kandlaGreySandstone },
-    { id: 11, name: 'Lalitpur Grey Sandstone', image: lalitpurGreySandstone },
-    { id: 12, name: 'Lalitpur Yellow Sandstone', image: lalitpurYellowSandstone },
-    { id: 13, name: 'Mandana Red Sandstone', image: mandanaRedSandstone },
-    { id: 14, name: 'Modak Sandstone', image: modakSandstone },
-    { id: 15, name: 'Pantersandstone', image: pantersandstone },
-    { id: 16, name: 'Pink Mint Sandstone', image: pinkMintSandstone },
-    { id: 17, name: 'Rainbow Sandstone', image: rainbowSandstone },
-    { id: 18, name: 'Raj Green Natural Sandstone', image: rajGreenSandstone },
-    { id: 19, name: 'Raveena Sandstone', image: raveenaSandstone },
-    { id: 20, name: 'Sagar Black Sandstone', image: sagarBlackSandstone },
-    { id: 21, name: 'Teakwood Sandstone', image: teakwoodSandstone },
-    { id: 22, name: 'White Mint Sandstone', image: whiteMintSandstone },
-    { id: 23, name: 'Yellow Mint Sandstone', image: yellowMintSandstone }
+    { id: 1, name: 'Agra Red Sandstone', image: agraRedSandstone, color: 'Red', origin: 'Rajasthan' },
+    { id: 2, name: 'Autumn Brown Sandstone', image: automnBrownSandstone, color: 'Brown', origin: 'Rajasthan' },
+    { id: 3, name: 'Bansi Pink Sandstone', image: bansipinkSandstone, color: 'Pink', origin: 'Rajasthan' },
+    { id: 4, name: 'Camel Dust Sandstone', image: camelDustSandstone, color: 'Beige', origin: 'Rajasthan' },
+    { id: 5, name: 'Chocolate Sandstone', image: chocolateSandstone, color: 'Chocolate', origin: 'Rajasthan' },
+    { id: 6, name: 'Dholpur Beige Sandstone', image: dholpurBeigeSandstone, color: 'Beige', origin: 'Dholpur' },
+    { id: 7, name: 'Fossil Mint Sandstone', image: fossilMintSandstone, color: 'Mint', origin: 'Rajasthan' },
+    { id: 8, name: 'Jaisalmer Yellow Sandstone', image: jaisalmerYellowSandstone, color: 'Yellow', origin: 'Jaisalmer' },
+    { id: 9, name: 'Jodhpur Pink Sandstone', image: jodhpurPinkSandstone, color: 'Pink', origin: 'Jodhpur' },
+    { id: 10, name: 'Kandla Grey Sandstone', image: kandlaGreySandstone, color: 'Grey', origin: 'Kandla' },
+    { id: 11, name: 'Lalitpur Grey Sandstone', image: lalitpurGreySandstone, color: 'Grey', origin: 'Lalitpur' },
+    { id: 12, name: 'Lalitpur Yellow Sandstone', image: lalitpurYellowSandstone, color: 'Yellow', origin: 'Lalitpur' },
+    { id: 13, name: 'Mandana Red Sandstone', image: mandanaRedSandstone, color: 'Red', origin: 'Rajasthan' },
+    { id: 14, name: 'Modak Sandstone', image: modakSandstone, color: 'Multi', origin: 'Rajasthan' },
+    { id: 15, name: 'Pantersandstone', image: pantersandstone, color: 'Multi', origin: 'Rajasthan' },
+    { id: 16, name: 'Pink Mint Sandstone', image: pinkMintSandstone, color: 'Pink', origin: 'Rajasthan' },
+    { id: 17, name: 'Rainbow Sandstone', image: rainbowSandstone, color: 'Multi', origin: 'Rajasthan' },
+    { id: 18, name: 'Raj Green Natural Sandstone', image: rajGreenSandstone, color: 'Green', origin: 'Rajasthan' },
+    { id: 19, name: 'Raveena Sandstone', image: raveenaSandstone, color: 'Multi', origin: 'Rajasthan' },
+    { id: 20, name: 'Sagar Black Sandstone', image: sagarBlackSandstone, color: 'Black', origin: 'Rajasthan' },
+    { id: 21, name: 'Teakwood Sandstone', image: teakwoodSandstone, color: 'Teak', origin: 'Rajasthan' },
+    { id: 22, name: 'White Mint Sandstone', image: whiteMintSandstone, color: 'White', origin: 'Rajasthan' },
+    { id: 23, name: 'Yellow Mint Sandstone', image: yellowMintSandstone, color: 'Yellow', origin: 'Rajasthan' }
   ]
 
   return (
@@ -81,73 +80,20 @@ const SandstonePage = ({
         onShowBooking={onShowBooking}
       />
 
-      {/* Hero Image Container */}
-      <div className="relative w-full overflow-hidden" style={{ height: '60vh', minHeight: '500px' }}>
-        {/* Background Image */}
-        <img
-          src={sandstoneHeroImg}
-          alt="Sandstone Background"
-          className="w-full h-full object-cover"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-        />
+      <HeroSectionWithForm
+        heroImage={sandstoneHeroImg}
+        title="SANDSTONE"
+        subtitle="Timeless Elegance Carved in Earth"
+        description="Experience the raw beauty and unparalleled durability of our premium Sandstone collection. Perfect for architectural masterpieces that stand the test of time."
+      />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent"></div>
-
-        {/* Hero Text Overlay - Left Side */}
-        <div className="absolute top-16 md:top-24 lg:top-32 left-4 md:left-6 lg:left-8 xl:left-12 z-10 max-w-xl md:max-w-2xl">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight uppercase tracking-wide drop-shadow-lg">
-            SANDSTONE
-          </h1>
-          <p className="text-sm md:text-base lg:text-lg text-white font-light mb-2 drop-shadow-md">
-            Natural Beauty in Every Grain
-          </p>
-        </div>
-      </div>
-
-      {/* Images Gallery Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-10 md:mb-14 lg:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic mb-4 md:mb-5 tracking-wide">
-              Our Sandstone Collection
-            </h2>
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore our exquisite range of sandstone varieties, each with unique textures and colors perfect for your projects.
-            </p>
-            <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
-          </div>
-
-          {/* Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {sandstoneImages.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => navigate(`/products/sandstone/${item.id}`)}
-                className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
-              >
-                <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
-                    style={{
-                      imageRendering: '-webkit-optimize-contrast',
-                      filter: 'contrast(1.25) saturate(1.1) brightness(1.02)',
-                      WebkitFilter: 'contrast(1.25) saturate(1.1) brightness(1.02)'
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-white font-semibold text-lg uppercase">{item.name}</h3>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ImageGallery
+        title="Our Sandstone Gallery"
+        description="From the fiery reds of Agra to the serene yellows of Jaisalmer, our collection brings together the finest sedimentary treasures of the Indian subcontinent."
+        images={sandstoneImages}
+        stoneType="sandstone"
+        origin="Rajasthan"
+      />
 
       <Footer />
       <FloatingButtons />
@@ -156,4 +102,5 @@ const SandstonePage = ({
 }
 
 export default SandstonePage
+
 

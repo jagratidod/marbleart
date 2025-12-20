@@ -160,6 +160,7 @@ import ProjectsDropdown from "./ProjectsDropdown";
 import OurCreationsDropdown from "./OurCreationsDropdown";
 import OurProductsDropdown from "./OurProductsDropdown";
 import OurServicesDropdown from "./OurServicesDropdown";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 const Header = ({
   variant = "default",
@@ -175,6 +176,7 @@ const Header = ({
   const [pendingDropdown, setPendingDropdown] = useState(null);
   const [mobileExpandedMenu, setMobileExpandedMenu] = useState(null);
   const timeoutRef = useRef(null);
+  const { language, languages, changeLanguage, isChangingLanguage } = useLanguage();
 
   // Handle dropdown change with fade animation
   const handleDropdownChange = (newDropdown) => {
@@ -351,6 +353,35 @@ const Header = ({
                   TESTIMONIALS
                   <span className={`absolute left-0 bottom-0 h-[2px] w-0 ${underlineColor} transition-all duration-300 group-hover:w-full`}></span>
                 </Link>
+
+                {/* Language Selector */}
+                <div className="relative group ml-2">
+                  <select
+                    value={language}
+                    onChange={(e) => changeLanguage(e.target.value)}
+                    disabled={isChangingLanguage}
+                    className={`
+                      appearance-none bg-transparent border border-gray-300 rounded-full px-3 py-1 pr-8
+                      text-[10px] uppercase font-medium focus:outline-none focus:border-[#8B8B5C]
+                      ${textColor} cursor-pointer
+                    `}
+                    style={{ minWidth: '100px' }}
+                  >
+                    {Object.entries(languages).map(([code, { label, flag }]) => (
+                      <option key={code} value={code} className="text-black bg-white">
+                        {flag} {label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                    <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                  </div>
+                  {isChangingLanguage && (
+                    <div className="absolute top-full text-[9px] text-[#8B8B5C] w-full text-center mt-1">
+                      Translating...
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -421,7 +452,7 @@ const Header = ({
                   className="fixed inset-0 bg-black bg-opacity-50 z-[199] lg:hidden"
                   onClick={() => setOpen(false)}
                 ></div>
-                
+
                 {/* Sidebar */}
                 <div className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-[201] transform transition-transform duration-300 ease-in-out overflow-y-auto">
                   <div className="p-4">
@@ -615,6 +646,25 @@ const Header = ({
                       >
                         TESTIMONIALS
                       </Link>
+
+                      {/* Mobile Language Selector */}
+                      <div className="px-4 py-3 border-t border-gray-100 mt-2">
+                        <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Language</label>
+                        <select
+                          value={language}
+                          onChange={(e) => {
+                            changeLanguage(e.target.value);
+                            setOpen(false);
+                          }}
+                          className="w-full bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#8B8B5C]"
+                        >
+                          {Object.entries(languages).map(([code, { label, flag }]) => (
+                            <option key={code} value={code}>
+                              {flag} {label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>

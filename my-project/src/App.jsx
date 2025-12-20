@@ -58,6 +58,9 @@ import PebbleStonesPage from './modules/user/pages/PebbleStonesPage'
 import CobbleStonesPage from './modules/user/pages/CobbleStonesPage'
 import StoneChipsPage from './modules/user/pages/StoneChipsPage'
 import GranitePage from './modules/user/pages/GranitePage'
+import BasaltPage from './modules/user/pages/BasaltPage'
+import SoapStonePage from './modules/user/pages/SoapStonePage'
+import TravertinePage from './modules/user/pages/TravertinePage'
 import TSADesignHubPage from './modules/user/pages/TSADesignHubPage'
 import TSAInternationalPage from './modules/user/pages/TSAInternationalPage'
 import IndividualProductDetailPage from './modules/user/pages/IndividualProductDetailPage'
@@ -92,6 +95,8 @@ import OurClientsManagementPage from './modules/admin/pages/OurClientsManagement
 import CommunalProjectsManagementPage from './modules/admin/pages/CommunalProjectsManagementPage'
 import ResidentialProjectsManagementPage from './modules/admin/pages/ResidentialProjectsManagementPage'
 import InternationalProjectsManagementPage from './modules/admin/pages/InternationalProjectsManagementPage'
+import PoojaRoomManagementPage from './modules/admin/pages/PoojaRoomManagementPage'
+import DreamTempleManagementPage from './modules/admin/pages/DreamTempleManagementPage'
 
 import OurServicesManagementPage from './modules/admin/pages/OurServicesManagementPage'
 import TalkToExpertPage from './modules/admin/pages/TalkToExpertPage'
@@ -714,6 +719,19 @@ function App() {
             />
           } />
 
+          <Route path="/products/pebble-stones/:productId" element={
+            <StoneProductDetailPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
           <Route path="/products/cobble-stones/:productId" element={
             <StoneProductDetailPage
               onShowSidebar={() => setShowSidebar(true)}
@@ -792,6 +810,97 @@ function App() {
             />
           } />
 
+          <Route path="/products/basalt-stones/:productId" element={
+            <StoneProductDetailPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/products/basalt-stones" element={
+            <BasaltPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/products/soap-stones/:productId" element={
+            <StoneProductDetailPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/products/soap-stones" element={
+            <SoapStonePage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/products/travertine-stones/:productId" element={
+            <StoneProductDetailPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/products/travertine-stones" element={
+            <TravertinePage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
+          <Route path="/tsa-design-hub" element={
+            <TSADesignHubPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+
           <Route path="/services/tsa-design-hub" element={
             <TSADesignHubPage
               onShowSidebar={() => setShowSidebar(true)}
@@ -806,6 +915,18 @@ function App() {
           } />
 
           <Route path="/services/tsa-international" element={
+            <TSAInternationalPage
+              onShowSidebar={() => setShowSidebar(true)}
+              onShowProjects={() => setShowProjectsModal(true)}
+              onShowCreations={() => setShowOurCreations(true)}
+              onShowProducts={() => setShowOurProducts(true)}
+              onShowServices={() => setShowOurServices(true)}
+              onShowHowItWorks={() => setShowModal(true)}
+              onShowLocation={() => { }}
+              onShowBooking={() => { }}
+            />
+          } />
+          <Route path="/tsa-international" element={
             <TSAInternationalPage
               onShowSidebar={() => setShowSidebar(true)}
               onShowProjects={() => setShowProjectsModal(true)}
@@ -1324,6 +1445,16 @@ function App() {
           <Route path="/admin/pages/our-products-nav" element={
             <ProtectedRoute>
               <OurProductsNavPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/content/pooja-room" element={
+            <ProtectedRoute>
+              <PoojaRoomManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/content/dream-temple" element={
+            <ProtectedRoute>
+              <DreamTempleManagementPage />
             </ProtectedRoute>
           } />
 

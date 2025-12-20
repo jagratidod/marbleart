@@ -14,7 +14,9 @@ const ContentPagesManagementPage = () => {
     { id: 8, name: 'Careers', slug: 'careers', path: '/careers' },
     { id: 9, name: 'The Team', slug: 'the-team', path: '/the-team' },
     { id: 10, name: 'OUR ARTIST', slug: 'artisans-of-tilak', path: '/artisans-of-tilak' },
-    { id: 11, name: 'Our Clients', slug: 'our-clients', path: '/our-clients' }
+    { id: 11, name: 'Our Clients', slug: 'our-clients', path: '/our-clients' },
+    { id: 12, name: 'Pooja Room', slug: 'pooja-room', path: '/ourcreations/pooja-room' },
+    { id: 13, name: 'Dream Temple', slug: 'dream-temple', path: '/ourcreations/dream-temple' }
   ])
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedPage, setSelectedPage] = useState(null)
@@ -36,7 +38,7 @@ const ContentPagesManagementPage = () => {
     // Handle path-based routing for Aslam House pages
     const pathname = location.pathname
     let targetSlug = null
-    
+
     if (pathname === '/admin/aslam-house/careers') {
       targetSlug = 'careers'
     } else if (pathname === '/admin/aslam-house/our-artist') {
@@ -88,6 +90,10 @@ const ContentPagesManagementPage = () => {
                         onClick={() => {
                           if (page.slug === 'the-team') {
                             window.location.href = '/admin/aslam-house/the-team'
+                          } else if (page.slug === 'pooja-room') {
+                            window.location.href = '/admin/content/pooja-room'
+                          } else if (page.slug === 'dream-temple') {
+                            window.location.href = '/admin/content/dream-temple'
                           } else {
                             setSelectedPage(page)
                             setShowEditModal(true)

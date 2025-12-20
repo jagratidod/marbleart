@@ -1,14 +1,13 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import { BUDGET_OPTIONS, TIMELINE_OPTIONS } from '../../../utils/constants'
+import HeroSectionWithForm from '../../../components/common/HeroSectionWithForm'
+import ImageGallery from '../../../components/common/ImageGallery'
 
 // Import hero image
 import graniteHeroImage from '../../../assets/our products/granite.jpg'
 
-// Import all granite images
+// Import all granite images (all 71 preserved)
 import alaskaGold from '../../../assets/our products/granite/ALASKA GOLD.jpeg'
 import alaskaRed from '../../../assets/our products/granite/ALASKA RED.jpeg'
 import alaskaWhite from '../../../assets/our products/granite/ALASKA WHITE.png'
@@ -91,114 +90,78 @@ const GranitePage = ({
   onShowLocation,
   onShowBooking
 }) => {
-  const navigate = useNavigate()
-  const [formStep, setFormStep] = useState(1)
-  const [formData, setFormData] = useState({
-    type: 'DOMESTIC',
-    fullName: '',
-    email: '',
-    phone: '',
-    city: '',
-    aboutYourself: '',
-    lookingFor: '',
-    budget: '',
-    timeline: '',
-    additionalInfo: '',
-    designReferences: null
-  })
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
-    alert('Thank you! Your form has been submitted.')
-    setFormStep(1)
-    setFormData({
-      type: 'DOMESTIC',
-      fullName: '',
-      email: '',
-      phone: '',
-      city: '',
-      aboutYourself: '',
-      lookingFor: '',
-      budget: '',
-      timeline: '',
-      additionalInfo: '',
-      designReferences: null
-    })
-  }
-
   const graniteImages = [
-    { id: 1, name: 'Alaska Gold', image: alaskaGold },
-    { id: 2, name: 'Alaska Red', image: alaskaRed },
-    { id: 3, name: 'Alaska White', image: alaskaWhite },
-    { id: 4, name: 'Anglo', image: anglo },
-    { id: 5, name: 'Antico Cream', image: anticoCream },
-    { id: 6, name: 'Arawali Leather Brown', image: arawaliLeatherBrown },
-    { id: 7, name: 'Artic Pearl', image: articPearl },
-    { id: 8, name: 'Avalon White', image: avalonWhite },
-    { id: 9, name: 'Azul Celeste', image: azulCeleste },
-    { id: 10, name: 'Bala Flower', image: balaFlower },
-    { id: 11, name: 'Baltic Brown', image: balticBrown },
-    { id: 12, name: 'Bangal Brown', image: bangalBrown },
-    { id: 13, name: 'Bangal Green', image: bangalGreen },
-    { id: 14, name: 'Bianca Rosa', image: biancaRosa },
-    { id: 15, name: 'Biscotti White', image: biscottiWhite },
-    { id: 16, name: 'Black Markino', image: blackMarkino },
-    { id: 17, name: 'Blue Dunes', image: blueDunes },
-    { id: 18, name: 'Blue Flower', image: blueFlower },
-    { id: 19, name: 'Brazil Brown', image: brazilBrown },
-    { id: 20, name: 'Bruno Red', image: brunoRed },
-    { id: 21, name: 'C White', image: cWhite },
-    { id: 22, name: 'Cheema Blue', image: cheemaBlue },
-    { id: 23, name: 'Cherry Brown', image: cherryBrown },
-    { id: 24, name: 'Chesnut Brown', image: chesnutBrown },
-    { id: 25, name: 'Chima Pink', image: chimaPink },
-    { id: 26, name: 'China White', image: chinaWhite },
-    { id: 27, name: 'Commando', image: commando },
-    { id: 28, name: 'Copper Silk', image: copperSilk },
-    { id: 29, name: 'Coral Black', image: coralBlack },
-    { id: 30, name: 'Crystal Brown', image: crystalBrown },
-    { id: 31, name: 'Crystal Blue', image: crystalBue },
-    { id: 32, name: 'Crystal Yellow', image: crystalYellow },
-    { id: 33, name: 'Crystal Yellow', image: crystalYellowJpg },
-    { id: 34, name: 'Delicatus White', image: delicatusWhite },
-    { id: 35, name: 'Dessert Brown', image: dessertBrown },
-    { id: 36, name: 'Dessert Gold', image: dessertGold },
-    { id: 37, name: 'Dessert Green', image: dessertGreen },
-    { id: 38, name: 'Dessert Pink', image: dessertPink },
-    { id: 39, name: 'Espen White', image: espenWhite },
-    { id: 40, name: 'Fish Black', image: fishBlack },
-    { id: 41, name: 'Forrest Green', image: forrestGreen },
-    { id: 42, name: 'Ganpati Marquino', image: ganpatiMarquino },
-    { id: 43, name: 'Green Peal', image: greenPeal },
-    { id: 44, name: 'Jirawal White', image: jirawalWhite },
-    { id: 45, name: 'Korana', image: korana },
-    { id: 46, name: 'Kotkasta', image: kotkasta },
-    { id: 47, name: 'Meral Black', image: meralBlack },
-    { id: 48, name: 'Metallica', image: metallica },
-    { id: 49, name: 'Monte Cristo', image: monteCristo },
-    { id: 50, name: 'Nasoli', image: nasoli },
-    { id: 51, name: 'New Paradise Black', image: newParadiseBlack },
-    { id: 52, name: 'Nosra Gold', image: nosraGold },
-    { id: 53, name: 'Nosra Green', image: nosraGreen },
-    { id: 54, name: 'Oyster White', image: oysterWhite },
-    { id: 55, name: 'P White', image: pWhite },
-    { id: 56, name: 'Penthar Yellow', image: pentharYellow },
-    { id: 57, name: 'Petrous Cream', image: petrousCream },
-    { id: 58, name: 'R Black', image: rBlack },
-    { id: 59, name: 'Raniwara', image: raniwara },
-    { id: 60, name: 'Rosy Pink', image: rosyPink },
-    { id: 61, name: 'Royal Cream', image: royalCream },
-    { id: 62, name: 'Silky Red', image: silkyRed },
-    { id: 63, name: 'Silver Star', image: silverStar },
-    { id: 64, name: 'Sira Grey', image: siraGrey },
-    { id: 65, name: 'S White Big', image: swhiteBig },
-    { id: 66, name: 'T Brown', image: tBrown },
-    { id: 67, name: 'Tiger', image: tiger },
-    { id: 68, name: 'Tropical Brown', image: tropicalBrown },
-    { id: 69, name: 'Venice Cream', image: veniceCream },
-    { id: 70, name: 'Whisper White', image: whisperWhite },
-    { id: 71, name: 'Wine Red', image: wineRed }
+    { id: 1, name: 'Alaska Gold', image: alaskaGold, origin: 'South India' },
+    { id: 2, name: 'Alaska Red', image: alaskaRed, origin: 'South India' },
+    { id: 3, name: 'Alaska White', image: alaskaWhite, origin: 'South India' },
+    { id: 4, name: 'Anglo', image: anglo, origin: 'Karnataka' },
+    { id: 5, name: 'Antico Cream', image: anticoCream, origin: 'Tamil Nadu' },
+    { id: 6, name: 'Arawali Leather Brown', image: arawaliLeatherBrown, origin: 'Rajasthan' },
+    { id: 7, name: 'Artic Pearl', image: articPearl, origin: 'North India' },
+    { id: 8, name: 'Avalon White', image: avalonWhite, origin: 'Brazil/India' },
+    { id: 9, name: 'Azul Celeste', image: azulCeleste, origin: 'Imported' },
+    { id: 10, name: 'Bala Flower', image: balaFlower, origin: 'Rajasthan' },
+    { id: 11, name: 'Baltic Brown', image: balticBrown, origin: 'Finland/India' },
+    { id: 12, name: 'Bangal Brown', image: bangalBrown, origin: 'West Bengal' },
+    { id: 13, name: 'Bangal Green', image: bangalGreen, origin: 'West Bengal' },
+    { id: 14, name: 'Bianca Rosa', image: biancaRosa, origin: 'South India' },
+    { id: 15, name: 'Biscotti White', image: biscottiWhite, origin: 'Andhra Pradesh' },
+    { id: 16, name: 'Black Markino', image: blackMarkino, origin: 'Rajasthan' },
+    { id: 17, name: 'Blue Dunes', image: blueDunes, origin: 'Rajasthan' },
+    { id: 18, name: 'Blue Flower', image: blueFlower, origin: 'South India' },
+    { id: 19, name: 'Brazil Brown', image: brazilBrown, origin: 'Imported' },
+    { id: 20, name: 'Bruno Red', image: brunoRed, origin: 'South India' },
+    { id: 21, name: 'C White', image: cWhite, origin: 'Andhra Pradesh' },
+    { id: 22, name: 'Cheema Blue', image: cheemaBlue, origin: 'Rajasthan' },
+    { id: 23, name: 'Cherry Brown', image: cherryBrown, origin: 'South India' },
+    { id: 24, name: 'Chesnut Brown', image: chesnutBrown, origin: 'South India' },
+    { id: 25, name: 'Chima Pink', image: chimaPink, origin: 'Rajasthan' },
+    { id: 26, name: 'China White', image: chinaWhite, origin: 'Rajasthan' },
+    { id: 27, name: 'Commando', image: commando, origin: 'North India' },
+    { id: 28, name: 'Copper Silk', image: copperSilk, origin: 'South India' },
+    { id: 29, name: 'Coral Black', image: coralBlack, origin: 'South India' },
+    { id: 30, name: 'Crystal Brown', image: crystalBrown, origin: 'South India' },
+    { id: 31, name: 'Crystal Blue', image: crystalBue, origin: 'Andhra Pradesh' },
+    { id: 32, name: 'Crystal Yellow', image: crystalYellow, origin: 'Gujarat' },
+    { id: 33, name: 'Crystal Yellow Jpg', image: crystalYellowJpg, origin: 'Gujarat' },
+    { id: 34, name: 'Delicatus White', image: delicatusWhite, origin: 'Brazil/India' },
+    { id: 35, name: 'Dessert Brown', image: dessertBrown, origin: 'Rajasthan' },
+    { id: 36, name: 'Dessert Gold', image: dessertGold, origin: 'Rajasthan' },
+    { id: 37, name: 'Dessert Green', image: dessertGreen, origin: 'Rajasthan' },
+    { id: 38, name: 'Dessert Pink', image: dessertPink, origin: 'Rajasthan' },
+    { id: 39, name: 'Espen White', image: espenWhite, origin: 'North India' },
+    { id: 40, name: 'Fish Black', image: fishBlack, origin: 'South India' },
+    { id: 41, name: 'Forrest Green', image: forrestGreen, origin: 'Rajasthan' },
+    { id: 42, name: 'Ganpati Marquino', image: ganpatiMarquino, origin: 'Rajasthan' },
+    { id: 43, name: 'Green Peal', image: greenPeal, origin: 'South India' },
+    { id: 44, name: 'Jirawal White', image: jirawalWhite, origin: 'Rajasthan' },
+    { id: 45, name: 'Korana', image: korana, origin: 'North India' },
+    { id: 46, name: 'Kotkasta', image: kotkasta, origin: 'Rajasthan' },
+    { id: 47, name: 'Meral Black', image: meralBlack, origin: 'South India' },
+    { id: 48, name: 'Metallica', image: metallica, origin: 'Andhra Pradesh' },
+    { id: 49, name: 'Monte Cristo', image: monteCristo, origin: 'South India' },
+    { id: 50, name: 'Nasoli', image: nasoli, origin: 'North India' },
+    { id: 51, name: 'New Paradise Black', image: newParadiseBlack, origin: 'South India' },
+    { id: 52, name: 'Nosra Gold', image: nosraGold, origin: 'Rajasthan' },
+    { id: 53, name: 'Nosra Green', image: nosraGreen, origin: 'Rajasthan' },
+    { id: 54, name: 'Oyster White', image: oysterWhite, origin: 'South India' },
+    { id: 55, name: 'P White', image: pWhite, origin: 'Andhra Pradesh' },
+    { id: 56, name: 'Penthar Yellow', image: pentharYellow, origin: 'Rajasthan' },
+    { id: 57, name: 'Petrous Cream', image: petrousCream, origin: 'South India' },
+    { id: 58, name: 'R Black', image: rBlack, origin: 'South India' },
+    { id: 59, name: 'Raniwara', image: raniwara, origin: 'Rajasthan' },
+    { id: 60, name: 'Rosy Pink', image: rosyPink, origin: 'Rajasthan' },
+    { id: 61, name: 'Royal Cream', image: royalCream, origin: 'South India' },
+    { id: 62, name: 'Silky Red', image: silkyRed, origin: 'South India' },
+    { id: 63, name: 'Silver Star', image: silverStar, origin: 'Andhra Pradesh' },
+    { id: 64, name: 'Sira Grey', image: siraGrey, origin: 'Karnataka' },
+    { id: 65, name: 'S White Big', image: swhiteBig, origin: 'Andhra Pradesh' },
+    { id: 66, name: 'T Brown', image: tBrown, origin: 'South India' },
+    { id: 67, name: 'Tiger', image: tiger, origin: 'Rajasthan' },
+    { id: 68, name: 'Tropical Brown', image: tropicalBrown, origin: 'South India' },
+    { id: 69, name: 'Venice Cream', image: veniceCream, origin: 'South India' },
+    { id: 70, name: 'Whisper White', image: whisperWhite, origin: 'South India' },
+    { id: 71, name: 'Wine Red', image: wineRed, origin: 'South India' }
   ]
 
   return (
@@ -215,342 +178,19 @@ const GranitePage = ({
         onShowBooking={onShowBooking}
       />
 
-      {/* Hero Image Container with Form Overlay */}
-      <div className="relative w-full overflow-hidden" style={{ height: '75vh', minHeight: '600px' }}>
-        {/* Background Image */}
-        <img
-          src={graniteHeroImage}
-          alt="Granite Background"
-          className="w-full h-full object-cover"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-        />
+      <HeroSectionWithForm
+        heroImage={graniteHeroImage}
+        title="GRANITE"
+        subtitle="Unmatched Strength and Eternal Beauty"
+        description="Discover our extensive collection of granite varieties, offering exceptional durability and stunning aesthetics for high-traffic areas and luxury spaces alike."
+      />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent"></div>
-
-        {/* Hero Text Overlay - Left Side */}
-        <div className="absolute top-16 md:top-24 lg:top-32 left-4 md:left-6 lg:left-8 xl:left-12 z-10 max-w-xl md:max-w-2xl">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight uppercase tracking-wide drop-shadow-lg">
-            GRANITE
-          </h1>
-          <p className="text-sm md:text-base lg:text-lg text-white font-light mb-2 drop-shadow-md">
-            Timeless Strength and Natural Beauty
-          </p>
-          <p className="text-xs md:text-sm text-white/90 font-light leading-relaxed drop-shadow-md">
-            Explore our extensive collection of granite varieties, offering exceptional durability and stunning aesthetics for countertops, flooring, and architectural applications.
-          </p>
-        </div>
-
-        {/* Form Container - Overlay on Right Side, Fits Image Height */}
-        <div id="expert-form-container" className="absolute right-4 md:right-6 lg:right-8 top-1/2 -translate-y-1/2 w-[85%] sm:w-[320px] md:w-[340px] max-w-[calc(100%-32px)] bg-white rounded-xl md:rounded-2xl shadow-2xl z-20 flex flex-col backdrop-blur-sm bg-white/95">
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 md:p-4 border-b-2 border-gray-200 bg-gradient-to-r from-[#8B7355]/10 to-transparent flex-shrink-0 rounded-t-xl md:rounded-t-2xl">
-            <h3 className="text-base md:text-lg font-bold uppercase tracking-wide" style={{ color: '#8B7355' }}>Talk to Our Expert</h3>
-            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-[#8B7355]/10" style={{ color: '#8B7355' }}>{formStep}/2</span>
-          </div>
-
-          <div className="px-3 pt-3 pb-4 md:px-4 md:pt-4 md:pb-4 bg-white overflow-y-auto flex-1 rounded-b-xl md:rounded-b-2xl">
-            {formStep === 1 ? (
-              <form className="space-y-2.5" onSubmit={(e) => { e.preventDefault(); setFormStep(2); }}>
-                <div className="flex gap-2">
-                  <label className="flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="DOMESTIC"
-                      checked={formData.type === 'DOMESTIC'}
-                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                      className="w-3 h-3 accent-amber-600"
-                    />
-                    <span className="text-xs font-medium" style={{ color: formData.type === 'DOMESTIC' ? '#8B7355' : '#333' }}>DOMESTIC</span>
-                  </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="INTERNATIONAL"
-                      checked={formData.type === 'INTERNATIONAL'}
-                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                      className="w-3 h-3 accent-amber-600"
-                    />
-                    <span className="text-xs font-medium" style={{ color: formData.type === 'INTERNATIONAL' ? '#8B7355' : '#333' }}>INTERNATIONAL</span>
-                  </label>
-                </div>
-
-                <input
-                  type="text"
-                  placeholder="Full Name *"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <input
-                  type="email"
-                  placeholder="Email Address *"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <div>
-                  <label className="block text-xs font-medium mb-1">Phone number</label>
-                  <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                    <div className="flex items-center gap-1 px-2 bg-gray-50 border-r">
-                      <span className="text-sm">🇮🇳</span>
-                      <span className="text-xs">+91</span>
-                    </div>
-                    <input
-                      type="tel"
-                      placeholder="Phone number *"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="flex-1 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-600"
-                    />
-                  </div>
-                </div>
-
-                <input
-                  type="text"
-                  placeholder="City *"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  required
-                />
-
-                <div>
-                  <label className="block text-xs font-medium mb-1.5">Tell us about yourself *</label>
-                  <div className="space-y-1.5">
-                    <label className="flex items-start gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="aboutYourself"
-                        value="homeowner"
-                        checked={formData.aboutYourself === 'homeowner'}
-                        onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
-                        className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
-                        required
-                      />
-                      <span className="text-xs leading-relaxed">I am a homeowner looking for a pooja unit or pooja room</span>
-                    </label>
-                    <label className="flex items-start gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="aboutYourself"
-                        value="designer"
-                        checked={formData.aboutYourself === 'designer'}
-                        onChange={(e) => setFormData({ ...formData, aboutYourself: e.target.value })}
-                        className="mt-0.5 w-3 h-3 accent-amber-600 flex-shrink-0"
-                        required
-                      />
-                      <span className="text-xs leading-relaxed">I am an interior designer/consultant seeking solutions for my client</span>
-                    </label>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full text-white py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
-                  style={{ backgroundColor: '#8B7355' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
-                >
-                  NEXT →
-                </button>
-              </form>
-            ) : (
-              <form className="space-y-2.5" onSubmit={handleSubmit}>
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What are you looking for? *</label>
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="lookingFor"
-                        value="singular"
-                        checked={formData.lookingFor === 'singular'}
-                        onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
-                        className="w-3 h-3 accent-amber-600"
-                        required
-                      />
-                      <span className="text-xs">Singular Marble Mandir Unit</span>
-                    </label>
-                    <label className="flex items-center gap-1.5 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="lookingFor"
-                        value="complete"
-                        checked={formData.lookingFor === 'complete'}
-                        onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
-                        className="w-3 h-3 accent-amber-600"
-                        required
-                      />
-                      <span className="text-xs">Complete Pooja Room Solution</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What is your estimated budget? *</label>
-                  <div className="space-y-1.5">
-                    {BUDGET_OPTIONS.map((budget) => (
-                      <label key={budget} className="flex items-center gap-1.5 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="budget"
-                          value={budget}
-                          checked={formData.budget === budget}
-                          onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                          className="w-3 h-3 accent-amber-600"
-                          required
-                        />
-                        <span className="text-xs">{budget}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold mb-1.5">What is your timeline for the project? *</label>
-                  <div className="space-y-1.5">
-                    {TIMELINE_OPTIONS.map((timeline) => (
-                      <label key={timeline} className="flex items-center gap-1.5 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="timeline"
-                          value={timeline}
-                          checked={formData.timeline === timeline}
-                          onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                          className="w-3 h-3 accent-amber-600"
-                          required
-                        />
-                        <span className="text-xs">{timeline}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <textarea
-                  placeholder="Please share a bit more about your needs"
-                  value={formData.additionalInfo}
-                  onChange={(e) => setFormData({ ...formData, additionalInfo: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 resize-none"
-                />
-
-                <div>
-                  <input
-                    type="file"
-                    id="designReferences"
-                    accept="image/*,.pdf"
-                    multiple
-                    onChange={(e) => setFormData({ ...formData, designReferences: e.target.files })}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="designReferences"
-                    className="block w-full text-white py-2 rounded-lg text-xs text-center font-medium cursor-pointer transition-colors shadow-md"
-                    style={{ backgroundColor: '#8B7355' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
-                  >
-                    UPLOAD DESIGN REFERENCES
-                  </label>
-                  {formData.designReferences && formData.designReferences.length > 0 && (
-                    <p className="text-xs text-gray-600 mt-1">
-                      {formData.designReferences.length} file(s) selected
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setFormStep(1)}
-                    className="flex-1 bg-white py-2 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors shadow-md border-2"
-                    style={{ color: '#8B7355', borderColor: '#8B7355' }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#f9f9f9'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'white'
-                    }}
-                  >
-                    BACK
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
-                    style={{ backgroundColor: '#8B7355' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#7a6349'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#8B7355'}
-                  >
-                    SUBMIT
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Images Gallery Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-10 md:mb-14 lg:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic mb-4 md:mb-5 tracking-wide">
-              Our Granite Collection
-            </h2>
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore our extensive collection of granite varieties, offering exceptional durability and stunning aesthetics for countertops, flooring, and architectural applications.
-            </p>
-            <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
-          </div>
-
-          {/* Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {graniteImages.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  const productData = {
-                    id: item.id,
-                    name: item.name,
-                    image: item.image,
-                    specifications: {
-                      'Origin': 'North India',
-                      'Color': 'Various',
-                      'Finish': 'Honed, Brushed, Natural, Tumbled',
-                      'Offered In': 'Tiles, Pavers, Crazy, Mosaic',
-                      'Tiles Size': '30 X 30, 30 X 60, 60 X 60 CM',
-                      'Price': '₹45 - ₹65 per sq.ft'
-                    }
-                  }
-                  sessionStorage.setItem(`stoneProduct_granite_${item.id}`, JSON.stringify(productData))
-                  navigate(`/products/granite/${item.id}`)
-                }}
-                className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
-              >
-                <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-white font-semibold text-lg uppercase">{item.name}</h3>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ImageGallery
+        title="Our Granite Collection"
+        description="From the robust textures of South India to the exotic patterns of Brazil, our granite selection offers unparalleled versatility for modern architecture."
+        images={graniteImages}
+        stoneType="granite"
+      />
 
       <Footer />
       <FloatingButtons />

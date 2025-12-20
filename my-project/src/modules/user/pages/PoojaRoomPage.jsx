@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CreationsNavBar from '../../../components/layout/CreationsNavBar'
 import Footer from '../../../components/layout/Footer'
@@ -29,6 +29,7 @@ import BeforeAfterSlider from '../../../components/common/BeforeAfterSlider'
 import afterImage from '../../../assets/ourcreation/pooja room/before&after/compare1.png'
 import beforeImage from '../../../assets/ourcreation/pooja room/before&after/compare2.jpg'
 
+
 const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
   const navigate = useNavigate()
   const [formStep, setFormStep] = useState(1)
@@ -37,6 +38,9 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
   const [selectedProjectType, setSelectedProjectType] = useState('Communal')
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [showExpertForm, setShowExpertForm] = useState(true)
+  const [pageData, setPageData] = useState(null)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+
   const [formData, setFormData] = useState({
     type: 'DOMESTIC',
     fullName: '',
@@ -50,6 +54,21 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
     additionalInfo: '',
     designReferences: null
   })
+
+  useEffect(() => {
+    const fetchPageData = async () => {
+      try {
+        const res = await fetch(`${API_URL}/pooja-room`)
+        const data = await res.json()
+        if (res.ok) {
+          setPageData(data)
+        }
+      } catch (error) {
+        console.error('Error fetching pooja room data:', error)
+      }
+    }
+    fetchPageData()
+  }, [API_URL])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -71,7 +90,10 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
     })
   }
 
-  const poojaRooms = [
+  const poojaRooms = pageData?.collection?.length > 0 ? pageData.collection.map(item => ({
+    ...item,
+    image: item.image?.url || poojaRoom1 // Fallback image if needed
+  })) : [
     {
       id: 1,
       name: 'Small Pooja Room',
@@ -106,18 +128,20 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
     }
   ]
 
-  const galleryImages = [
-    poojaRoom1,
-    poojaRoom2,
-    poojaRoom3,
-    poojaRoom4,
-    galleryImg1,
-    galleryImg2,
-    galleryImg3,
-    galleryImg4,
-    galleryImg5,
-    galleryImg6
-  ]
+  const galleryImages = pageData?.gallery?.length > 0
+    ? pageData.gallery.map(img => img.url)
+    : [
+      poojaRoom1,
+      poojaRoom2,
+      poojaRoom3,
+      poojaRoom4,
+      galleryImg1,
+      galleryImg2,
+      galleryImg3,
+      galleryImg4,
+      galleryImg5,
+      galleryImg6
+    ]
 
   const handleGalleryPrev = () => {
     setGalleryIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1))
@@ -168,8 +192,8 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
       <div className="relative w-full overflow-hidden" style={{ height: '75vh', minHeight: '600px' }}>
         {/* Horizontal Heading Image */}
         <img
-          src={headingImage}
-          alt="Pooja Room"
+          src={pageData?.heroSection?.image?.url || headingImage}
+          alt={pageData?.heroSection?.image?.alt || "Pooja Room"}
           className="w-full h-full object-cover"
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
@@ -177,10 +201,10 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
         {/* Overlay Text */}
         <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 lg:left-20 max-w-sm md:max-w-lg lg:max-w-2xl px-6 md:px-0 z-10 w-full animate-fadeInUp">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif text-white italic drop-shadow-md mb-2 md:mb-4">
-            Welcome to Our Pooja Room Collection
+            {pageData?.heroSection?.title || 'Welcome to Our Pooja Room Collection'}
           </h1>
           <p className="text-base md:text-2xl text-white/90 font-medium drop-shadow-md tracking-wide">
-            <span className="font-bold border-b-2 border-[#8B7355] pb-1">Aslam Marble Suppliers</span>
+            <span className="font-bold border-b-2 border-[#8B7355] pb-1">{pageData?.heroSection?.subtitle || 'Aslam Marble Suppliers'}</span>
           </p>
         </div>
 
@@ -452,55 +476,58 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
       </div>
 
       {/* Pooja Rooms Collection Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+      <section className="w-full py-16 md:py-24 px-4 md:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-10 md:mb-14 lg:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic mb-4 md:mb-5 tracking-wide">
+          <div className="text-center mb-12 md:mb-20">
+            <span className="text-[#8B7355] font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Exquisite Craftsmanship</span>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-[#8B7355] italic mb-6 tracking-tight">
               Our Pooja Room Collection
             </h2>
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <div className="w-20 h-1 bg-[#8B7355]/30 mx-auto mb-8"></div>
+            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light">
               Transform your sacred space with our meticulously crafted pooja rooms, designed to bring peace and divinity into your home.
             </p>
-            <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             {poojaRooms.map((room) => (
               <div
                 key={room.id}
-                className="group cursor-pointer bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-[#8B7355] transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-2"
+                className="group cursor-pointer bg-white rounded-2xl overflow-hidden transition-all duration-700 hover:shadow-[0_30px_60px_-15px_rgba(139,115,85,0.15)] transform hover:-translate-y-3"
               >
                 {/* Image Container */}
-                <div className="relative w-full h-64 md:h-72 lg:h-80 overflow-hidden bg-gray-100">
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
                   <img
                     src={room.image}
                     alt={room.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-125"
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
                   />
-                  {/* Gradient Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  {/* Price Badge */}
-                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500">
-                    <span className="text-sm font-bold" style={{ color: '#8B7355' }}>INR {room.price}</span>
+
+                  {/* Premium Overlay */}
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500"></div>
+
+                  {/* Subtle Top Gradient */}
+                  <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black/40 to-transparent"></div>
+
+                  {/* Elegant Price Badge - Slides in from left on hover */}
+                  <div className="absolute top-10 left-0 overflow-hidden pointer-events-none">
+                    <div className="bg-[#8B7355] text-white px-6 py-2 shadow-2xl transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out">
+                      <span className="text-xs font-bold tracking-widest uppercase">INR {room.price}</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Info Container */}
-                <div className="p-5 md:p-6 bg-white">
-                  <div className="mb-2">
-                    <p className="text-xs md:text-sm font-medium text-gray-500 mb-2 uppercase tracking-wide">
-                      Starting at
-                    </p>
-                    <p className="text-lg md:text-xl font-bold text-black mb-2 group-hover:text-[#8B7355] transition-colors duration-300">
-                      INR {room.price}
-                    </p>
-                    <p className="text-base md:text-lg font-semibold text-gray-800 mb-1">
-                      {room.name}
-                    </p>
-                    <p className="text-sm md:text-base text-gray-600">
-                      {room.size}
-                    </p>
+                <div className="p-8 bg-white text-center border-t border-gray-50">
+                  <p className="text-[#8B7355] text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Starting at {room.price}</p>
+                  <h3 className="text-xl md:text-2xl font-serif text-gray-800 italic mb-3 group-hover:text-[#8B7355] transition-colors duration-300">
+                    {room.name}
+                  </h3>
+                  <div className="flex items-center justify-center gap-2 text-gray-400">
+                    <div className="w-8 h-[1px] bg-gray-200"></div>
+                    <span className="text-xs font-medium tracking-wide italic">{room.size}</span>
+                    <div className="w-8 h-[1px] bg-gray-200"></div>
                   </div>
                 </div>
               </div>
@@ -510,32 +537,41 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
       </section>
 
       {/* Consultation Section 1 */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8" style={{ backgroundColor: '#F5F5DC' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+      <section className="w-full py-16 md:py-24 px-4 md:px-6 lg:px-8 bg-[#fffbf0]">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
             {/* Left Side - Text Content */}
-            <div className="space-y-6">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic leading-tight">
-                All We Need Is Your Space Dimensions And Pictures
-              </h2>
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Before starting the session, we require you to have your site pictures and dimensions ready. This allows us to understand your space and craft a suitable solution, ensuring we make the most out of our concept discovery session.
-              </p>
-              <button
-                onClick={() => setShowConsultationModal(true)}
-                className="px-6 py-3 md:px-8 md:py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm md:text-base"
-              >
-                Get Free Consultation
-              </button>
+            <div className="w-full md:w-3/5 order-2 md:order-1">
+              <div className="max-w-xl">
+                <p className="text-[#8B7355] font-bold tracking-[0.2em] uppercase text-sm mb-4">Consultation</p>
+                <h2 className="text-3xl md:text-5xl font-serif text-gray-800 italic mb-6 leading-[1.2]">
+                  {pageData?.consultation?.section1?.title || 'All We Need Is Your Space Dimensions And Pictures'}
+                </h2>
+                <div className="w-16 h-1 bg-[#8B7355]/40 mb-8"></div>
+                <p className="text-lg text-gray-600 leading-relaxed mb-10">
+                  {pageData?.consultation?.section1?.description || "We understand that every space is unique. Share your space's dimensions and pictures, and let our experts help you visualize the perfect marble solution tailored to your environment."}
+                </p>
+                <button
+                  onClick={() => setShowConsultationModal(true)}
+                  className="group relative px-8 py-4 bg-[#8B7355] text-white font-bold rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_10px_20px_rgba(139,115,85,0.3)] hover:-translate-y-1 active:scale-95"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Get Free Consultation
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
             </div>
 
-            {/* Right Side - Illustration */}
-            <div className="flex justify-center md:justify-end">
-              <div className="relative w-full max-w-md">
+            {/* Right Side - Image */}
+            <div className="w-full md:w-2/5 order-1 md:order-2">
+              <div className="flex justify-center md:justify-end">
                 <img
-                  src={consultationImage1}
-                  alt="Consultation"
-                  className="w-full h-auto object-contain"
+                  src={pageData?.consultation?.section1?.image?.url || consultationImage1}
+                  alt={pageData?.consultation?.section1?.image?.alt || "Consultation"}
+                  className="w-full h-auto object-contain pointer-events-none max-w-md"
                 />
               </div>
             </div>
@@ -579,82 +615,139 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
         </div>
       </section>
 
-      {/* Scrollable Image Gallery Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            {/* Left Arrow */}
+      {/* Premium 3D Cinematic Gallery Section */}
+      <section className="w-full pt-12 md:pt-16 pb-12 md:pb-20 bg-white overflow-hidden" style={{ perspective: '2000px' }}>
+        <div className="max-w-7xl mx-auto text-center mb-12 md:mb-20">
+          <span className="text-[#8B7355] font-bold tracking-[0.3em] uppercase text-xs mb-4 block">New Arrivals</span>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-[#8B7355] italic mb-2 tracking-tight">
+            Recent Collection
+          </h2>
+          <div className="w-20 h-1 bg-[#8B7355]/30 mx-auto"></div>
+        </div>
+
+        <div className="max-w-[1920px] mx-auto relative px-4 md:px-0">
+          <div className="flex items-center justify-center relative">
+            {/* Left Arrow - Floating */}
             <button
               onClick={handleGalleryPrev}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white rounded-full p-3 md:p-4 shadow-lg transition-all duration-300 hover:scale-110"
-              style={{ color: '#8B7355' }}
+              className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 z-40 w-12 h-12 md:w-20 md:h-20 bg-white/90 backdrop-blur-md shadow-2xl rounded-full flex items-center justify-center text-[#8B7355] hover:bg-[#8B7355] hover:text-white transition-all duration-500 transform hover:scale-110 group border border-white/20"
             >
-              <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg className="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
-            {/* Gallery Container */}
-            <div className="overflow-hidden rounded-xl">
+            {/* 3D Gallery Container */}
+            <div className="w-full relative overflow-visible h-full flex items-center justify-center">
               <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${galleryIndex * 100}%)` }}
+                className="flex transition-all duration-1000 cubic-bezier(0.23, 1, 0.32, 1) items-center"
+                style={{
+                  transform: `translateX(calc(${(galleryImages.length / 2 - 0.5 - galleryIndex) * 33.33}vw))`,
+                  width: `${galleryImages.length * 33.33}vw`
+                }}
               >
-                {galleryImages.map((image, index) => (
-                  <div key={index} className="min-w-full">
-                    <img
-                      src={image}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-[400px] md:h-[500px] lg:h-[600px] object-cover"
-                    />
-                  </div>
-                ))}
+                {galleryImages.map((image, index) => {
+                  const isActive = index === galleryIndex;
+                  const isPrev = index < galleryIndex;
+                  const isNext = index > galleryIndex;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`relative transition-all duration-1000 ease-out flex-shrink-0 flex items-center justify-center
+                        ${isActive ? 'w-[33.33vw] z-30 scale-125 md:scale-150' : 'w-[33.33vw] z-10 opacity-40 scale-75 md:scale-90'}
+                      `}
+                      style={{
+                        perspective: '1200px',
+                        transformStyle: 'preserve-3d'
+                      }}
+                    >
+                      <div
+                        className={`w-[90%] md:w-[85%] aspect-[16/9] overflow-hidden shadow-2xl transition-all duration-1000
+                          ${isActive ? 'shadow-[0_40px_80px_-15px_rgba(139,115,85,0.4)]' : 'grayscale blur-[2px]'}
+                          ${isActive ? 'hover:scale-105 cursor-zoom-in' : ''}
+                        `}
+                        style={{
+                          transform: isActive ? 'rotateY(0deg)' : (isPrev ? 'rotateY(25deg)' : 'rotateY(-25deg)'),
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`Gallery ${index + 1}`}
+                          className={`w-full h-full object-cover transition-transform duration-1000 ${isActive ? 'hover:scale-110' : ''}`}
+                        />
+                        {/* Dramatic Overlay for Depth */}
+                        {!isActive && (
+                          <div className="absolute inset-0 bg-black/20"></div>
+                        )}
+
+                        {/* Premium Glow effect for active image */}
+                        {isActive && (
+                          <div className="absolute inset-0 border-[1px] border-white/30 pointer-events-none"></div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Right Arrow */}
+            {/* Right Arrow - Floating */}
             <button
               onClick={handleGalleryNext}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white rounded-full p-3 md:p-4 shadow-lg transition-all duration-300 hover:scale-110"
-              style={{ color: '#8B7355' }}
+              className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 z-40 w-12 h-12 md:w-20 md:h-20 bg-white/90 backdrop-blur-md shadow-2xl rounded-full flex items-center justify-center text-[#8B7355] hover:bg-[#8B7355] hover:text-white transition-all duration-500 transform hover:scale-110 group border border-white/20"
             >
-              <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg className="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
               </svg>
             </button>
+          </div>
 
-            {/* Gallery Indicators */}
-            <div className="flex justify-center gap-2 mt-4">
+          {/* Luxury Navigation Indicators */}
+          <div className="mt-20 md:mt-32 flex flex-col items-center gap-6">
+            <div className="flex gap-2 items-center">
               {galleryImages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setGalleryIndex(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${index === galleryIndex ? 'w-8 bg-[#8B7355]' : 'w-2 bg-gray-300'
+                  className={`transition-all duration-500 rounded-full ${index === galleryIndex ? 'w-12 h-1.5 bg-[#8B7355]' : 'w-2 h-1.5 bg-gray-200 hover:bg-gray-300'
                     }`}
                 />
               ))}
+            </div>
+            <div className="flex items-center gap-4 text-[#8B7355] font-serif italic text-sm md:text-base">
+              <span className="opacity-40">Previous Exhibit</span>
+              <div className="w-12 h-[1px] bg-[#8B7355]/30"></div>
+              <span className="font-bold tracking-widest">{String(galleryIndex + 1).padStart(2, '0')} / {String(galleryImages.length).padStart(2, '0')}</span>
+              <div className="w-12 h-[1px] bg-[#8B7355]/30"></div>
+              <span className="opacity-40">Next Masterpiece</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Consultation Section 2 - Customised Solutions */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8" style={{ backgroundColor: '#F5F5DC' }}>
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-[#fffbf0]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left Side - Text Content */}
             <div className="space-y-6">
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic leading-tight">
-                Customised Solutions
+                {pageData?.consultation?.section2?.title || 'Customised Solutions'}
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Let us bring your vision to life with a custom-designed space that reflects your unique taste and lifestyle. Whether it's a traditional pooja room or a modern sanctuary, we'll work with you to create the perfect fit. Ready to make your dream a reality?
+                {pageData?.consultation?.section2?.description || "Let us bring your vision to life with a custom-designed space that reflects your unique taste and lifestyle. Whether it's a traditional pooja room or a modern sanctuary, we'll work with you to create the perfect fit. Ready to make your dream a reality?"}
               </p>
               <button
                 onClick={() => setShowConsultationModal(true)}
-                className="px-6 py-3 md:px-8 md:py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm md:text-base"
+                className="group relative px-8 py-4 bg-[#8B7355] text-white font-bold rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_10px_20px_rgba(139,115,85,0.3)] hover:-translate-y-1 active:scale-95"
               >
-                Get Free Consultation
+                <span className="relative z-10 flex items-center gap-2">
+                  Get Free Consultation
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
               </button>
             </div>
 
@@ -662,8 +755,8 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
             <div className="flex justify-center md:justify-end">
               <div className="relative w-full max-w-md">
                 <img
-                  src={consultationImage2}
-                  alt="Customised Solutions"
+                  src={pageData?.consultation?.section2?.image?.url || consultationImage2}
+                  alt={pageData?.consultation?.section2?.image?.alt || "Customised Solutions"}
                   className="w-full h-auto object-contain"
                 />
               </div>
@@ -728,6 +821,9 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
 
 
 
+
+
+
       {/* Before and After Section */}
       <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -745,8 +841,10 @@ const PoojaRoomPage = ({ onShowCart, onShowLikes }) => {
             {/* Right Side - Comparison Slider */}
             <div className="order-1 lg:order-2 w-full">
               <BeforeAfterSlider
-                beforeImage={beforeImage}
-                afterImage={afterImage}
+                beforeImage={pageData?.beforeAfter?.beforeImage?.url || afterImage}
+                afterImage={pageData?.beforeAfter?.afterImage?.url || beforeImage}
+                beforeLabel="Before"
+                afterLabel="After"
               />
             </div>
           </div>
@@ -826,13 +924,13 @@ const ConsultationModal = ({ formStep, setFormStep, formData, setFormData, handl
   return (
     <>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-[110] transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] transition-all duration-500"
         onClick={onClose}
       ></div>
 
       <div className="fixed inset-0 z-[115] flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="bg-white rounded-xl md:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden pointer-events-auto transform transition-all duration-300"
+          className="bg-white/95 backdrop-blur-md rounded-xl md:rounded-2xl shadow-2xl max-w-sm w-full max-h-[90vh] overflow-hidden pointer-events-auto transform transition-all duration-300 animate-fadeInUp border border-white/20"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 md:p-5 border-b-2 border-gray-200 bg-gradient-to-r from-[#8B7355]/10 to-transparent">
