@@ -29,6 +29,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       location.pathname.startsWith('/admin/category/communal-temples') ||
       location.pathname.startsWith('/admin/category/jain-temples') ||
       location.pathname.startsWith('/admin/pages/our-creations-nav'),
+    ourServicesNav: location.pathname.startsWith('/admin/our-services') ||
+      location.pathname.startsWith('/admin/pages/our-services-nav'),
     ourProductsNav: location.pathname.startsWith('/admin/products/stone') ||
       location.pathname.startsWith('/admin/products/stone-pages') ||
       location.pathname.startsWith('/admin/pages/our-products-nav')
@@ -133,7 +135,16 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             { title: 'Manage Hover', path: '/admin/pages/our-creations-nav' }
           ]
         },
-        { title: 'Our Services Nav', path: '/admin/pages/our-services-nav' },
+        {
+          title: 'Our Services Nav',
+          key: 'ourServicesNav',
+          isNested: true,
+          submenu: [
+            { title: 'Design Hub', path: '/admin/our-services/design-hub' },
+            { title: 'International', path: '/admin/our-services/international' },
+            { title: 'Manage Hover', path: '/admin/pages/our-services-nav' }
+          ]
+        },
         {
           title: 'Our Products Nav',
           key: 'ourProductsNav',

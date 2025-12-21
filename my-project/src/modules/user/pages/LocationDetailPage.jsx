@@ -287,6 +287,11 @@ const ProcessStepsSection = ({ selectedStep, onStepChange }) => {
   return (
     <section className="w-full py-8 md:py-12 px-4 md:px-6 bg-white">
       <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center tracking-wide font-bold">
+            Our 5-Step Process
+          </h2>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="relative">
             {steps.map((step) => (

@@ -162,55 +162,7 @@ const TSAInternationalPage = ({
       />
 
       {/* End to End Solutions Section */}
-      <section className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8 bg-[#fffbf0]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-            {/* Design */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
-                <img
-                  src={designIcon}
-                  alt="Design"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
 
-            {/* Production */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
-                <img
-                  src={productionIcon}
-                  alt="Production"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-
-            {/* Shipping */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
-                <img
-                  src={shippingIcon}
-                  alt="Shipping"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-
-            {/* DIY Assembly */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
-                <img
-                  src={diyAssemblyIcon}
-                  alt="DIY Assembly"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* GIF with Caption Section */}
       <section className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8 bg-white">
@@ -330,8 +282,8 @@ const TSAInternationalPage = ({
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 md:px-6 md:py-2 lg:px-8 lg:py-3 text-xs sm:text-sm md:text-base lg:text-lg font-semibold uppercase tracking-wide transition-all duration-300 whitespace-nowrap ${activeTab === tab
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border-2 border-gray-300 hover:border-[#8B7355]'
+                  ? 'bg-black text-white'
+                  : 'bg-white text-black border-2 border-gray-300 hover:border-[#8B7355]'
                   }`}
               >
                 {tab}
@@ -407,6 +359,57 @@ const TSAInternationalPage = ({
 
       {/* 5 Steps Process Section */}
       <ProcessStepsSection selectedStep={selectedProcessStep} onStepChange={setSelectedProcessStep} />
+
+      {/* End to End Solutions Section (Moved) */}
+      <section className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8 bg-[#fffbf0]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
+            {/* Design */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
+                <img
+                  src={designIcon}
+                  alt="Design"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Production */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
+                <img
+                  src={productionIcon}
+                  alt="Production"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Shipping */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
+                <img
+                  src={shippingIcon}
+                  alt="Shipping"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
+            {/* DIY Assembly */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 flex items-center justify-center">
+                <img
+                  src={diyAssemblyIcon}
+                  alt="DIY Assembly"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
@@ -511,6 +514,11 @@ const ProcessStepsSection = ({ selectedStep, onStepChange }) => {
   return (
     <section className="w-full py-8 md:py-12 px-4 md:px-6 bg-white">
       <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center tracking-wide font-bold">
+            Our 5-Step Process
+          </h2>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div className="relative">
             {steps.map((step) => (

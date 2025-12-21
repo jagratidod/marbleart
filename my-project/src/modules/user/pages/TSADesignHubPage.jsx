@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
@@ -25,6 +26,9 @@ import relaxIcon from '../../../assets/services/TSA design hub/how it work/4rela
 // Import Visit Store image
 import visitStoreImage from '../../../assets/home/visit store/poojaroomm.jpeg'
 
+// Register ScrollTrigger
+
+
 const TSADesignHubPage = ({
   onShowSidebar,
   onShowProjects,
@@ -37,8 +41,12 @@ const TSADesignHubPage = ({
 }) => {
   const navigate = useNavigate()
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
-    <div className="w-full min-h-screen bg-white">
+    <div className="w-full min-h-screen bg-white overflow-hidden">
       <Header
         variant="default"
         onShowSidebar={onShowSidebar}
@@ -86,7 +94,7 @@ const TSADesignHubPage = ({
       </section>
 
       {/* GIF with Support Features Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8" style={{ backgroundColor: 'rgb(255, 250, 240)' }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left Side - GIF */}
@@ -106,42 +114,21 @@ const TSADesignHubPage = ({
                 We Support You With:
               </h2>
               <div className="space-y-4 md:space-y-5">
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Exclusive Partner Pricing</span> crafted to fit your project requirements.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Personalized Showroom Visits</span> for you and your clients, offering a private, curated experience.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Detailed Product Insights & Sample Assistance</span> to help you choose confidently.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Real-Time Stock Updates & Easy Order Management</span> for smooth project planning.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Professional Installation Support</span> to ensure flawless execution at your client's site.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0"></div>
-                  <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-[#8B7355]">Interactive 2D Design Configurator</span> allowing instant customization of temple designs.
-                  </p>
-                </div>
+                {[
+                  { title: "Exclusive Partner Pricing", desc: "crafted to fit your project requirements." },
+                  { title: "Personalized Showroom Visits", desc: "for you and your clients, offering a private, curated experience." },
+                  { title: "Detailed Product Insights & Sample Assistance", desc: "to help you choose confidently." },
+                  { title: "Real-Time Stock Updates & Easy Order Management", desc: "for smooth project planning." },
+                  { title: "Professional Installation Support", desc: "to ensure flawless execution at your client's site." },
+                  { title: "Interactive 2D Design Configurator", desc: "allowing instant customization of temple designs." }
+                ].map((item, index) => (
+                  <div key={index} className="flex items-start gap-3 group/item">
+                    <div className="w-2 h-2 rounded-full bg-[#8B7355] mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300"></div>
+                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                      <span className="font-semibold text-[#8B7355]">{item.title}</span> {item.desc}
+                    </p>
+                  </div>
+                ))}
               </div>
               <div className="w-24 h-1 rounded-full mt-6" style={{ backgroundColor: '#8B7355' }}></div>
             </div>
@@ -208,7 +195,7 @@ const TSADesignHubPage = ({
             {/* Left Side - Caption */}
             <div className="order-2 md:order-1">
               <p className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic leading-tight font-bold">
-                Explore our latest pooja room concepts and ongoing projects through exclusive, partner-only lookbook access
+                Explore our latest pooja room concepts and ongoing projects through exclusive, partner-only lookbook access.
               </p>
               <div className="w-24 h-1 rounded-full mt-6" style={{ backgroundColor: '#8B7355' }}></div>
             </div>
@@ -228,7 +215,7 @@ const TSADesignHubPage = ({
       </section>
 
       {/* How It Works Section */}
-      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white">
+      <section className="w-full py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-10 md:mb-14 lg:mb-16">
@@ -238,86 +225,77 @@ const TSADesignHubPage = ({
             <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{ backgroundColor: '#8B7355' }}></div>
           </div>
 
-          {/* Steps Grid - 2x2 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {/* Steps Grid - 4 Columns for 'Small' cards */}
+          <div className="how-it-works-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
             {/* Step 1: Register with Us */}
-            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 md:mb-6">
-                  <img
-                    src={registerIcon}
-                    alt="Register"
-                    className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                  />
-                </div>
-                <h3 className="text-xl md:text-2xl font-serif text-[#8B7355] italic mb-3 md:mb-4 tracking-wide font-bold">
-                  Register with Us
-                </h3>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                  Join our AMS Soul Connect Platform and unlock access to 200+ curated concepts for pooja rooms, dream temples, artistic wall panels, and premium home décor pieces. Explore our global project portfolio, browse detailed price lists, and view exclusive client-specific pricing—all in one place.
-                </p>
-                <p className="text-xs md:text-sm font-semibold text-[#8B7355] mt-3 uppercase">
-                  Version 1 – Premium & Professional
-                </p>
+            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center h-full border border-gray-100">
+              <div className="mb-4 md:mb-6">
+                <img
+                  src={registerIcon}
+                  alt="Register"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                />
               </div>
+              <h3 className="text-xl font-serif text-[#8B7355] italic mb-3 font-bold">
+                Register with Us
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Join our AMS Soul Connect Platform to access 200+ curated concepts, global projects, and detailed price lists.
+              </p>
             </div>
 
             {/* Step 2: Book a Concept Discovery Session */}
-            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 md:mb-6">
-                  <img
-                    src={bookIcon}
-                    alt="Book Session"
-                    className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                  />
-                </div>
-                <h3 className="text-xl md:text-2xl font-serif text-[#8B7355] italic mb-3 md:mb-4 tracking-wide font-bold">
-                  Book a Concept Discovery Session
-                </h3>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                  Schedule a one-on-one concept discovery session with our team, where we'll align your client's vision with our design expertise. Together, we'll craft a bespoke experience tailored to their specific requirements. You can also choose to have customized quotations prepared and shared directly with your clients.
-                </p>
+            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center h-full border border-gray-100">
+              <div className="mb-4 md:mb-6">
+                <img
+                  src={bookIcon}
+                  alt="Book Session"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                />
               </div>
+              <h3 className="text-xl font-serif text-[#8B7355] italic mb-3 font-bold">
+                Discovery Session
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Schedule a one-on-one session to align your client's vision with our expertise and get customized quotations.
+              </p>
             </div>
 
             {/* Step 3: Place an Order */}
-            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 md:mb-6">
-                  <img
-                    src={orderIcon}
-                    alt="Place Order"
-                    className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                  />
-                </div>
-                <h3 className="text-xl md:text-2xl font-serif text-[#8B7355] italic mb-3 md:mb-4 tracking-wide font-bold">
-                  Place an Order
-                </h3>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                  After the design is approved, simply place your order with us. Our team manages the entire process—from design and production to logistics and final delivery. For pooja rooms and dream temples, we also offer expert on-site installation to ensure a flawless finish.
-                </p>
+            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center h-full border border-gray-100">
+              <div className="mb-4 md:mb-6">
+                <img
+                  src={orderIcon}
+                  alt="Place Order"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                />
               </div>
+              <h3 className="text-xl font-serif text-[#8B7355] italic mb-3 font-bold">
+                Place an Order
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                We manage the entire process—from design to delivery. We also offer expert on-site installation.
+              </p>
             </div>
 
             {/* Step 4: Sit Back and Relax */}
-            <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 md:mb-6">
-                  <img
-                    src={relaxIcon}
-                    alt="Relax"
-                    className="w-16 h-16 md:w-20 md:h-20 object-contain"
-                  />
-                </div>
-                <h3 className="text-xl md:text-2xl font-serif text-[#8B7355] italic mb-3 md:mb-4 tracking-wide font-bold">
-                  Sit Back and Relax
-                </h3>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                  Enjoy complete peace of mind while we keep you informed at every step. Our team handles the entire process from start to finish, ensuring a smooth, effortless experience so you can focus on what truly matters.
-                </p>
+            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center h-full border border-gray-100">
+              <div className="mb-4 md:mb-6">
+                <img
+                  src={relaxIcon}
+                  alt="Relax"
+                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                />
               </div>
+              <h3 className="text-xl font-serif text-[#8B7355] italic mb-3 font-bold">
+                Sit Back & Relax
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Enjoy peace of mind as our team handles everything, ensuring a smooth, effortless experience.
+              </p>
             </div>
+
           </div>
         </div>
       </section>
@@ -325,6 +303,7 @@ const TSADesignHubPage = ({
       {/* Horizontal Image Section Above Footer - Full Screen */}
       <section className="w-full py-0 bg-white">
         <div className="relative w-full overflow-hidden">
+          <div className="absolute inset-0 bg-black/10 z-10 pointer-events-none"></div>
           <img
             src={tsaDesignHubImg1}
             alt="TSA Design Hub"
@@ -346,7 +325,7 @@ const TSADesignHubPage = ({
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
             <button
               onClick={() => navigate('/visit-store')}
-              className="bg-white text-black font-semibold px-6 md:px-10 lg:px-12 py-2 md:py-3 lg:py-4 rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-sm md:text-base lg:text-lg uppercase tracking-wide"
+              className="bg-white text-black font-semibold px-6 md:px-10 lg:px-12 py-2 md:py-3 lg:py-4 rounded-lg shadow-lg text-sm md:text-base lg:text-lg uppercase tracking-wide"
             >
               Visit Store
             </button>
@@ -361,4 +340,3 @@ const TSADesignHubPage = ({
 }
 
 export default TSADesignHubPage
-

@@ -84,6 +84,8 @@ app.use('/api/dream-temple', dreamTempleRoutes);
 app.use('/api/dream-temple', dreamTempleRoutes);
 app.use('/api/v1/translate', translationRoutes);
 app.use('/api/stone-products', require('./routes/stoneProductRoutes'));
+app.use('/api/tsa-design-hub', require('./routes/tsaDesignHubRoutes'));
+app.use('/api/tsa-international', require('./routes/tsaInternationalRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

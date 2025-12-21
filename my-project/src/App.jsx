@@ -103,6 +103,8 @@ import PoojaRoomManagementPage from './modules/admin/pages/PoojaRoomManagementPa
 import DreamTempleManagementPage from './modules/admin/pages/DreamTempleManagementPage'
 
 import OurServicesManagementPage from './modules/admin/pages/OurServicesManagementPage'
+import TSADesignHubManagementPage from './modules/admin/pages/TSADesignHubManagementPage'
+import TSAInternationalManagementPage from './modules/admin/pages/TSAInternationalManagementPage'
 import TalkToExpertPage from './modules/admin/pages/TalkToExpertPage'
 import ProtectedRoute from './modules/admin/components/ProtectedRoute'
 import AslamHousePage from './modules/admin/pages/AslamHousePage'
@@ -1510,6 +1512,16 @@ function App() {
           <Route path="/admin/content/our-services" element={
             <ProtectedRoute>
               <OurServicesManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/our-services/design-hub" element={
+            <ProtectedRoute>
+              <TSADesignHubManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/our-services/international" element={
+            <ProtectedRoute>
+              <TSAInternationalManagementPage />
             </ProtectedRoute>
           } />
           <Route path="/admin/settings" element={
