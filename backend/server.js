@@ -28,6 +28,8 @@ const internationalProjectsRoutes = require('./routes/internationalProjects');
 const poojaRoomRoutes = require('./routes/poojaRoomRoutes');
 const dreamTempleRoutes = require('./routes/dreamTempleRoutes');
 const translationRoutes = require('./routes/translationRoutes');
+const communalTemplesRoutes = require('./routes/communalTemplesRoutes');
+const jainTemplesRoutes = require('./routes/jainTemplesRoutes');
 
 dotenv.config();
 
@@ -38,7 +40,14 @@ app.use(compression());
 
 // Core middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'http://localhost:5176',
+    'http://localhost:5177',
+    'http://localhost:3000'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -81,10 +90,12 @@ app.use('/api/residential-projects', residentialProjectsRoutes);
 app.use('/api/international-projects', internationalProjectsRoutes);
 app.use('/api/pooja-room', poojaRoomRoutes);
 app.use('/api/dream-temple', dreamTempleRoutes);
-app.use('/api/dream-temple', dreamTempleRoutes);
 app.use('/api/v1/translate', translationRoutes);
+app.use('/api/communal-temples', communalTemplesRoutes);
+app.use('/api/jain-temples', jainTemplesRoutes);
 app.use('/api/stone-products', require('./routes/stoneProductRoutes'));
 app.use('/api/tsa-design-hub', require('./routes/tsaDesignHubRoutes'));
+app.use('/api/murtis', require('./routes/murtiRoutes'));
 app.use('/api/tsa-international', require('./routes/tsaInternationalRoutes'));
 
 // Health check

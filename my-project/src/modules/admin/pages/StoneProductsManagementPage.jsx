@@ -346,7 +346,7 @@ const StoneProductsManagementPage = () => {
                                                 <div key={product._id} className="group relative bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100">
                                                     <div className="aspect-square rounded-lg overflow-hidden bg-gray-50 mb-3 relative">
                                                         <img
-                                                            src={product.image?.url}
+                                                            src={product.image?.url || product.image}
                                                             alt={product.name}
                                                             loading="lazy"
                                                             className="w-full h-full object-cover"

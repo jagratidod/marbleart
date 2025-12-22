@@ -25,6 +25,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     ourCreationsNav: location.pathname.startsWith('/admin/category/pooja-room') ||
       location.pathname.startsWith('/admin/category/dream-temple') ||
       location.pathname.startsWith('/admin/category/murti') ||
+      location.pathname.startsWith('/admin/content/murtis') ||
       location.pathname.startsWith('/admin/category/home-decor') ||
       location.pathname.startsWith('/admin/category/communal-temples') ||
       location.pathname.startsWith('/admin/category/jain-temples') ||
@@ -128,7 +129,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           submenu: [
             { title: 'Pooja Rooms', path: '/admin/content/pooja-room' },
             { title: 'Dream Temples', path: '/admin/content/dream-temple' },
-            { title: 'Murti', path: '/admin/category/murti' },
+            { title: 'Murti', path: '/admin/content/murtis' },
             { title: 'Home Decor', path: '/admin/category/home-decor' },
             { title: 'Communal Temples', path: '/admin/category/communal-temples' },
             { title: 'Jain Temples', path: '/admin/category/jain-temples' },

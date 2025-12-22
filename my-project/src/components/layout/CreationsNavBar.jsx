@@ -21,7 +21,7 @@ const CreationsNavBar = ({ onShowCart, onShowLikes }) => {
   const navItems = [
     { name: 'DREAM TEMPLE', path: '/dream-temple', hasDropdown: false },
     { name: 'DREAM MURTIS', path: '/murti', hasDropdown: true, dropdownKey: 'dream-murtis' },
-    { name: 'HOME DECOR', path: '/home-decor', hasDropdown: true, dropdownKey: 'home-decor' },
+    { name: 'HOME DECOR', path: '/murti#shop-home-decor', hasDropdown: true, dropdownKey: 'home-decor' },
     { name: 'SHOP BY', path: '/shop-by', hasDropdown: true, dropdownKey: 'shop-by' },
     { name: 'LIMITED EDITION', path: '/limited-edition', hasDropdown: false },
     { name: 'ON SALE', path: '/on-sale', hasDropdown: false },
@@ -279,9 +279,8 @@ const CreationsNavBar = ({ onShowCart, onShowLikes }) => {
                         <div key={item.name} className="border-b border-gray-100">
                           <button
                             onClick={() => setMobileExpandedMenu(isExpanded ? null : item.name)}
-                            className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide transition-colors ${
-                              isActive ? 'text-[#8B7355] bg-gray-50' : 'text-gray-700 hover:bg-gray-50'
-                            }`}
+                            className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium uppercase tracking-wide transition-colors ${isActive ? 'text-[#8B7355] bg-gray-50' : 'text-gray-700 hover:bg-gray-50'
+                              }`}
                           >
                             <span>{item.name}</span>
                             <svg
@@ -332,9 +331,8 @@ const CreationsNavBar = ({ onShowCart, onShowLikes }) => {
                         key={item.name}
                         to={item.path}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-4 py-3 text-sm font-medium uppercase tracking-wide transition-colors border-b border-gray-100 ${
-                          isActive ? 'text-[#8B7355] bg-gray-50' : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`px-4 py-3 text-sm font-medium uppercase tracking-wide transition-colors border-b border-gray-100 ${isActive ? 'text-[#8B7355] bg-gray-50' : 'text-gray-700 hover:bg-gray-50'
+                          }`}
                       >
                         {item.name}
                       </Link>

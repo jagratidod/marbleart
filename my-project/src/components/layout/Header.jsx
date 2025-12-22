@@ -548,7 +548,7 @@ const Header = ({
                             <Link to="/pooja-room" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Pooja Rooms</Link>
                             <Link to="/dream-temple" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Dream Temples</Link>
                             <Link to="/murti" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Murti</Link>
-                            <Link to="/home-decor" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Home Decor</Link>
+                            <Link to="/murti#shop-home-decor" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Home Decor</Link>
                             <Link to="/communal-temples" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Communal Temples</Link>
                             <Link to="/jain-temples" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-gray-700 hover:text-[#8B7355] hover:bg-white rounded">Jain Temples</Link>
                           </div>

@@ -128,7 +128,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         product.name = req.body.name || product.name;
         product.categoryId = req.body.categoryId || product.categoryId;
         product.image = req.body.image || product.image;
-        product.images = req.body.images || product.images;
+
         product.specifications = req.body.specifications || product.specifications;
         product.description = req.body.description || product.description;
         product.displayOrder = req.body.displayOrder || product.displayOrder;
@@ -157,6 +157,19 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Get single product by ID
+// @route   GET /api/stone-products/:id
+// @access  Public
+const getProductById = asyncHandler(async (req, res) => {
+    const product = await StoneProduct.findById(req.params.id);
+    if (product) {
+        res.json(product);
+    } else {
+        res.status(404);
+        throw new Error('Product not found');
+    }
+});
+
 module.exports = {
     getCategories,
     getCategoryById,
@@ -164,5 +177,6 @@ module.exports = {
     updateCategory,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProductById
 };

@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import Header from '../../../components/layout/Header'
 import Footer from '../../../components/layout/Footer'
 import FloatingButtons from '../../../components/common/FloatingButtons'
-import { sandstoneProducts } from '../../../data/sandstoneProducts'
 
 const StoneProductDetailPage = ({
   onShowSidebar,
@@ -17,38 +17,80 @@ const StoneProductDetailPage = ({
   const { productId, stoneType } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
   // Extract stone type from URL path
   const pathParts = location.pathname.split('/')
   const actualStoneType = stoneType || pathParts[2] // /products/{stoneType}/{productId}
 
-  // Get product data based on stone type
-  let product = null
-
-  if (actualStoneType === 'sandstone') {
-    product = sandstoneProducts.find(p => p.id === parseInt(productId))
-  } else {
-    // For other stone types, get product data from sessionStorage
-    const storedProduct = sessionStorage.getItem(`stoneProduct_${actualStoneType}_${productId}`)
-    if (storedProduct) {
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setLoading(true)
       try {
-        const parsed = JSON.parse(storedProduct)
-        product = {
-          ...parsed,
-          specifications: parsed.specifications || {
-            'Origin': 'North India',
-            'Color': 'Various',
-            'Finish': 'Honed, Brushed, Natural, Tumbled',
-            'Offered In': 'Tiles, Pavers, Crazy, Mosaic',
-            'Tiles Size': '30 X 30, 30 X 60, 60 X 60 CM',
-            'Price': '₹45 - ₹65 per sq.ft'
+        // 1. Try Session Storage first (fastest)
+        const storedProduct = sessionStorage.getItem(`stoneProduct_${actualStoneType}_${productId}`)
+        if (storedProduct) {
+          try {
+            const sanitizedImage = (typeof parsed.image === 'string' ? parsed.image : parsed.image?.url) ||
+              (typeof parsed.images?.[0] === 'string' ? parsed.images[0] : parsed.images?.[0]?.url) ||
+              'https://via.placeholder.com/600'
+
+            setProduct({
+              ...parsed,
+              image: sanitizedImage,
+              specifications: parsed.specifications || {
+                'Origin': 'North India',
+                'Color': 'Various',
+                'Finish': 'Honed, Brushed, Natural, Tumbled',
+                'Offered In': 'Tiles, Pavers, Crazy, Mosaic',
+                'Tiles Size': '30 X 30, 30 X 60, 60 X 60 CM',
+                'Price': '₹45 - ₹65 per sq.ft'
+              }
+            })
+            setLoading(false)
+            return // Found in session, stop here
+          } catch (e) {
+            console.error('Error parsing stored product:', e)
           }
         }
-      } catch (e) {
-        console.error('Error parsing stored product:', e)
+
+        // 2. Fetch from API if not in session or parsing failed
+        const res = await fetch(`${API_URL}/stone-products/${productId}`)
+        if (res.ok) {
+          const apiProduct = await res.json()
+
+          // Map API response to Component format
+          setProduct({
+            id: apiProduct._id,
+            name: apiProduct.name,
+            image: (typeof apiProduct.image === 'string' ? apiProduct.image : apiProduct.image?.url) || (typeof apiProduct.images?.[0] === 'string' ? apiProduct.images[0] : apiProduct.images?.[0]?.url) || 'https://via.placeholder.com/600',
+            specifications: {
+              'Origin': apiProduct.specifications?.origin || 'India',
+              'Color': apiProduct.specifications?.color || 'Standard',
+              'Finish': apiProduct.specifications?.finish || 'Standard Finish',
+              'Offered In': apiProduct.specifications?.offeredIn || 'Various Forma',
+              'Tiles Size': apiProduct.specifications?.dimensions || 'Custom',
+              'Price': apiProduct.specifications?.price ? `₹${apiProduct.specifications.price}` : 'Contact for Price'
+            },
+            description: apiProduct.description
+          })
+        } else {
+          // If valid ObjectId but not found, or invalid ID (API returns 404/500), let it be null
+          console.log("Product not found via API")
+        }
+
+      } catch (error) {
+        console.error('Error fetching product:', error)
+      } finally {
+        setLoading(false)
       }
     }
-  }
+
+    fetchProduct()
+  }, [productId, actualStoneType, API_URL])
 
   // Get stone type display name
   const getStoneTypeName = (type) => {
@@ -62,9 +104,20 @@ const StoneProductDetailPage = ({
       'pebble-stones': 'Pebble Stones',
       'cobble-stones': 'Cobble Stones',
       'stone-chips': 'Stone Chips',
-      'natural-indian-stones': 'Natural Indian Stones'
+      'natural-indian-stones': 'Natural Indian Stones',
+      'basalt': 'Basalt',
+      'soap-stone': 'Soap Stone',
+      'travertine': 'Travertine'
     }
     return names[actualStoneType] || actualStoneType
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-white flex items-center justify-center">
+        <div className="inline-block w-12 h-12 border-t-2 border-b-2 border-[#8B7355] rounded-full animate-spin"></div>
+      </div>
+    )
   }
 
   if (!product) {
@@ -125,6 +178,7 @@ const StoneProductDetailPage = ({
                 <img
                   src={product.image}
                   alt={product.name}
+                  referrerPolicy="no-referrer"
                   className="w-full h-auto object-cover"
                 />
               </div>
@@ -132,11 +186,11 @@ const StoneProductDetailPage = ({
               <div className="mt-8 p-8 bg-gray-50 rounded-2xl border-l-4 border-[#8B7355] shadow-sm">
                 <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-light">
                   <span className="font-serif italic font-bold text-gray-900 text-2xl block mb-3">{product.name}</span>
-                  This premium natural stone is sourced directly from the historic quarries of <span className="font-semibold text-gray-900">{product.specifications.Origin}</span>.
-                  Renowned for its distinctive <span className="font-semibold text-[#8B7355]">{product.specifications.Color.toLowerCase()}</span> hues and remarkable geological
-                  strength, it serves as a centerpiece for architectural excellence. Available in refined <span className="italic">{product.specifications.Finish.toLowerCase()}</span> finishes,
-                  it seamlessly adapts to <span className="font-medium text-gray-800">{product.specifications['Offered In'].toLowerCase()}</span> applications,
-                  offering a timeless aesthetic that matures beautifully over time.
+                  This premium natural stone is sourced directly from the historic quarries{product.specifications.Origin ? ` of ${product.specifications.Origin}` : ''}.
+                  {product.specifications.Color && (
+                    <> Renowned for its distinctive <span className="font-semibold text-[#8B7355]">{product.specifications.Color.toLowerCase()}</span> hues and remarkable geological strength,</>
+                  )}
+                  it serves as a centerpiece for architectural excellence.
                 </p>
               </div>
             </div>
@@ -193,4 +247,3 @@ const StoneProductDetailPage = ({
 }
 
 export default StoneProductDetailPage
-

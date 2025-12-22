@@ -16,7 +16,9 @@ const ContentPagesManagementPage = () => {
     { id: 10, name: 'OUR ARTIST', slug: 'artisans-of-tilak', path: '/artisans-of-tilak' },
     { id: 11, name: 'Our Clients', slug: 'our-clients', path: '/our-clients' },
     { id: 12, name: 'Pooja Room', slug: 'pooja-room', path: '/ourcreations/pooja-room' },
-    { id: 13, name: 'Dream Temple', slug: 'dream-temple', path: '/ourcreations/dream-temple' }
+    { id: 13, name: 'Dream Temple', slug: 'dream-temple', path: '/ourcreations/dream-temple' },
+    { id: 14, name: 'Communal Temples', slug: 'communal-temples', path: '/ourcreations/communal-temples' },
+    { id: 15, name: 'Jain Temples', slug: 'jain-temples', path: '/ourcreations/jain-temples' }
   ])
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedPage, setSelectedPage] = useState(null)
@@ -94,6 +96,10 @@ const ContentPagesManagementPage = () => {
                             window.location.href = '/admin/content/pooja-room'
                           } else if (page.slug === 'dream-temple') {
                             window.location.href = '/admin/content/dream-temple'
+                          } else if (page.slug === 'communal-temples') {
+                            window.location.href = '/admin/category/communal-temples'
+                          } else if (page.slug === 'jain-temples') {
+                            window.location.href = '/admin/category/jain-temples'
                           } else {
                             setSelectedPage(page)
                             setShowEditModal(true)

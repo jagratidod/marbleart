@@ -7,7 +7,8 @@ const {
     updateCategory,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProductById
 } = require('../controllers/stoneProductController');
 const { auth, adminOnly } = require('../middlewares/authMiddleware');
 
@@ -25,6 +26,7 @@ router.route('/')
     .post(auth, adminOnly, createProduct);
 
 router.route('/:id')
+    .get(getProductById)
     .put(auth, adminOnly, updateProduct)
     .delete(auth, adminOnly, deleteProduct);
 

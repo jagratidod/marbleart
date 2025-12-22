@@ -41,8 +41,28 @@ const ProductDetailPage = ({
   const [showShareDropdown, setShowShareDropdown] = useState(false)
   const [showTechnicalSpecs, setShowTechnicalSpecs] = useState(false)
   const [showShipping, setShowShipping] = useState(false)
+  const [backendProduct, setBackendProduct] = useState(null)
   const sizeDropdownRef = useRef(null)
   const shareDropdownRef = useRef(null)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5100/api'
+
+  useEffect(() => {
+    // Attempt to fetch from backend if ID looks like a Mongo ID or just try generic fetch
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`${API_URL}/stone-products/${productId}`)
+        if (res.ok) {
+          const data = await res.json()
+          setBackendProduct(data)
+        }
+      } catch (e) {
+        console.log('Not a backend product or fetch failed')
+      }
+    }
+    if (productId && productId.length === 24) {
+      fetchProduct()
+    }
+  }, [productId])
 
   // Available sizes
   const availableSizes = ['5', '6', '7', '9', '11', '12', '14', '15', '18', '19', '24', '30', '33']
@@ -99,7 +119,7 @@ const ProductDetailPage = ({
     allProducts = vishnuLaxmiProducts
   }
 
-  let product = allProducts.find(p => p.id === productId)
+  let product = backendProduct || allProducts.find(p => p.id === productId)
 
   // If not found in murti products, check generated products (Furniture/Decor)
   if (!product) {
@@ -140,7 +160,7 @@ const ProductDetailPage = ({
           id: product.id,
           productId: product.id,
           name: product.name,
-          image: product.images?.[0] || product.image,
+          image: (product.images?.[0]?.url || product.images?.[0] || product.image?.url || product.image),
           price: product.price,
           quantity: quantity,
           size: selectedSize,
@@ -220,7 +240,7 @@ const ProductDetailPage = ({
                       }`}
                   >
                     <img
-                      src={img}
+                      src={typeof img === 'string' ? img : img?.url}
                       alt={`${product.name} view ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -231,7 +251,7 @@ const ProductDetailPage = ({
               {/* Main Image */}
               <div className="relative flex-1 aspect-square bg-gray-100 rounded-lg overflow-hidden">
                 <img
-                  src={product.images[selectedImageIndex]}
+                  src={typeof product.images[selectedImageIndex] === 'string' ? product.images[selectedImageIndex] : product.images[selectedImageIndex]?.url}
                   alt={product.name}
                   className="w-full h-full object-contain"
                 />

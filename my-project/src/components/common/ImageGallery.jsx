@@ -54,7 +54,16 @@ const ImageGallery = ({
   }, [])
 
   const handleImageClick = (item) => {
-    if (stoneType && item.id) {
+    let type = stoneType;
+
+    // Safety check for stoneType being an object (which causes routing errors)
+    if (typeof type === 'object' && type !== null) {
+      console.warn('ImageGallery: stoneType prop is an object, expected string.', type);
+      // Try to extract a useful property, or fallback
+      type = type.id || type.slug || 'unknown-category';
+    }
+
+    if (type && item.id) {
       const productData = {
         id: item.id,
         name: item.name,
@@ -68,8 +77,8 @@ const ImageGallery = ({
           'Price': '₹45 - ₹65 per sq.ft'
         }
       }
-      sessionStorage.setItem(`stoneProduct_${stoneType}_${item.id}`, JSON.stringify(productData))
-      navigate(`/products/${stoneType}/${item.id}`)
+      sessionStorage.setItem(`stoneProduct_${type}_${item.id}`, JSON.stringify(productData))
+      navigate(`/products/${type}/${item.id}`)
     }
   }
 
@@ -117,6 +126,7 @@ const ImageGallery = ({
                     <img
                       src={item.image}
                       alt={item.name}
+                      referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110"
                     />
                   </div>

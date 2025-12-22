@@ -16,9 +16,8 @@ import { vishnuLaxmiProducts } from '../../../data/vishnuLaxmiProducts'
 import { durgaProducts } from '../../../data/durgaProducts'
 import { saraswatiProducts } from '../../../data/saraswatiProducts'
 import { shivParvatiProducts } from '../../../data/shivParvatiProducts'
-import headingImage from '../../../assets/ourcreation/murti/heading.png'
-import homeDecorHeading from '../../../assets/ourcreation/home decore/heading.png'
 import { furnitureData, homeDecorData, allFurnitureCategories, allHomeDecorCategories } from '../../../data/categoryImages'
+import { Link } from 'react-router-dom'
 
 const MurtiPage = ({
   onShowSidebar,
@@ -38,6 +37,58 @@ const MurtiPage = ({
   const [expandedFaq, setExpandedFaq] = useState(null)
   const [faqs, setFaqs] = useState([])
   const [loadingFAQs, setLoadingFAQs] = useState(true)
+  const [categoryImagesFromBackend, setCategoryImagesFromBackend] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [pageData, setPageData] = useState(null)
+  const [hierarchy, setHierarchy] = useState([])
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+
+  // Fetch Category Images from Backend
+  useEffect(() => {
+    const fetchCategoryImages = async () => {
+      try {
+        const res = await fetch(`${API_URL}/stone-products/categories`)
+        if (res.ok) {
+          const data = await res.json()
+          const imageMap = {}
+          data.forEach(cat => {
+            if (cat.heroSection?.image?.url) {
+              imageMap[cat.id] = cat.heroSection.image.url
+            }
+          })
+          setCategoryImagesFromBackend(imageMap)
+        }
+      } catch (error) {
+        console.error('Error fetching category images:', error)
+      }
+    }
+    fetchCategoryImages()
+  }, [])
+
+  // Fetch all Murti data
+  useEffect(() => {
+    const fetchMurtiData = async () => {
+      try {
+        setLoading(true)
+        const [pageRes, hierarchyRes] = await Promise.all([
+          fetch(`${API_URL}/murtis/page`),
+          fetch(`${API_URL}/murtis/hierarchy`)
+        ])
+
+        const pageResult = await pageRes.json()
+        const hierarchyResult = await hierarchyRes.json()
+
+        if (pageResult.success) setPageData(pageResult.data)
+        if (hierarchyResult.success) setHierarchy(hierarchyResult.data)
+      } catch (error) {
+        console.error('Error fetching murti data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchMurtiData()
+  }, [])
 
   // Fetch FAQs from API
   useEffect(() => {
@@ -87,35 +138,16 @@ const MurtiPage = ({
     'Shiv Parivar': shivParvatiProducts[0]?.images[0] || ''
   }
 
-  const handleCollectionClick = (collectionId) => {
-    if (collectionId === 'durga') {
-      navigate('/murti/durga')
-    }
-    // Add other category navigation logic here if needed
+  const handleCategoryClick = (category) => {
+    navigate(`/murti/${category.id}`)
   }
 
-  const handleCategoryClick = (category) => {
-    if (category === 'Ganesha') {
-      navigate('/murti/ganesha')
-    } else if (category === 'Hanuman Ji') {
-      navigate('/murti/hanuman')
-    } else if (category === 'Radha Krishna') {
-      navigate('/murti/radha-krishna')
-    } else if (category === 'Ram Darbar') {
-      navigate('/murti/ram-darbar')
-    } else if (category === 'Durga') {
-      navigate('/murti/durga')
-    } else if (category === 'Saraswati') {
-      navigate('/murti/saraswati')
-    } else if (category === 'Shiv Parivar') {
-      navigate('/murti/shiv-parvati')
-    } else if (category === 'Sai Baba') {
-      navigate('/murti/sai-baba')
-    } else if (category === 'Vishnu Laxmi') {
-      navigate('/murti/vishnu-laxmi')
-    } else {
-      setSelectedCategory(category)
-    }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B7355]"></div>
+      </div>
+    )
   }
 
   return (
@@ -123,91 +155,92 @@ const MurtiPage = ({
       <CreationsNavBar onShowCart={onShowCart} onShowLikes={onShowLikes} />
 
       {/* Heading Image - Horizontal at Top */}
-      <div className="relative w-full overflow-hidden" style={{ height: '250px' }}>
+      <div className="relative w-full overflow-hidden" style={{ height: '350px' }}>
         <img
-          src={headingImage}
+          src={pageData?.heroSection?.image?.url || 'https://images.unsplash.com/photo-1544006659-f0b21f04cb1b?auto=format&fit=crop&q=80&w=2000'}
           alt="Murtis Heading"
           className="w-full h-full object-cover"
           style={{ objectPosition: 'center' }}
         />
-        {/* Text and Button Overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4">
-          {/* Welcome Caption */}
-          <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white text-center mb-4 md:mb-6 lg:mb-8 leading-tight drop-shadow-2xl">
-            Welcome to Aslam Marble Suppliers — Your Trusted Source for Premium Marble Creations
+        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center z-10 px-4">
+          <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white text-center mb-6 leading-tight drop-shadow-2xl max-w-5xl">
+            {pageData?.heroSection?.title || 'Welcome to Aslam Marble Suppliers'}
           </h1>
-          {/* Shop Now Button */}
+          <p className="text-white/90 text-lg md:text-xl font-medium mb-8 text-center drop-shadow-lg">
+            {pageData?.heroSection?.subtitle}
+          </p>
           <button
             onClick={() => {
-              const shopSection = document.getElementById('shop-murtis-section')
+              const shopSection = document.getElementById('categories-hierarchy-section')
               if (shopSection) {
                 shopSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
               }
             }}
-            className="px-6 md:px-8 lg:px-10 py-3 md:py-4 text-base md:text-lg lg:text-xl font-semibold text-white rounded-lg transition-all duration-300 hover:opacity-90 hover:scale-105 shadow-lg"
+            className="px-8 md:px-12 py-4 text-lg font-bold text-white rounded-full transition-all duration-300 hover:opacity-90 hover:scale-105 shadow-2xl backdrop-blur-sm border border-white/30"
             style={{ backgroundColor: '#8B7355' }}
           >
-            Shop Now
+            Explore Collection
           </button>
         </div>
       </div>
 
-      {/* Shop Murtis Section */}
-      <div id="shop-murtis-section" className="w-full py-8 md:py-12 px-4 md:px-6 lg:px-8">
+      {/* Categories Hierarchy Section - Matching User Image */}
+      <section id="categories-hierarchy-section" className="w-full py-16 px-4 md:px-6 lg:px-8 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
-          {/* Heading */}
-          {/* Heading */}
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[#8B7355] italic text-center mb-6 md:mb-8 font-bold">
-            Shop Murtis
-          </h1>
-
-          {/* Category Navigation Buttons */}
-          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 lg:gap-8 mb-2">
-            {allCategories.map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryClick(category)}
-                className={`relative text-base md:text-lg lg:text-xl font-bold transition-all duration-300 pb-2 hover:-translate-y-1 ${selectedCategory === category
-                  ? 'text-[#8B7355]'
-                  : 'text-black hover:text-[#8B7355]'
-                  }`}
-              >
-                {category}
-                {selectedCategory === category && (
-                  <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-[#8B7355] z-10"></span>
-                )}
-              </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+            {hierarchy.map((group) => (
+              <div key={group._id} className="space-y-6">
+                <h3 className="text-xl font-bold text-gray-900 uppercase tracking-widest border-b-2 border-[#8B7355] pb-3 inline-block">
+                  {group.name}
+                </h3>
+                <ul className="space-y-1.5">
+                  {group.categories.map((category) => (
+                    <li key={category._id}>
+                      <Link
+                        to={`/murti/${category.id}`}
+                        className="text-gray-600 hover:text-[#8B7355] transition-all duration-300 text-base font-medium flex items-center group"
+                      >
+                        <span className="w-0 group-hover:w-2 h-[1px] bg-[#8B7355] mr-0 group-hover:mr-2 transition-all"></span>
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Divider Line */}
-          <div className="w-full h-[1px] bg-gray-300 mb-8"></div>
+      {/* Shop Murtis Section - Visual Grid */}
+      <div id="shop-murtis-section" className="w-full py-16 px-4 md:px-6 lg:px-8 bg-gray-50/50">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic text-center mb-12 font-bold decoration-[#8B7355]/20 underline-offset-8 underline">
+            Visual Showcase
+          </h1>
 
-          {/* Category Images Line - Hover to see category image */}
-          <div className="w-full py-6 md:py-8">
-            <div className="flex gap-4 md:gap-6 lg:gap-8 overflow-x-auto pb-4 scrollbar-hide">
-              {allCategories.map((category) => (
-                <div
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className="flex-shrink-0 group cursor-pointer relative"
-                >
-                  <div className="relative w-32 h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 overflow-hidden border border-gray-300 hover:border-[#8B7355] transition-all duration-300">
-                    <img
-                      src={categoryImages[category] || murtiCollections[0]?.image}
-                      alt={category}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    {/* Category Name Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                      <p className="text-white text-xs md:text-sm font-semibold p-2 w-full text-center uppercase">
-                        {category}
-                      </p>
-                    </div>
+          <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory">
+            {hierarchy.flatMap(g => g.categories).map((category) => (
+              <div
+                key={category._id}
+                onClick={() => handleCategoryClick(category)}
+                className="flex-shrink-0 group cursor-pointer relative snap-center"
+              >
+                <div className="relative w-48 h-72 md:w-56 md:h-80 lg:w-64 lg:h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-500 group-hover:shadow-[#8B7355]/20">
+                  <img
+                    src={category.heroSection?.image?.url || 'https://via.placeholder.com/300x500'}
+                    alt={category.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <p className="text-white text-lg font-bold uppercase tracking-widest mb-1">
+                      {category.name}
+                    </p>
+                    <div className="w-8 h-1 bg-[#8B7355] transition-all duration-300 group-hover:w-16"></div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

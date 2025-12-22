@@ -38,7 +38,7 @@ const OurCreationsModal = ({ isOpen, onClose }) => {
                   if (category === 'Murti') path = '/murti'
                   else if (category === 'Dream Temples') path = '/dream-temple'
                   else if (category === 'Pooja Rooms') path = '/pooja-room'
-                  else if (category === 'Home Decor') path = '/home-decor'
+                  else if (category === 'Home Decor') path = '/murti#shop-home-decor'
                   else if (category === 'Communal Temples') path = '/communal-temples'
                   else if (category === 'Jain Temples') path = '/jain-temples'
 

@@ -6,7 +6,8 @@ import { durgaProducts } from '../../../data/durgaProducts'
 
 const ProductsManagementPage = () => {
   const { category } = useParams()
-  const [products, setProducts] = useState({})
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -14,65 +15,107 @@ const ProductsManagementPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [productToDelete, setProductToDelete] = useState(null)
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+  const token = localStorage.getItem('adminToken')
+
   const getPageTitle = () => {
     return category === 'murti' ? 'Murti Products' : 'Stone Products'
   }
 
   const getMurtiCategories = () => {
-    return ['Ganesha', 'Durga', 'Saraswati', 'Shiv Parvati', 'Sai Baba', 'Vishnu Laxmi']
+    return ['Ganesha', 'Durga', 'Saraswati', 'Shiv Parvati', 'Sai Baba', 'Vishnu Laxmi', 'Hanuman', 'Krishna', 'Ram Darbar', 'Shiv', 'Jain Gods', 'Nandi', 'Balaji', 'Radha Krishna']
   }
 
   const getStoneCategories = () => {
     return ['Sandstone', 'Limestone', 'Marble', 'Granite', 'Slate', 'Quartzite', 'Pebble Stones', 'Cobble Stones', 'Stone Chips', 'Basalt', 'Soap Stone', 'Travertine']
   }
 
-  useEffect(() => {
-    // Initialize products from data files
-    const initialProducts = {}
-    if (category === 'murti') {
-      getMurtiCategories().forEach(cat => {
-        switch (cat) {
-          case 'Ganesha': initialProducts[cat] = [...(ganeshaProducts || [])]; break
-          case 'Durga': initialProducts[cat] = [...(durgaProducts || [])]; break
-          default: initialProducts[cat] = []
-        }
-      })
-    } else {
-      getStoneCategories().forEach(cat => {
-        initialProducts[cat] = []
-      })
-    }
-    setProducts(initialProducts)
-  }, [category])
-
-  const getProductsByCategory = (cat) => {
-    return products[cat] || []
-  }
-
   const categories = category === 'murti' ? getMurtiCategories() : getStoneCategories()
 
-  const handleAddProduct = (newProduct) => {
+  // Format category name for API (e.g. "Shiv Parvati" -> "shiv-parvati")
+  const formatCategoryId = (catName) => {
+    if (!catName) return ''
+    return catName.toLowerCase().replace(/\s+/g, '-')
+  }
+
+  useEffect(() => {
+    // Set default selected category when page loads
+    if (categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0])
+    }
+  }, [category, categories])
+
+  useEffect(() => {
     if (selectedCategory) {
-      const newId = Math.max(...(getProductsByCategory(selectedCategory).map(p => p.id) || [0]), 0) + 1
-      const productWithId = { ...newProduct, id: newId, category: selectedCategory }
-      setProducts({
-        ...products,
-        [selectedCategory]: [...getProductsByCategory(selectedCategory), productWithId]
-      })
-      setShowAddModal(false)
+      fetchProducts(selectedCategory)
+    }
+  }, [selectedCategory])
+
+  const fetchProducts = async (catName) => {
+    setLoading(true)
+    try {
+      const catId = formatCategoryId(catName)
+      const res = await fetch(`${API_URL}/stone-products/category/${catId}`)
+      const data = await res.json()
+      setProducts(data)
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      setProducts([])
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleEditProduct = (updatedProduct) => {
-    if (selectedCategory) {
-      setProducts({
-        ...products,
-        [selectedCategory]: getProductsByCategory(selectedCategory).map(p =>
-          p.id === updatedProduct.id ? updatedProduct : p
-        )
+  const handleSaveProduct = async (productData) => {
+    setLoading(true)
+    try {
+      // Prepare payload
+      // Backend expects 'image' object with url.
+      // We use the first image from the array as the main image.
+      const mainImageUrl = productData.images.length > 0 ? productData.images[0] : null
+
+      const payload = {
+        ...productData,
+        categoryId: formatCategoryId(selectedCategory),
+        image: mainImageUrl ? { url: mainImageUrl, alt: productData.name } : null,
+        // Backend currently might not automatically upload 'images' array if base64. 
+        // For now, we pass them as is. If the backend controller needs update, we can do that.
+        // But importantly, we MUST send 'image' for the controller's logic to kick in for at least one image.
+        specifications: {
+          price: productData.price?.toString(),
+          dimensions: productData.dimensions,
+          weight: productData.weight,
+          material: productData.material
+        }
+      }
+
+      const method = productData.id ? 'PUT' : 'POST'
+      const url = productData.id
+        ? `${API_URL}/stone-products/${productData.id}`
+        : `${API_URL}/stone-products`
+
+      const res = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
       })
-      setShowEditModal(false)
-      setSelectedProduct(null)
+
+      if (res.ok) {
+        setShowAddModal(false)
+        setShowEditModal(false)
+        fetchProducts(selectedCategory) // Refresh list
+      } else {
+        const err = await res.json()
+        alert(`Error: ${err.message || 'Failed to save product'}`)
+      }
+    } catch (error) {
+      console.error('Error saving product:', error)
+      alert('Failed to save product')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -81,14 +124,28 @@ const ProductsManagementPage = () => {
     setShowDeleteConfirm(true)
   }
 
-  const confirmDelete = () => {
-    if (productToDelete && selectedCategory) {
-      setProducts({
-        ...products,
-        [selectedCategory]: getProductsByCategory(selectedCategory).filter(p => p.id !== productToDelete.id)
+  const confirmDelete = async () => {
+    if (!productToDelete) return
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_URL}/stone-products/${productToDelete._id || productToDelete.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
-      setShowDeleteConfirm(false)
-      setProductToDelete(null)
+
+      if (res.ok) {
+        setShowDeleteConfirm(false)
+        setProductToDelete(null)
+        fetchProducts(selectedCategory)
+      } else {
+        alert('Failed to delete product')
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -108,15 +165,15 @@ const ProductsManagementPage = () => {
         </div>
 
         {/* Categories Filter */}
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <div className="flex flex-wrap gap-2">
+        <div className="bg-white rounded-lg shadow-md p-4 overflow-x-auto">
+          <div className="flex flex-nowrap md:flex-wrap gap-2 min-w-max md:min-w-0">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 border-2 rounded-lg font-medium transition-colors ${selectedCategory === cat
-                    ? 'text-white border-[#8B7355]'
-                    : 'border-gray-300 text-gray-700 hover:border-[#8B7355] hover:text-[#8B7355]'
+                className={`px-4 py-2 border-2 rounded-lg font-medium transition-colors whitespace-nowrap ${selectedCategory === cat
+                  ? 'text-white border-[#8B7355]'
+                  : 'border-gray-300 text-gray-700 hover:border-[#8B7355] hover:text-[#8B7355]'
                   }`}
                 style={selectedCategory === cat ? { backgroundColor: '#8B7355' } : {}}
               >
@@ -130,45 +187,60 @@ const ProductsManagementPage = () => {
         {selectedCategory && (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">{selectedCategory} Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {getProductsByCategory(selectedCategory).map((product) => (
-                <div key={product.id} className="border-2 border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-                  <img
-                    src={product.images?.[0] || product.image}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">{product.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">SKU: {product.sku || 'N/A'}</p>
-                    <p className="text-lg font-bold text-[#8B7355] mb-4">₹{product.price?.toLocaleString() || 'N/A'}</p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedProduct(product)
-                          setShowEditModal(true)
-                        }}
-                        className="flex-1 px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:opacity-90"
-                        style={{ backgroundColor: '#8B7355' }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteProduct(product)}
-                        className="px-3 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                      >
-                        Delete
-                      </button>
+
+            {loading ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B7355]"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <div key={product._id || product.id} className="border-2 border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <img
+                      src={(typeof product.image === 'string' ? product.image : product.image?.url) || (typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url) || 'https://via.placeholder.com/300'}
+                      alt={product.name}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">{product.name}</h3>
+                      <p className="text-sm text-gray-600 mb-2">SKU: {product.sku || 'N/A'}</p>
+                      <p className="text-lg font-bold text-[#8B7355] mb-4">₹{product.price?.toLocaleString() || 'N/A'}</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            // Ensure images is an array of strings for the form if they are objects
+                            const formImages = product.images?.map(img => typeof img === 'string' ? img : img.url) ||
+                              (product.image?.url ? [product.image.url] : []);
+
+                            setSelectedProduct({
+                              id: product._id || product.id,
+                              ...product,
+                              images: formImages
+                            })
+                            setShowEditModal(true)
+                          }}
+                          className="flex-1 px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:opacity-90"
+                          style={{ backgroundColor: '#8B7355' }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product)}
+                          className="px-3 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {getProductsByCategory(selectedCategory).length === 0 && (
-                <div className="col-span-full text-center text-gray-500 py-12">
-                  No products found in this category. Click "Add New Product" to get started.
-                </div>
-              )}
-            </div>
+                ))}
+                {products.length === 0 && (
+                  <div className="col-span-full text-center text-gray-500 py-12">
+                    No products found in this category. Click "Add New Product" to get started.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -182,8 +254,9 @@ const ProductsManagementPage = () => {
         {showAddModal && (
           <ProductFormModal
             category={selectedCategory}
-            onSave={handleAddProduct}
+            onSave={handleSaveProduct}
             onClose={() => setShowAddModal(false)}
+            loading={loading}
           />
         )}
 
@@ -192,11 +265,12 @@ const ProductsManagementPage = () => {
           <ProductFormModal
             product={selectedProduct}
             category={selectedCategory}
-            onSave={handleEditProduct}
+            onSave={handleSaveProduct}
             onClose={() => {
               setShowEditModal(false)
               setSelectedProduct(null)
             }}
+            loading={loading}
           />
         )}
 
@@ -212,9 +286,10 @@ const ProductsManagementPage = () => {
                 <div className="flex gap-3">
                   <button
                     onClick={confirmDelete}
-                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+                    disabled={loading}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                   >
-                    Delete
+                    {loading ? 'Deleting...' : 'Delete'}
                   </button>
                   <button
                     onClick={() => {
@@ -236,7 +311,7 @@ const ProductsManagementPage = () => {
 }
 
 // Product Form Modal Component
-const ProductFormModal = ({ product, category, onSave, onClose }) => {
+const ProductFormModal = ({ product, category, onSave, onClose, loading }) => {
   const [formData, setFormData] = useState(product || {
     name: '',
     sku: '',
@@ -411,15 +486,17 @@ const ProductFormModal = ({ product, category, onSave, onClose }) => {
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 text-white rounded-lg font-medium transition-colors hover:opacity-90"
+                disabled={loading}
+                className="flex-1 px-4 py-2 text-white rounded-lg font-medium transition-colors hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#8B7355' }}
               >
-                {product ? 'Update Product' : 'Add Product'}
+                {loading ? 'Saving...' : (product ? 'Update Product' : 'Add Product')}
               </button>
               <button
                 type="button"
                 onClick={onClose}
                 className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                disabled={loading}
               >
                 Cancel
               </button>
