@@ -17,4 +17,9 @@ const murtiProductSchema = new mongoose.Schema({
     inStock: { type: Boolean, default: true }
 }, { timestamps: true });
 
+// Indexes for performance
+murtiProductSchema.index({ categoryId: 1, displayOrder: 1 });
+murtiProductSchema.index({ sku: 1 });
+murtiProductSchema.index({ inStock: 1 });
+
 module.exports = mongoose.model('MurtiProduct', murtiProductSchema);

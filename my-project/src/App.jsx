@@ -104,6 +104,7 @@ import DreamTempleManagementPage from './modules/admin/pages/DreamTempleManageme
 import CommunalTemplesManagementPage from './modules/admin/pages/CommunalTemplesManagementPage'
 import JainTemplesManagementPage from './modules/admin/pages/JainTemplesManagementPage'
 import MurtiManagementPage from './modules/admin/pages/MurtiManagementPage'
+import HomeDecorManagementPage from './modules/admin/pages/HomeDecorManagementPage'
 
 import OurServicesManagementPage from './modules/admin/pages/OurServicesManagementPage'
 import TSADesignHubManagementPage from './modules/admin/pages/TSADesignHubManagementPage'
@@ -1171,6 +1172,11 @@ function App() {
           <Route path="/admin/content/murtis" element={
             <ProtectedRoute>
               <MurtiManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/content/home-decor" element={
+            <ProtectedRoute>
+              <HomeDecorManagementPage />
             </ProtectedRoute>
           } />
           <Route path="/admin/content/blog" element={

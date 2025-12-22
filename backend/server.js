@@ -50,6 +50,10 @@ app.use(cors({
   ],
   credentials: true
 }));
+
+// Compression middleware for better performance
+app.use(compression());
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -96,6 +100,7 @@ app.use('/api/jain-temples', jainTemplesRoutes);
 app.use('/api/stone-products', require('./routes/stoneProductRoutes'));
 app.use('/api/tsa-design-hub', require('./routes/tsaDesignHubRoutes'));
 app.use('/api/murtis', require('./routes/murtiRoutes'));
+app.use('/api/home-decor', require('./routes/homeDecorRoutes'));
 app.use('/api/tsa-international', require('./routes/tsaInternationalRoutes'));
 
 // Health check
