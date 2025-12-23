@@ -101,6 +101,8 @@ app.use('/api/stone-products', require('./routes/stoneProductRoutes'));
 app.use('/api/tsa-design-hub', require('./routes/tsaDesignHubRoutes'));
 app.use('/api/murtis', require('./routes/murtiRoutes'));
 app.use('/api/home-decor', require('./routes/homeDecorRoutes'));
+app.use('/api/locations', require('./routes/locationRoutes'));
+app.use('/api/home-page', require('./routes/homePageRoutes'));
 app.use('/api/tsa-international', require('./routes/tsaInternationalRoutes'));
 
 // Health check
