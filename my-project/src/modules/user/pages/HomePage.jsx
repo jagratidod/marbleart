@@ -15,6 +15,7 @@ import HomePageFormPopup from '../../../components/common/HomePageFormPopup'
 import ExpertFormSection from '../../../components/common/ExpertFormSection'
 import ExploreProjectsSection from '../../../components/home/ExploreProjectsSection'
 import { fetchBlogs } from '../../../utils/blogUtils'
+import { fetchHomePageData } from '../../../utils/homePageUtils'
 import BeforeAfterSlider from '../../../components/common/BeforeAfterSlider'
 import afterImage from '../../../assets/ourcreation/pooja room/before&after/compare1.png'
 import beforeImage from '../../../assets/ourcreation/pooja room/before&after/compare2.jpg'
@@ -30,6 +31,8 @@ const HomePage = ({
   const [showFormPopup, setShowFormPopup] = useState(true)
   const [blogs, setBlogs] = useState([])
   const [loadingBlogs, setLoadingBlogs] = useState(true)
+  const [homePageData, setHomePageData] = useState(null)
+  const [loadingHomePage, setLoadingHomePage] = useState(true)
 
   useEffect(() => {
     let isMounted = true
@@ -52,6 +55,32 @@ const HomePage = ({
       }
     }
     loadBlogs()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    const loadHomePageData = async () => {
+      try {
+        setLoadingHomePage(true)
+        const data = await fetchHomePageData()
+        if (isMounted) {
+          setHomePageData(data)
+        }
+      } catch (error) {
+        console.error('Error loading home page data:', error)
+        if (isMounted) {
+          setHomePageData(null)
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingHomePage(false)
+        }
+      }
+    }
+    loadHomePageData()
     return () => {
       isMounted = false
     }
@@ -93,26 +122,26 @@ const HomePage = ({
       {/* Completed Custom Projects Section */}
       <section className="w-full relative h-[300px] md:h-[350px] lg:h-[400px] overflow-hidden">
         <img
-          src="https://res.cloudinary.com/djuyp9lut/image/upload/v1766129645/artist/hero/yjy4w3bfu9s4fhirpius.webp"
-          alt="Completed Custom Projects"
+          src={homePageData?.completedProjectsSection?.backgroundImage?.url || "https://res.cloudinary.com/djuyp9lut/image/upload/v1766129645/artist/hero/yjy4w3bfu9s4fhirpius.webp"}
+          alt={homePageData?.completedProjectsSection?.backgroundImage?.alt || "Completed Custom Projects"}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-12 text-center">
-            COMPLETED CUSTOM PROJECTS
+            {homePageData?.completedProjectsSection?.heading || 'COMPLETED CUSTOM PROJECTS'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-5xl w-full">
             <div className="text-center">
-              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">950+</p>
+              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">{homePageData?.completedProjectsSection?.stats?.projects || 950}+</p>
               <p className="text-lg md:text-xl lg:text-2xl">Projects</p>
             </div>
             <div className="text-center">
-              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">350+</p>
+              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">{homePageData?.completedProjectsSection?.stats?.cities || 350}+</p>
               <p className="text-lg md:text-xl lg:text-2xl">Cities</p>
             </div>
             <div className="text-center">
-              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">25+</p>
+              <p className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">{homePageData?.completedProjectsSection?.stats?.yearsExperience || 25}+</p>
               <p className="text-lg md:text-xl lg:text-2xl">Years Experience</p>
             </div>
           </div>
@@ -126,18 +155,18 @@ const HomePage = ({
             {/* Left Side - Text */}
             <div className="space-y-6 order-2 lg:order-1">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#8B7355] italic">
-                Before and After
+                {homePageData?.beforeAfterSection?.heading || 'Before and After'}
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed text-justify">
-                Witness the transformation from a blank canvas to a serene sanctuary with Tilak Stone Arts India. Our skilled artisans turn raw spaces into exquisite pooja rooms, reflecting spirituality and elegance. See the remarkable difference quality and craftsmanship can make.
+                {homePageData?.beforeAfterSection?.description || 'Witness the transformation from a blank canvas to a serene sanctuary with Tilak Stone Arts India. Our skilled artisans turn raw spaces into exquisite pooja rooms, reflecting spirituality and elegance. See the remarkable difference quality and craftsmanship can make.'}
               </p>
             </div>
 
             {/* Right Side - Comparison Slider */}
             <div className="order-1 lg:order-2 w-full">
               <BeforeAfterSlider
-                beforeImage={afterImage}
-                afterImage={beforeImage}
+                beforeImage={homePageData?.beforeAfterSection?.afterImage?.url || afterImage}
+                afterImage={homePageData?.beforeAfterSection?.beforeImage?.url || beforeImage}
               />
             </div>
           </div>

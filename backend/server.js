@@ -104,6 +104,7 @@ app.use('/api/home-decor', require('./routes/homeDecorRoutes'));
 app.use('/api/locations', require('./routes/locationRoutes'));
 app.use('/api/home-page', require('./routes/homePageRoutes'));
 app.use('/api/tsa-international', require('./routes/tsaInternationalRoutes'));
+app.use('/api/trusted-by', require('./routes/trustedByRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

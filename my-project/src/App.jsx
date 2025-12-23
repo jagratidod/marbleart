@@ -117,6 +117,7 @@ import OurCreationsNavPage from './modules/admin/pages/OurCreationsNavPage'
 import OurServicesNavPage from './modules/admin/pages/OurServicesNavPage'
 import OurProductsNavPage from './modules/admin/pages/OurProductsNavPage'
 import StoneProductsManagementPage from './modules/admin/pages/StoneProductsManagementPage'
+import CompaniesManagementPage from './modules/admin/pages/CompaniesManagementPage'
 import ProjectsModal from './components/modals/ProjectsModal'
 import OurCreationsModal from './components/modals/OurCreationsModal'
 import OurProductsModal from './components/modals/OurProductsModal'
@@ -1282,6 +1283,11 @@ function App() {
           <Route path="/admin/products/stone-pages" element={
             <ProtectedRoute>
               <StoneProductsManagementPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/products/companies" element={
+            <ProtectedRoute>
+              <CompaniesManagementPage />
             </ProtectedRoute>
           } />
           <Route path="/admin/content/pooja-room" element={
